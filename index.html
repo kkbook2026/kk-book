@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KK-2026 · Thư Viện Sách</title>
+<meta name="robots" content="noarchive, noimageindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,600&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+:root{
+  --navy-950:#0A1428; --navy-900:#0E1B36; --navy-800:#15264A; --navy-700:#1E3260;
+  --gold:#C9A227; --gold-bright:#E4C158; --gold-dim:#8C7420;
+  --cream:#F6F0E1; --cream-dim:#D9CFB6; --ink:#1A2233;
+  --ok:#3FA66A; --danger:#C4514A;
+  --radius:14px;
+  --font-display:'Playfair Display', 'Times New Roman', serif;
+  --font-body:'Be Vietnam Pro', system-ui, sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-body);
+  background:var(--navy-950);
+  color:var(--cream);
+  min-height:100vh;
+  -webkit-user-select:none;-moz-user-select:none;user-select:none;
+  -webkit-touch-callout:none;
+}
+input,textarea{-webkit-user-select:text;user-select:text}
+img{pointer-events:none}
+::selection{background:transparent}
+
+/* ============ HEADER ============ */
+header{
+  position:sticky;top:0;z-index:50;
+  background:linear-gradient(180deg, rgba(10,20,40,.97), rgba(10,20,40,.92));
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(201,162,39,.25);
+}
+.header-inner{
+  max-width:1240px;margin:0 auto;padding:12px 20px;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+}
+.brand{display:flex;align-items:center;gap:14px;cursor:pointer}
+.logo-kk{width:52px;height:52px;flex-shrink:0}
+.brand-text .brand-name{
+  font-family:var(--font-display);font-weight:900;font-size:1.35rem;
+  color:var(--gold-bright);letter-spacing:.04em;line-height:1.1;
+}
+.brand-text .brand-sub{font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;color:var(--cream-dim)}
+.header-tools{margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.search-box{position:relative}
+.search-box input{
+  background:var(--navy-800);border:1px solid rgba(201,162,39,.3);color:var(--cream);
+  border-radius:99px;padding:9px 16px 9px 38px;width:230px;font-size:.88rem;outline:none;
+  transition:border-color .2s, width .25s;
+}
+.search-box input:focus{border-color:var(--gold);width:280px}
+.search-box svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);opacity:.55}
+.lang-switch{display:flex;background:var(--navy-800);border-radius:99px;border:1px solid rgba(201,162,39,.3);overflow:hidden}
+.lang-switch button{
+  background:none;border:none;color:var(--cream-dim);padding:8px 13px;cursor:pointer;
+  font-size:.8rem;font-weight:600;font-family:var(--font-body);transition:all .15s;
+}
+.lang-switch button.active{background:var(--gold);color:var(--navy-950)}
+.btn{
+  border:none;cursor:pointer;font-family:var(--font-body);font-weight:600;
+  border-radius:99px;padding:9px 20px;font-size:.86rem;transition:all .18s;
+}
+.btn-gold{background:var(--gold);color:var(--navy-950)}
+.btn-gold:hover{background:var(--gold-bright);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--gold-bright);border:1px solid rgba(201,162,39,.45)}
+.btn-ghost:hover{background:rgba(201,162,39,.12)}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-sm{padding:6px 14px;font-size:.78rem}
+button:focus-visible, input:focus-visible, select:focus-visible{outline:2px solid var(--gold-bright);outline-offset:2px}
+
+/* ============ HERO ============ */
+.hero{
+  position:relative;overflow:hidden;
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 0%, rgba(201,162,39,.16), transparent 62%),
+    var(--navy-950);
+  border-bottom:1px solid rgba(201,162,39,.18);
+}
+.hero::before{ /* lưới khoa học mờ */
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(201,162,39,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201,162,39,.05) 1px, transparent 1px);
+  background-size:56px 56px;
+  mask-image:radial-gradient(ellipse 75% 80% at 50% 30%, #000 30%, transparent 78%);
+  -webkit-mask-image:radial-gradient(ellipse 75% 80% at 50% 30%, #000 30%, transparent 78%);
+  pointer-events:none;
+}
+.hero-inner{
+  position:relative;max-width:860px;margin:0 auto;
+  padding:58px 20px 52px;text-align:center;
+  display:flex;flex-direction:column;align-items:center;
+}
+.hero-logo{width:110px;height:110px;filter:drop-shadow(0 10px 34px rgba(201,162,39,.35))}
+.hero h1{
+  font-family:var(--font-display);font-weight:900;
+  font-size:clamp(2.4rem, 6vw, 4.2rem);line-height:1.08;
+  letter-spacing:.06em;margin-top:22px;
+  background:linear-gradient(180deg, #F3D98B 0%, var(--gold-bright) 45%, var(--gold) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.hero-divider{
+  display:flex;align-items:center;gap:12px;margin:20px 0 16px;
+}
+.hero-divider .line{width:74px;height:1px;background:linear-gradient(90deg, transparent, var(--gold));}
+.hero-divider .line:last-child{background:linear-gradient(90deg, var(--gold), transparent)}
+.hero-divider .diamond{width:8px;height:8px;background:var(--gold);transform:rotate(45deg)}
+.hero p.lede{color:var(--cream-dim);font-size:1rem;line-height:1.75;font-weight:300;max-width:600px}
+.hero-stats{display:flex;gap:52px;margin-top:32px;justify-content:center}
+.hero-stats .stat b{font-family:var(--font-display);font-size:1.9rem;color:var(--gold-bright);display:block}
+.hero-stats .stat span{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--cream-dim)}
+
+/* ============ CATEGORY SHELF ============ */
+.section{max-width:1240px;margin:0 auto;padding:44px 20px}
+.section-head{display:flex;align-items:baseline;gap:14px;margin-bottom:22px;flex-wrap:wrap}
+.section-head h2{font-family:var(--font-display);font-size:1.5rem;font-weight:700;color:var(--cream)}
+.section-head .count{color:var(--gold);font-size:.85rem;font-weight:600}
+.cat-shelf{
+  display:grid;gap:12px;
+  grid-template-columns:repeat(8, 1fr); /* 16 ô = 8 x 2, dàn đều tuyệt đối */
+}
+.cat-chip{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  text-align:center;min-height:86px;padding:12px 8px;
+  background:var(--navy-800);border:1px solid rgba(201,162,39,.22);
+  color:var(--cream-dim);border-radius:12px;cursor:pointer;
+  font-size:.82rem;font-weight:500;font-family:var(--font-body);line-height:1.3;
+  border-top:3px solid var(--gold-dim);
+  transition:all .16s;
+}
+.cat-chip:hover{border-color:var(--gold);color:var(--cream);transform:translateY(-3px);box-shadow:0 10px 26px rgba(0,0,0,.35)}
+.cat-chip.active{background:var(--gold);color:var(--navy-950);border-color:var(--gold);font-weight:700}
+.cat-chip .n{
+  font-size:.7rem;font-weight:700;
+  background:rgba(10,20,40,.35);border:1px solid rgba(201,162,39,.35);
+  border-radius:99px;padding:2px 10px;min-width:32px;
+}
+.cat-chip.active .n{background:rgba(10,20,40,.14);border-color:rgba(10,20,40,.3)}
+@media (max-width:1180px){.cat-shelf{grid-template-columns:repeat(5,1fr)}}
+@media (max-width:900px){.cat-shelf{grid-template-columns:repeat(4,1fr)}}
+@media (max-width:640px){.cat-shelf{grid-template-columns:repeat(3,1fr)}.cat-chip{min-height:76px;font-size:.75rem}}
+@media (max-width:420px){.cat-shelf{grid-template-columns:repeat(2,1fr)}}
+
+/* ============ BOOK GRID ============ */
+.book-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:26px;
+}
+.book-card{
+  background:var(--navy-900);border:1px solid rgba(201,162,39,.16);
+  border-radius:var(--radius);overflow:hidden;cursor:pointer;
+  transition:transform .2s, box-shadow .2s, border-color .2s;
+  display:flex;flex-direction:column;
+}
+.book-card:hover{transform:translateY(-6px);border-color:rgba(201,162,39,.55);box-shadow:0 18px 44px rgba(0,0,0,.5)}
+.book-cover{
+  aspect-ratio:3/4.15;background:var(--navy-800);position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.book-cover img{width:100%;height:100%;object-fit:cover}
+.book-cover .placeholder{
+  font-family:var(--font-display);font-size:3rem;color:rgba(201,162,39,.35);font-weight:900;
+}
+.book-cover::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(105deg, transparent 40%, rgba(255,255,255,.06) 45%, transparent 55%);
+}
+.book-cover .badge{
+  position:absolute;top:10px;left:10px;background:rgba(10,20,40,.85);color:var(--gold-bright);
+  font-size:.64rem;font-weight:700;letter-spacing:.08em;padding:4px 10px;border-radius:99px;
+  border:1px solid rgba(201,162,39,.4);text-transform:uppercase;
+}
+.book-info{padding:14px 14px 15px;display:flex;flex-direction:column;gap:5px;flex:1}
+.book-info h3{font-size:.94rem;font-weight:600;line-height:1.35;color:var(--cream);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.book-info .meta{font-size:.74rem;color:var(--cream-dim);margin-top:auto;display:flex;justify-content:space-between;gap:8px}
+.book-info .meta .pg{color:var(--gold);font-weight:600}
+.empty-state{
+  grid-column:1/-1;text-align:center;padding:70px 20px;color:var(--cream-dim);
+  border:1.5px dashed rgba(201,162,39,.3);border-radius:var(--radius);
+}
+.empty-state .logo-kk{width:64px;height:64px;margin:0 auto 18px;opacity:.6}
+.empty-state h3{font-family:var(--font-display);font-size:1.3rem;color:var(--cream);margin-bottom:8px}
+
+/* ============ READER ============ */
+.reader{
+  position:fixed;inset:0;z-index:100;background:rgba(6,11,22,.98);
+  display:none;flex-direction:column;
+}
+.reader.open{display:flex}
+.reader-bar{
+  display:flex;align-items:center;gap:12px;padding:10px 18px;
+  background:var(--navy-900);border-bottom:1px solid rgba(201,162,39,.3);flex-wrap:wrap;
+}
+.reader-bar .r-title{
+  font-family:var(--font-display);font-weight:700;color:var(--gold-bright);
+  font-size:1rem;flex:1;min-width:150px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.reader-controls{display:flex;align-items:center;gap:8px}
+.reader-controls .page-ind{font-size:.84rem;color:var(--cream-dim);min-width:86px;text-align:center}
+.icon-btn{
+  background:var(--navy-800);border:1px solid rgba(201,162,39,.35);color:var(--cream);
+  width:36px;height:36px;border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .15s;font-size:1rem;
+}
+.icon-btn:hover:not(:disabled){background:var(--navy-700);border-color:var(--gold)}
+.icon-btn:disabled{opacity:.3;cursor:default}
+.reader-stage{
+  flex:1;overflow:auto;display:flex;justify-content:center;align-items:flex-start;padding:26px;
+  position:relative;
+}
+.canvas-wrap{position:relative;box-shadow:0 24px 70px rgba(0,0,0,.7);border-radius:4px;overflow:hidden;background:#fff}
+.canvas-wrap canvas{display:block;max-width:100%;height:auto}
+.reader-note{
+  text-align:center;font-size:.7rem;color:var(--cream-dim);padding:8px;letter-spacing:.06em;
+  border-top:1px solid rgba(201,162,39,.15);background:var(--navy-950);
+}
+
+/* ============ MODALS ============ */
+.modal-backdrop{
+  position:fixed;inset:0;z-index:120;background:rgba(6,11,22,.8);backdrop-filter:blur(6px);
+  display:none;align-items:center;justify-content:center;padding:20px;
+}
+.modal-backdrop.open{display:flex}
+.modal{
+  background:var(--navy-900);border:1px solid rgba(201,162,39,.4);border-radius:18px;
+  width:100%;max-width:520px;max-height:90vh;overflow:auto;padding:28px;
+  box-shadow:0 30px 90px rgba(0,0,0,.6);
+}
+.modal h3{font-family:var(--font-display);font-size:1.35rem;color:var(--gold-bright);margin-bottom:6px}
+.modal .modal-sub{font-size:.84rem;color:var(--cream-dim);margin-bottom:20px;line-height:1.6}
+.field{margin-bottom:15px}
+.field label{display:block;font-size:.76rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.field input[type=text],.field input[type=password],.field select,.field input[type=range]{
+  width:100%;background:var(--navy-800);border:1px solid rgba(201,162,39,.3);color:var(--cream);
+  border-radius:10px;padding:11px 14px;font-size:.92rem;font-family:var(--font-body);outline:none;
+}
+.field input:focus,.field select:focus{border-color:var(--gold)}
+.field select option{background:var(--navy-900)}
+.dropzone{
+  border:2px dashed rgba(201,162,39,.45);border-radius:14px;padding:30px;text-align:center;
+  cursor:pointer;transition:all .2s;color:var(--cream-dim);font-size:.9rem;
+}
+.dropzone:hover,.dropzone.drag{border-color:var(--gold);background:rgba(201,162,39,.06);color:var(--cream)}
+.dropzone .dz-icon{font-size:2rem;margin-bottom:8px}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:22px}
+.progress-wrap{display:none;margin-top:14px}
+.progress-bar{height:8px;background:var(--navy-800);border-radius:99px;overflow:hidden}
+.progress-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-bright));transition:width .2s}
+.progress-label{font-size:.76rem;color:var(--cream-dim);margin-top:6px;text-align:center}
+
+/* ============ ADMIN PANEL ============ */
+.admin-list{margin-top:8px}
+.admin-row{
+  display:flex;align-items:center;gap:12px;padding:10px 0;
+  border-bottom:1px solid rgba(201,162,39,.15);
+}
+.admin-row .ar-title{flex:1;font-size:.88rem;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.admin-row .ar-cat{font-size:.7rem;color:var(--gold);white-space:nowrap}
+.wm-preview{
+  margin-top:8px;background:#fff;border-radius:10px;height:90px;position:relative;overflow:hidden;
+}
+.toast{
+  position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--navy-800);border:1px solid var(--gold);color:var(--cream);
+  padding:12px 26px;border-radius:99px;font-size:.88rem;z-index:200;
+  transition:transform .3s;box-shadow:0 12px 40px rgba(0,0,0,.5);
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ============ FOOTER ============ */
+footer{
+  border-top:1px solid rgba(201,162,39,.2);margin-top:50px;
+  background:var(--navy-900);
+}
+.footer-inner{
+  max-width:1240px;margin:0 auto;padding:36px 20px;
+  display:flex;align-items:center;gap:20px;flex-wrap:wrap;justify-content:space-between;
+}
+.footer-inner .f-brand{display:flex;align-items:center;gap:12px}
+.footer-inner .f-note{font-size:.78rem;color:var(--cream-dim);line-height:1.7;max-width:480px}
+.f-author{font-size:.78rem;color:rgba(217,207,182,.55);font-style:italic}
+
+/* ============ PRINT BLOCK ============ */
+@media print{
+  body *{display:none !important}
+  body::before{
+    content:'Tài liệu được bảo vệ bản quyền - Tác giả : Nguyễn Duy Điển (KK-2026). Không được phép in hoặc sao chép.';
+    display:block !important;font-size:18pt;padding:40pt;color:#000;
+  }
+}
+@media (prefers-reduced-motion: reduce){
+  *{animation:none !important;transition:none !important}
+}
+@media (max-width:860px){
+  .hero-inner{padding:40px 20px 38px}
+  .hero-logo{width:84px;height:84px}
+  .hero-stats{gap:34px}
+  .search-box input{width:150px}
+  .search-box input:focus{width:180px}
+  .book-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+<header>
+  <div class="header-inner">
+    <div class="brand" id="brandHome" role="button" tabindex="0" aria-label="KK-2026">
+      <svg class="logo-kk" viewBox="0 0 100 100" aria-hidden="true">
+        <rect x="4" y="4" width="92" height="92" rx="10" fill="none" stroke="#C9A227" stroke-width="3.5"/>
+        <rect x="11" y="11" width="78" height="78" rx="6" fill="none" stroke="#C9A227" stroke-width="1.2" opacity=".55"/>
+        <text x="33" y="68" font-family="Playfair Display, serif" font-weight="900" font-size="52" fill="#E4C158" text-anchor="middle">K</text>
+        <g transform="translate(100,0) scale(-1,1)">
+          <text x="33" y="68" font-family="Playfair Display, serif" font-weight="900" font-size="52" fill="#E4C158" text-anchor="middle">K</text>
+        </g>
+      </svg>
+      <div class="brand-text">
+        <div class="brand-name">KK-2026</div>
+        <div class="brand-sub" data-i18n="brandSub">Thư viện sách</div>
+      </div>
+    </div>
+    <div class="header-tools">
+      <div class="search-box">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F6F0E1" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="text" id="searchInput" data-i18n-ph="searchPh" placeholder="Tìm kiếm sách...">
+      </div>
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button data-lang="vi" class="active">VI</button>
+        <button data-lang="en">EN</button>
+        <button data-lang="ja">JA</button>
+      </div>
+      <button class="btn btn-ghost" id="adminBtn" data-i18n="admin">Quản trị</button>
+    </div>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<div class="hero">
+  <div class="hero-inner">
+    <svg class="hero-logo" viewBox="0 0 100 100" aria-hidden="true">
+      <rect x="4" y="4" width="92" height="92" rx="10" fill="rgba(21,38,74,.55)" stroke="#C9A227" stroke-width="3.5"/>
+      <rect x="11" y="11" width="78" height="78" rx="6" fill="none" stroke="#C9A227" stroke-width="1.2" opacity=".55"/>
+      <text x="33" y="68" font-family="Playfair Display, serif" font-weight="900" font-size="52" fill="#E4C158" text-anchor="middle">K</text>
+      <g transform="translate(100,0) scale(-1,1)">
+        <text x="33" y="68" font-family="Playfair Display, serif" font-weight="900" font-size="52" fill="#E4C158" text-anchor="middle">K</text>
+      </g>
+    </svg>
+    <h1>KK - TRI THỨC</h1>
+    <div class="hero-divider" aria-hidden="true">
+      <span class="line"></span><span class="diamond"></span><span class="line"></span>
+    </div>
+    <p class="lede" data-i18n="heroLede">Tủ sách chuyên khảo KK-2026: từ công nghệ thông tin, lịch sử, địa lý đến y tế và quản trị. Mọi ấn phẩm được bảo vệ bản quyền với watermark tác giả trên từng trang.</p>
+    <div class="hero-stats">
+      <div class="stat"><b id="statBooks">0</b><span data-i18n="statBooks">Đầu sách</span></div>
+      <div class="stat"><b>15</b><span data-i18n="statCats">Lĩnh vực</span></div>
+      <div class="stat"><b>3</b><span data-i18n="statLangs">Ngôn ngữ</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= CATEGORIES ================= -->
+<div class="section">
+  <div class="section-head">
+    <h2 data-i18n="catTitle">Lĩnh vực</h2>
+  </div>
+  <div class="cat-shelf" id="catShelf"></div>
+</div>
+
+<!-- ================= BOOKS ================= -->
+<div class="section" style="padding-top:6px">
+  <div class="section-head">
+    <h2 data-i18n="libTitle">Tủ sách</h2>
+    <span class="count" id="bookCount"></span>
+  </div>
+  <div class="book-grid" id="bookGrid"></div>
+</div>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="footer-inner">
+    <div class="f-brand">
+      <svg class="logo-kk" style="width:40px;height:40px" viewBox="0 0 100 100" aria-hidden="true">
+        <rect x="4" y="4" width="92" height="92" rx="10" fill="none" stroke="#C9A227" stroke-width="3.5"/>
+        <text x="33" y="68" font-family="Playfair Display, serif" font-weight="900" font-size="52" fill="#E4C158" text-anchor="middle">K</text>
+        <g transform="translate(100,0) scale(-1,1)"><text x="33" y="68" font-family="Playfair Display, serif" font-weight="900" font-size="52" fill="#E4C158" text-anchor="middle">K</text></g>
+      </svg>
+      <div>
+        <div style="font-family:var(--font-display);font-weight:700;color:var(--gold-bright)">KK-2026</div>
+        <div class="f-author">Tác giả : Nguyễn Duy Điển (KK-2026)</div>
+      </div>
+    </div>
+    <p class="f-note" data-i18n="footNote">Mọi ấn phẩm trên trang thuộc bản quyền của tác giả. Nghiêm cấm sao chép, in ấn, phân phối lại dưới mọi hình thức khi chưa được phép bằng văn bản.</p>
+  </div>
+</footer>
+
+<!-- ================= READER ================= -->
+<div class="reader" id="reader" role="dialog" aria-modal="true">
+  <div class="reader-bar">
+    <div class="r-title" id="rTitle"></div>
+    <div class="reader-controls">
+      <button class="icon-btn" id="zoomOut" title="Zoom out">−</button>
+      <button class="icon-btn" id="zoomIn" title="Zoom in">+</button>
+      <button class="icon-btn" id="prevPage" title="Previous">‹</button>
+      <span class="page-ind" id="pageInd">1 / 1</span>
+      <button class="icon-btn" id="nextPage" title="Next">›</button>
+      <button class="icon-btn" id="closeReader" title="Close" style="border-color:var(--danger)">✕</button>
+    </div>
+  </div>
+  <div class="reader-stage" id="readerStage">
+    <div class="canvas-wrap"><canvas id="pdfCanvas"></canvas></div>
+  </div>
+  <div class="reader-note" data-i18n="readerNote">© Tài liệu được bảo vệ - Watermark tác giả nhúng trên từng trang - Nghiêm cấm sao chép</div>
+</div>
+
+<!-- ================= ADMIN LOGIN MODAL ================= -->
+<div class="modal-backdrop" id="loginModal">
+  <div class="modal">
+    <h3 data-i18n="loginTitle">Đăng nhập quản trị</h3>
+    <p class="modal-sub" id="loginSub"></p>
+    <div class="field">
+      <label data-i18n="pinLabel">Mã PIN</label>
+      <input type="password" id="pinInput" maxlength="24" autocomplete="off">
+    </div>
+    <div class="field" id="pinConfirmField" style="display:none">
+      <label data-i18n="pinConfirm">Xác nhận PIN</label>
+      <input type="password" id="pinConfirmInput" maxlength="24" autocomplete="off">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="loginCancel" data-i18n="cancel">Hủy</button>
+      <button class="btn btn-gold" id="loginOk" data-i18n="confirm">Xác nhận</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= ADMIN PANEL MODAL ================= -->
+<div class="modal-backdrop" id="adminModal">
+  <div class="modal" style="max-width:640px">
+    <h3 data-i18n="adminTitle">Bảng quản trị KK-2026</h3>
+    <p class="modal-sub" data-i18n="adminSub">Tải sách PDF lên, quản lý danh mục và cấu hình watermark chống sao chép.</p>
+
+    <div class="dropzone" id="dropzone" tabindex="0">
+      <div class="dz-icon">📚</div>
+      <span data-i18n="dzText">Kéo thả file PDF vào đây hoặc bấm để chọn</span>
+      <input type="file" id="fileInput" accept="application/pdf" multiple hidden>
+    </div>
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-bar"><i id="progressFill"></i></div>
+      <div class="progress-label" id="progressLabel"></div>
+    </div>
+
+    <div class="field" style="margin-top:20px">
+      <label data-i18n="wmLabel">Chữ ký watermark (in mờ trên từng trang)</label>
+      <input type="text" id="wmText" value="Tác giả : Nguyễn Duy Điển (KK-2026)">
+    </div>
+    <div class="field">
+      <label><span data-i18n="wmOpacity">Độ đậm watermark</span>: <span id="wmOpVal">10%</span></label>
+      <input type="range" id="wmOpacity" min="4" max="30" value="10">
+      <div class="wm-preview"><canvas id="wmPreview" width="560" height="90" style="width:100%;height:100%"></canvas></div>
+    </div>
+    <div class="modal-actions" style="justify-content:flex-start">
+      <button class="btn btn-gold btn-sm" id="saveSettings" data-i18n="saveSettings">Lưu cấu hình</button>
+      <button class="btn btn-ghost btn-sm" id="changePin" data-i18n="changePin">Đổi mã PIN</button>
+    </div>
+
+    <div class="section-head" style="margin-top:26px;margin-bottom:4px">
+      <h2 style="font-size:1.05rem">Google Drive</h2>
+    </div>
+    <p class="modal-sub" id="driveStatus" style="margin-bottom:10px"></p>
+    <div class="modal-actions" style="justify-content:flex-start;margin-top:0">
+      <button class="btn btn-gold btn-sm" id="driveConnectBtn" data-i18n="driveConnect">Kết nối Google Drive</button>
+    </div>
+    <div class="field" id="driveCatalogField" style="display:none;margin-top:12px">
+      <label data-i18n="driveCatalog">Mã catalog - dán vào GDRIVE.catalogFileId trong file HTML</label>
+      <input type="text" id="driveCatalogIdBox" readonly onclick="this.select()">
+    </div>
+
+    <div class="section-head" style="margin-top:26px;margin-bottom:4px">
+      <h2 style="font-size:1.05rem" data-i18n="manageBooks">Quản lý sách</h2>
+    </div>
+    <div class="admin-list" id="adminList"></div>
+
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="adminClose" data-i18n="close">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= UPLOAD DETAIL MODAL ================= -->
+<div class="modal-backdrop" id="metaModal">
+  <div class="modal">
+    <h3 data-i18n="metaTitle">Thông tin sách</h3>
+    <p class="modal-sub" id="metaFile"></p>
+    <div class="field">
+      <label data-i18n="bookTitle">Tên sách</label>
+      <input type="text" id="metaTitleInput">
+    </div>
+    <div class="field">
+      <label data-i18n="bookCat">Lĩnh vực</label>
+      <select id="metaCat"></select>
+    </div>
+    <div class="field">
+      <label data-i18n="bookLang">Ngôn ngữ sách</label>
+      <select id="metaLang">
+        <option value="VI">Tiếng Việt</option>
+        <option value="EN">English</option>
+        <option value="JA">日本語</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="metaCancel" data-i18n="cancel">Hủy</button>
+      <button class="btn btn-gold" id="metaOk" data-i18n="upload">Tải lên</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================================
+   KK-2026 · Thư Viện Sách - single-file library site
+   Tác giả : Nguyễn Duy Điển (KK-2026)
+===================================================================== */
+'use strict';
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+/* =====================================================================
+   CẤU HÌNH GOOGLE DRIVE - ĐÃ CẤU HÌNH SẴN, KHÔNG CẦN SỬA
+   Project: kk-2026-library | Tên miền: kk-book.com
+   Chỉ còn 1 việc: sau lần "Kết nối Google Drive" đầu tiên trong bảng
+   quản trị, sao chép Mã catalog hiện ra và dán vào catalogFileId bên
+   dưới, rồi cập nhật lại file lên GitHub đúng 1 lần duy nhất.
+===================================================================== */
+const GDRIVE = {
+  apiKey: 'AIzaSyCI-zsRP85UVOi0DjtiCwWBwQ1djDy741g',
+  clientId: '38255041603-hn625o2dpa2eahjupd2i4jislaa1j28s.apps.googleusercontent.com',
+  folderName: 'KK-2026-Library',   // thư mục tự tạo trên Google Drive
+  catalogFileId: ''                // <- dán Mã catalog vào đây (1 lần duy nhất)
+};
+
+/* ---------------- i18n ---------------- */
+const I18N = {
+  vi: {
+    brandSub:'Thư viện sách', searchPh:'Tìm kiếm sách...', admin:'Quản trị',
+    heroA:'Tri thức Việt,', heroB:'trình bày đẳng cấp.',
+    heroLede:'Tủ sách chuyên khảo KK-2026: từ công nghệ thông tin, lịch sử, địa lý đến y tế và quản trị. Mọi ấn phẩm được bảo vệ bản quyền với watermark tác giả trên từng trang.',
+    statBooks:'Đầu sách', statCats:'Lĩnh vực', statLangs:'Ngôn ngữ',
+    catTitle:'Lĩnh vực', libTitle:'Tủ sách', allCats:'Tất cả',
+    emptyTitle:'Tủ sách đang chờ ấn phẩm đầu tiên', emptyText:'Vào mục Quản trị để tải sách PDF lên. Bìa sách sẽ được tạo tự động từ trang đầu tiên.',
+    loginTitle:'Đăng nhập quản trị', pinLabel:'Mã PIN', pinConfirm:'Xác nhận PIN',
+    firstPin:'Lần đầu sử dụng: hãy tạo mã PIN quản trị (tối thiểu 4 ký tự).',
+    enterPin:'Nhập mã PIN để mở bảng quản trị.',
+    cancel:'Hủy', confirm:'Xác nhận', close:'Đóng', upload:'Tải lên',
+    adminTitle:'Bảng quản trị KK-2026', adminSub:'Tải sách PDF lên, quản lý danh mục và cấu hình watermark chống sao chép.',
+    dzText:'Kéo thả file PDF vào đây hoặc bấm để chọn',
+    wmLabel:'Chữ ký watermark (in mờ trên từng trang)', wmOpacity:'Độ đậm watermark',
+    saveSettings:'Lưu cấu hình', changePin:'Đổi mã PIN', manageBooks:'Quản lý sách',
+    metaTitle:'Thông tin sách', bookTitle:'Tên sách', bookCat:'Lĩnh vực', bookLang:'Ngôn ngữ sách',
+    readerNote:'© Tài liệu được bảo vệ - Watermark tác giả nhúng trên từng trang - Nghiêm cấm sao chép',
+    footNote:'Mọi ấn phẩm trên trang thuộc bản quyền của tác giả. Nghiêm cấm sao chép, in ấn, phân phối lại dưới mọi hình thức khi chưa được phép bằng văn bản.',
+    pages:'trang', delete:'Xóa', read:'Đọc',
+    toastSaved:'Đã lưu cấu hình', toastUploaded:'Đã tải sách lên thành công', toastDeleted:'Đã xóa sách',
+    toastWrongPin:'Mã PIN không đúng', toastPinSet:'Đã tạo mã PIN', toastPinShort:'PIN tối thiểu 4 ký tự', toastPinMismatch:'PIN xác nhận không khớp',
+    toastCopy:'Nội dung được bảo vệ bản quyền - KK-2026', toastTooBig:'File quá lớn cho bộ nhớ trình duyệt, hãy thử file nhỏ hơn',
+    driveConnect:'Kết nối Google Drive', driveOk:'Đã kết nối Google Drive',
+    driveNotConf:'Chưa cấu hình: mở file HTML, điền apiKey và clientId vào mục GDRIVE ở đầu phần script.',
+    driveIdle:'Chưa kết nối. Bấm nút bên dưới để đăng nhập Google. Sách tải lên sẽ lưu vào thư mục KK-2026-Library trên Drive của bạn.',
+    driveConnected:'Đã kết nối - sách mới sẽ lưu thẳng vào Google Drive và mọi khách truy cập đều nhìn thấy.',
+    driveCatalog:'Mã catalog - dán vào GDRIVE.catalogFileId trong file HTML (chỉ làm 1 lần)',
+    driveNeedConnect:'Hãy bấm Kết nối Google Drive trước khi xóa sách lưu trên Drive',
+    driveSynced:'Đã đồng bộ danh mục lên Google Drive',
+    countBooks:'đầu sách'
+  },
+  en: {
+    brandSub:'Book Library', searchPh:'Search books...', admin:'Admin',
+    heroA:'Vietnamese knowledge,', heroB:'masterfully presented.',
+    heroLede:'The KK-2026 reference collection: from IT, history and geography to healthcare and management. Every publication is copyright-protected with an author watermark on each page.',
+    statBooks:'Books', statCats:'Fields', statLangs:'Languages',
+    catTitle:'Fields', libTitle:'Library', allCats:'All',
+    emptyTitle:'The shelf awaits its first title', emptyText:'Open Admin to upload PDF books. Covers are generated automatically from the first page.',
+    loginTitle:'Admin sign in', pinLabel:'PIN code', pinConfirm:'Confirm PIN',
+    firstPin:'First use: create an admin PIN (minimum 4 characters).',
+    enterPin:'Enter your PIN to open the admin panel.',
+    cancel:'Cancel', confirm:'Confirm', close:'Close', upload:'Upload',
+    adminTitle:'KK-2026 Admin Panel', adminSub:'Upload PDF books, manage the catalog and configure the anti-copy watermark.',
+    dzText:'Drag & drop PDF files here or click to browse',
+    wmLabel:'Watermark signature (faded on every page)', wmOpacity:'Watermark opacity',
+    saveSettings:'Save settings', changePin:'Change PIN', manageBooks:'Manage books',
+    metaTitle:'Book details', bookTitle:'Title', bookCat:'Field', bookLang:'Book language',
+    readerNote:'© Protected document - Author watermark embedded on every page - Copying prohibited',
+    footNote:'All publications on this site are the copyright of the author. Copying, printing or redistribution in any form is strictly prohibited without written permission.',
+    pages:'pages', delete:'Delete', read:'Read',
+    toastSaved:'Settings saved', toastUploaded:'Book uploaded successfully', toastDeleted:'Book deleted',
+    toastWrongPin:'Incorrect PIN', toastPinSet:'PIN created', toastPinShort:'PIN must be at least 4 characters', toastPinMismatch:'PIN confirmation does not match',
+    toastCopy:'Copyright-protected content - KK-2026', toastTooBig:'File too large for browser storage, try a smaller file',
+    driveConnect:'Connect Google Drive', driveOk:'Google Drive connected',
+    driveNotConf:'Not configured: open the HTML file and fill apiKey and clientId in the GDRIVE block at the top of the script.',
+    driveIdle:'Not connected. Click below to sign in with Google. Uploaded books will be stored in the KK-2026-Library folder on your Drive.',
+    driveConnected:'Connected - new books are saved straight to Google Drive and visible to all visitors.',
+    driveCatalog:'Catalog ID - paste into GDRIVE.catalogFileId in the HTML file (one time only)',
+    driveNeedConnect:'Please connect Google Drive before deleting Drive-stored books',
+    driveSynced:'Catalog synced to Google Drive',
+    countBooks:'books'
+  },
+  ja: {
+    brandSub:'ブックライブラリ', searchPh:'書籍を検索...', admin:'管理',
+    heroA:'ベトナムの知識を、', heroB:'格調高く。',
+    heroLede:'KK-2026専門書コレクション：IT、歴史、地理から医療、経営まで。全出版物は各ページに著者の透かしを入れて著作権保護されています。',
+    statBooks:'書籍数', statCats:'分野', statLangs:'言語',
+    catTitle:'分野', libTitle:'ライブラリ', allCats:'すべて',
+    emptyTitle:'最初の一冊をお待ちしています', emptyText:'管理パネルからPDF書籍をアップロードしてください。表紙は1ページ目から自動生成されます。',
+    loginTitle:'管理者ログイン', pinLabel:'PINコード', pinConfirm:'PIN確認',
+    firstPin:'初回利用：管理者PINを作成してください（4文字以上）。',
+    enterPin:'PINを入力して管理パネルを開きます。',
+    cancel:'キャンセル', confirm:'確認', close:'閉じる', upload:'アップロード',
+    adminTitle:'KK-2026 管理パネル', adminSub:'PDF書籍のアップロード、カタログ管理、コピー防止透かしの設定。',
+    dzText:'PDFファイルをドラッグ＆ドロップ、またはクリックして選択',
+    wmLabel:'透かし署名（各ページに薄く表示）', wmOpacity:'透かしの濃さ',
+    saveSettings:'設定を保存', changePin:'PIN変更', manageBooks:'書籍管理',
+    metaTitle:'書籍情報', bookTitle:'タイトル', bookCat:'分野', bookLang:'書籍の言語',
+    readerNote:'© 保護された文書 - 各ページに著者透かし埋込 - 複製禁止',
+    footNote:'本サイトの全出版物の著作権は著者に帰属します。書面による許可なく、いかなる形式での複製・印刷・再配布も固く禁じます。',
+    pages:'ページ', delete:'削除', read:'読む',
+    toastSaved:'設定を保存しました', toastUploaded:'アップロード完了', toastDeleted:'削除しました',
+    toastWrongPin:'PINが正しくありません', toastPinSet:'PINを作成しました', toastPinShort:'PINは4文字以上', toastPinMismatch:'PIN確認が一致しません',
+    toastCopy:'著作権保護コンテンツ - KK-2026', toastTooBig:'ファイルが大きすぎます。小さいファイルをお試しください',
+    driveConnect:'Google Driveに接続', driveOk:'Google Driveに接続しました',
+    driveNotConf:'未設定：HTMLファイルを開き、スクリプト冒頭のGDRIVEにapiKeyとclientIdを入力してください。',
+    driveIdle:'未接続。下のボタンからGoogleにログインしてください。書籍はDriveのKK-2026-Libraryフォルダに保存されます。',
+    driveConnected:'接続済み - 新しい書籍はGoogle Driveに直接保存され、全訪問者に表示されます。',
+    driveCatalog:'カタログID - HTMLファイルのGDRIVE.catalogFileIdに貼付（初回のみ）',
+    driveNeedConnect:'Drive上の書籍を削除する前にGoogle Driveに接続してください',
+    driveSynced:'カタログをGoogle Driveに同期しました',
+    countBooks:'冊'
+  }
+};
+
+const CATS = [
+  {id:'it',      vi:'Công nghệ thông tin', en:'Information Technology', ja:'情報技術'},
+  {id:'sci',     vi:'Khoa học & Công nghệ', en:'Science & Technology', ja:'科学技術'},
+  {id:'edu',     vi:'Giáo dục', en:'Education', ja:'教育'},
+  {id:'health',  vi:'Y tế & Sức khỏe', en:'Healthcare', ja:'医療・健康'},
+  {id:'assist',  vi:'Siêu Trợ Lý', en:'Super Assistant', ja:'スーパーアシスタント'},
+  {id:'mgmt',    vi:'Quản lý & Lãnh đạo', en:'Management & Leadership', ja:'経営・リーダーシップ'},
+  {id:'geo',     vi:'Địa lý', en:'Geography', ja:'地理'},
+  {id:'hist',    vi:'Lịch sử', en:'History', ja:'歴史'},
+  {id:'culture', vi:'Văn hóa & Tâm linh', en:'Culture & Spirituality', ja:'文化・精神世界'},
+  {id:'sport',   vi:'Thể thao', en:'Sports', ja:'スポーツ'},
+  {id:'econ',    vi:'Kinh tế & Tài chính', en:'Economy & Finance', ja:'経済・金融'},
+  {id:'law',     vi:'Pháp luật & Chính sách', en:'Law & Policy', ja:'法律・政策'},
+  {id:'iching',  vi:'Kinh Dịch - Tử Vi', en:'I Ching - Astrology', ja:'易経・紫微斗数'},
+  {id:'ency',    vi:'Bách khoa & Tổng hợp', en:'Encyclopedia & General', ja:'百科・総合'},
+  {id:'general', vi:'KK-BOOK', en:'KK-BOOK', ja:'KK-BOOK'}
+];
+
+/* ---------------- state ---------------- */
+let locale = 'vi';
+let activeCat = 'all';
+let searchQ = '';
+let books = [];            // metadata list
+let settings = { wmText: 'Tác giả : Nguyễn Duy Điển (KK-2026)', wmOpacity: 10, pinHash: null };
+let adminUnlocked = false;
+const t = k => (I18N[locale] && I18N[locale][k]) || I18N.vi[k] || k;
+const catName = id => { const c = CATS.find(c=>c.id===id); return c ? (c[locale]||c.vi) : id; };
+
+/* ---------------- storage layer: window.storage -> IndexedDB -> memory ---------------- */
+const memStore = new Map();
+const Store = (() => {
+  const hasWS = typeof window.storage !== 'undefined' && window.storage && typeof window.storage.get === 'function';
+  let idb = null;
+  function openIDB(){
+    return new Promise((res)=>{ 
+      if(!('indexedDB' in window)){res(null);return;}
+      try{
+        const rq = indexedDB.open('kk2026-lib', 1);
+        rq.onupgradeneeded = () => rq.result.createObjectStore('kv');
+        rq.onsuccess = () => res(rq.result);
+        rq.onerror = () => res(null);
+      }catch(e){res(null)}
+    });
+  }
+  async function idbGet(k){ if(!idb) idb = await openIDB(); if(!idb) return null;
+    return new Promise(res=>{ try{const tx=idb.transaction('kv','readonly').objectStore('kv').get(k);
+      tx.onsuccess=()=>res(tx.result ?? null); tx.onerror=()=>res(null);}catch(e){res(null)} }); }
+  async function idbSet(k,v){ if(!idb) idb = await openIDB(); if(!idb) return false;
+    return new Promise(res=>{ try{const tx=idb.transaction('kv','readwrite').objectStore('kv').put(v,k);
+      tx.onsuccess=()=>res(true); tx.onerror=()=>res(false);}catch(e){res(false)} }); }
+  async function idbDel(k){ if(!idb) idb = await openIDB(); if(!idb) return false;
+    return new Promise(res=>{ try{const tx=idb.transaction('kv','readwrite').objectStore('kv').delete(k);
+      tx.onsuccess=()=>res(true); tx.onerror=()=>res(false);}catch(e){res(false)} }); }
+
+  return {
+    async get(k){
+      if(hasWS){ try{ const r = await window.storage.get(k); return r ? r.value : null; }catch(e){ return null; } }
+      const v = await idbGet(k); if(v!==null) return v;
+      return memStore.has(k) ? memStore.get(k) : null;
+    },
+    async set(k,v){
+      if(hasWS){ try{ const r = await window.storage.set(k,v); return !!r; }catch(e){ return false; } }
+      const ok = await idbSet(k,v); if(ok) return true;
+      memStore.set(k,v); return true;
+    },
+    async del(k){
+      if(hasWS){ try{ await window.storage.delete(k); return true; }catch(e){ return false; } }
+      const ok = await idbDel(k); memStore.delete(k); return ok || true;
+    }
+  };
+})();
+
+const CHUNK = 2800000; // chars of base64 per chunk (~2.1MB binary), safely under limits
+
+/* ---------------- Google Drive sync engine ---------------- */
+let gToken=null, gTokenExp=0, gFolderId=null, gCatalogId=GDRIVE.catalogFileId||null, tokenClient=null;
+const gReady = () => !!(GDRIVE.apiKey && GDRIVE.clientId);
+const gConnected = () => !!gToken && Date.now() < gTokenExp;
+
+function requestToken(){
+  return new Promise((resolve, reject)=>{
+    if(!gReady()){ reject(new Error('not-configured')); return; }
+    if(typeof google === 'undefined' || !google.accounts){ reject(new Error('Google chưa tải xong, thử lại sau vài giây')); return; }
+    if(!tokenClient){
+      tokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: GDRIVE.clientId,
+        scope: 'https://www.googleapis.com/auth/drive.file',
+        callback: ()=>{}
+      });
+    }
+    tokenClient.callback = (resp)=>{
+      if(resp.error){ reject(new Error(resp.error)); return; }
+      gToken = resp.access_token;
+      gTokenExp = Date.now() + (resp.expires_in - 60)*1000;
+      resolve(gToken);
+    };
+    tokenClient.requestAccessToken({prompt: ''});
+  });
+}
+async function gApi(url, opts={}){
+  opts.headers = Object.assign({'Authorization':'Bearer '+gToken}, opts.headers||{});
+  const r = await fetch(url, opts);
+  if(!r.ok) throw new Error('Drive API '+r.status);
+  return r;
+}
+async function gEnsureSetup(){
+  /* thư mục */
+  let q = encodeURIComponent(`name='${GDRIVE.folderName}' and mimeType='application/vnd.google-apps.folder' and trashed=false`);
+  let r = await (await gApi(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id)`)).json();
+  if(r.files && r.files.length){ gFolderId = r.files[0].id; }
+  else{
+    const created = await (await gApi('https://www.googleapis.com/drive/v3/files',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({name:GDRIVE.folderName, mimeType:'application/vnd.google-apps.folder'})
+    })).json();
+    gFolderId = created.id;
+  }
+  /* file catalog */
+  if(!gCatalogId){
+    q = encodeURIComponent(`name='kk-catalog.json' and '${gFolderId}' in parents and trashed=false`);
+    r = await (await gApi(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id)`)).json();
+    if(r.files && r.files.length){ gCatalogId = r.files[0].id; }
+    else{
+      const created = await gMultipartUpload('kk-catalog.json','application/json',
+        new TextEncoder().encode(JSON.stringify({v:1, books:[], settings:{}})));
+      gCatalogId = created.id;
+      await gMakePublic(gCatalogId);
+    }
+  }
+}
+async function gMultipartUpload(name, mime, bytes){
+  const boundary = 'kkb' + Date.now();
+  const meta = {name, parents:[gFolderId]};
+  const body = new Blob([
+    `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(meta)}\r\n--${boundary}\r\nContent-Type: ${mime}\r\n\r\n`,
+    bytes,
+    `\r\n--${boundary}--`
+  ]);
+  const r = await gApi(`https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id`,{
+    method:'POST', headers:{'Content-Type':`multipart/related; boundary=${boundary}`}, body
+  });
+  return r.json();
+}
+async function gMakePublic(id){
+  await gApi(`https://www.googleapis.com/drive/v3/files/${id}/permissions`,{
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({role:'reader', type:'anyone'})
+  });
+}
+async function gPushCatalog(){
+  if(!gConnected() || !gCatalogId) return;
+  const payload = JSON.stringify({
+    v:1,
+    books: books.filter(b=>b.driveId),
+    settings: {wmText: settings.wmText, wmOpacity: settings.wmOpacity}
+  });
+  await gApi(`https://www.googleapis.com/upload/drive/v3/files/${gCatalogId}?uploadType=media`,{
+    method:'PATCH', headers:{'Content-Type':'application/json'}, body: payload
+  });
+}
+async function gLoadCatalog(){
+  if(!GDRIVE.apiKey || !gCatalogId) return false;
+  try{
+    const r = await fetch(`https://www.googleapis.com/drive/v3/files/${gCatalogId}?alt=media&key=${GDRIVE.apiKey}`, {cache:'no-store'});
+    if(!r.ok) return false;
+    const cat = await r.json();
+    const localOnly = books.filter(b=>!b.driveId);
+    books = (cat.books||[]).concat(localOnly);
+    if(cat.settings){
+      if(cat.settings.wmText) settings.wmText = cat.settings.wmText;
+      if(cat.settings.wmOpacity) settings.wmOpacity = cat.settings.wmOpacity;
+    }
+    return true;
+  }catch(e){ console.error('catalog', e); return false; }
+}
+async function gFetchPdf(driveId){
+  const r = await fetch(`https://www.googleapis.com/drive/v3/files/${driveId}?alt=media&key=${GDRIVE.apiKey}`);
+  if(!r.ok) throw new Error('Drive HTTP '+r.status);
+  return new Uint8Array(await r.arrayBuffer());
+}
+function updateDriveUI(){
+  const st = $('#driveStatus'); if(!st) return;
+  if(!gReady()){ st.textContent = t('driveNotConf'); $('#driveConnectBtn').disabled = true; return; }
+  $('#driveConnectBtn').disabled = false;
+  if(gConnected()){
+    st.textContent = t('driveConnected');
+    if(gCatalogId){
+      $('#driveCatalogField').style.display = 'block';
+      $('#driveCatalogIdBox').value = gCatalogId;
+    }
+  } else {
+    st.textContent = t('driveIdle');
+  }
+}
+
+/* ---------------- anti-copy shield ---------------- */
+document.addEventListener('contextmenu', e => { e.preventDefault(); toast(t('toastCopy')); });
+document.addEventListener('copy', e => { e.preventDefault(); try{e.clipboardData.setData('text/plain', settings.wmText);}catch(_){} });
+document.addEventListener('cut', e => e.preventDefault());
+document.addEventListener('dragstart', e => { if(e.target.tagName==='IMG'||e.target.tagName==='CANVAS') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  const k = e.key.toLowerCase();
+  if((e.ctrlKey||e.metaKey) && ['s','p','u'].includes(k)){ e.preventDefault(); toast(t('toastCopy')); }
+  if((e.ctrlKey||e.metaKey) && e.shiftKey && ['i','j','c'].includes(k)){ e.preventDefault(); }
+  if(e.key==='F12'){ e.preventDefault(); }
+  if(e.key==='PrintScreen'){ try{navigator.clipboard.writeText(settings.wmText);}catch(_){} }
+});
+window.addEventListener('beforeprint', () => { document.body.style.visibility='hidden'; });
+window.addEventListener('afterprint', () => { document.body.style.visibility=''; });
+
+/* ---------------- helpers ---------------- */
+const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+let toastTimer;
+function toast(msg){
+  const el = $('#toast'); el.textContent = msg; el.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(()=>el.classList.remove('show'), 2600);
+}
+async function sha256(str){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('kk2026::'+str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+function uid(){ return 'b'+Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+function b64FromBytes(bytes){
+  let bin=''; const CH=32768;
+  for(let i=0;i<bytes.length;i+=CH){ bin += String.fromCharCode.apply(null, bytes.subarray(i,i+CH)); }
+  return btoa(bin);
+}
+function bytesFromB64(b64){
+  const bin = atob(b64); const out = new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++) out[i]=bin.charCodeAt(i);
+  return out;
+}
+
+/* ---------------- i18n render ---------------- */
+function applyI18n(){
+  $$('[data-i18n]').forEach(el => el.textContent = t(el.dataset.i18n));
+  $$('[data-i18n-ph]').forEach(el => el.placeholder = t(el.dataset.i18nPh));
+  document.documentElement.lang = locale;
+  renderCats(); renderBooks(); renderAdminList();
+}
+$$('.lang-switch button').forEach(b => b.addEventListener('click', () => {
+  locale = b.dataset.lang;
+  $$('.lang-switch button').forEach(x=>x.classList.toggle('active', x===b));
+  applyI18n();
+}));
+
+/* ---------------- categories ---------------- */
+function renderCats(){
+  const shelf = $('#catShelf'); shelf.innerHTML='';
+  const mk = (id, label) => {
+    const n = id==='all' ? books.length : books.filter(b=>b.cat===id).length;
+    const btn = document.createElement('button');
+    btn.className = 'cat-chip' + (activeCat===id?' active':'');
+    btn.innerHTML = `<span>${label}</span><span class="n">${n}</span>`;
+    btn.addEventListener('click', ()=>{ activeCat=id; renderCats(); renderBooks(); });
+    shelf.appendChild(btn);
+  };
+  mk('all', t('allCats'));
+  CATS.forEach(c => mk(c.id, c[locale]||c.vi));
+}
+
+/* ---------------- book grid ---------------- */
+function renderBooks(){
+  const grid = $('#bookGrid'); grid.innerHTML='';
+  $('#statBooks').textContent = books.length;
+  let list = books.filter(b => activeCat==='all' || b.cat===activeCat);
+  if(searchQ) list = list.filter(b => b.title.toLowerCase().includes(searchQ));
+  $('#bookCount').textContent = list.length + ' ' + t('countBooks');
+  if(!list.length){
+    grid.innerHTML = `<div class="empty-state">
+      <svg class="logo-kk" viewBox="0 0 100 100"><rect x="4" y="4" width="92" height="92" rx="10" fill="none" stroke="#C9A227" stroke-width="3.5"/><text x="33" y="68" font-family="Playfair Display, serif" font-weight="900" font-size="52" fill="#E4C158" text-anchor="middle">K</text><g transform="translate(100,0) scale(-1,1)"><text x="33" y="68" font-family="Playfair Display, serif" font-weight="900" font-size="52" fill="#E4C158" text-anchor="middle">K</text></g></svg>
+      <h3>${t('emptyTitle')}</h3><p>${t('emptyText')}</p></div>`;
+    return;
+  }
+  list.sort((a,b)=>b.addedAt-a.addedAt).forEach(b => {
+    const card = document.createElement('div');
+    card.className='book-card'; card.tabIndex=0; card.setAttribute('role','button');
+    card.innerHTML = `
+      <div class="book-cover">
+        ${b.cover ? `<img src="${b.cover}" alt="">` : `<span class="placeholder">KK</span>`}
+        <span class="badge">${b.lang||'VI'}</span>
+      </div>
+      <div class="book-info">
+        <h3>${escapeHtml(b.title)}</h3>
+        <div class="meta"><span>${catName(b.cat)}</span><span class="pg">${b.pages} ${t('pages')}</span></div>
+      </div>`;
+    const open = ()=>openReader(b);
+    card.addEventListener('click', open);
+    card.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();open();} });
+    grid.appendChild(card);
+  });
+}
+function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+$('#searchInput').addEventListener('input', e => { searchQ = e.target.value.trim().toLowerCase(); renderBooks(); });
+$('#brandHome').addEventListener('click', ()=>{ activeCat='all'; searchQ=''; $('#searchInput').value=''; renderCats(); renderBooks(); window.scrollTo({top:0,behavior:'smooth'}); });
+
+/* ---------------- persistence ---------------- */
+async function loadAll(){
+  try{
+    const m = await Store.get('kk-books');   if(m) books = JSON.parse(m);
+    const s = await Store.get('kk-settings');if(s) settings = Object.assign(settings, JSON.parse(s));
+  }catch(e){ console.error(e); }
+  await gLoadCatalog(); /* khách truy cập: tải danh mục công khai từ Google Drive */
+  $('#wmText').value = settings.wmText;
+  $('#wmOpacity').value = settings.wmOpacity;
+  $('#wmOpVal').textContent = settings.wmOpacity+'%';
+  applyI18n(); drawWmPreview();
+}
+const saveBooks = () => Store.set('kk-books', JSON.stringify(books));
+const saveSettings = () => Store.set('kk-settings', JSON.stringify(settings));
+
+async function savePdf(id, bytes){
+  const b64 = b64FromBytes(bytes);
+  const nChunks = Math.ceil(b64.length / CHUNK);
+  for(let i=0;i<nChunks;i++){
+    const ok = await Store.set(`kk-pdf-${id}-${i}`, b64.slice(i*CHUNK,(i+1)*CHUNK));
+    if(!ok) throw new Error('storage-full');
+  }
+  return nChunks;
+}
+async function loadPdf(id, nChunks){
+  let b64='';
+  for(let i=0;i<nChunks;i++){
+    const part = await Store.get(`kk-pdf-${id}-${i}`);
+    if(part===null) throw new Error('missing-chunk');
+    b64 += part;
+  }
+  return bytesFromB64(b64);
+}
+async function deletePdf(id, nChunks){
+  for(let i=0;i<nChunks;i++) await Store.del(`kk-pdf-${id}-${i}`);
+}
+
+/* ---------------- admin auth ---------------- */
+$('#adminBtn').addEventListener('click', async () => {
+  if(adminUnlocked){ openAdmin(); return; }
+  const firstTime = !settings.pinHash;
+  $('#loginSub').textContent = firstTime ? t('firstPin') : t('enterPin');
+  $('#pinConfirmField').style.display = firstTime ? 'block' : 'none';
+  $('#pinInput').value=''; $('#pinConfirmInput').value='';
+  $('#loginModal').classList.add('open');
+  setTimeout(()=>$('#pinInput').focus(), 60);
+});
+$('#loginCancel').addEventListener('click', ()=>$('#loginModal').classList.remove('open'));
+$('#loginOk').addEventListener('click', doLogin);
+$('#pinInput').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+$('#pinConfirmInput').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+async function doLogin(){
+  const pin = $('#pinInput').value;
+  if(!settings.pinHash){
+    if(pin.length<4){ toast(t('toastPinShort')); return; }
+    if(pin !== $('#pinConfirmInput').value){ toast(t('toastPinMismatch')); return; }
+    settings.pinHash = await sha256(pin); await saveSettings();
+    toast(t('toastPinSet'));
+  } else {
+    if(await sha256(pin) !== settings.pinHash){ toast(t('toastWrongPin')); return; }
+  }
+  adminUnlocked = true;
+  $('#loginModal').classList.remove('open');
+  openAdmin();
+}
+$('#changePin').addEventListener('click', async ()=>{
+  settings.pinHash = null; await saveSettings();
+  $('#adminModal').classList.remove('open');
+  adminUnlocked = false;
+  $('#adminBtn').click();
+});
+
+/* ---------------- admin panel ---------------- */
+function openAdmin(){ renderAdminList(); updateDriveUI(); $('#adminModal').classList.add('open'); }
+$('#adminClose').addEventListener('click', ()=>$('#adminModal').classList.remove('open'));
+
+$('#driveConnectBtn').addEventListener('click', async ()=>{
+  if(!gReady()){ toast(t('driveNotConf')); return; }
+  try{
+    await requestToken();
+    await gEnsureSetup();
+    await gPushCatalog();
+    updateDriveUI();
+    toast(t('driveOk'));
+    renderCats(); renderBooks(); renderAdminList();
+  }catch(e){ console.error(e); toast('Google Drive: ' + e.message); }
+});
+
+function renderAdminList(){
+  const list = $('#adminList'); if(!list) return;
+  list.innerHTML='';
+  if(!books.length){ list.innerHTML = `<p style="font-size:.84rem;color:var(--cream-dim);padding:8px 0">${t('emptyText')}</p>`; return; }
+  books.forEach(b => {
+    const row = document.createElement('div'); row.className='admin-row';
+    row.innerHTML = `<span class="ar-title">${escapeHtml(b.title)}</span>
+      <span class="ar-cat">${catName(b.cat)} · ${b.pages} ${t('pages')}</span>`;
+    const del = document.createElement('button');
+    del.className='btn btn-danger btn-sm'; del.textContent=t('delete');
+    del.addEventListener('click', async ()=>{
+      if(b.driveId){
+        if(!gConnected()){ toast(t('driveNeedConnect')); return; }
+        try{ await gApi(`https://www.googleapis.com/drive/v3/files/${b.driveId}`, {method:'DELETE'}); }
+        catch(e){ console.error(e); }
+      } else {
+        await deletePdf(b.id, b.chunks);
+      }
+      books = books.filter(x=>x.id!==b.id);
+      await saveBooks();
+      if(b.driveId) await gPushCatalog();
+      renderAdminList(); renderCats(); renderBooks();
+      toast(t('toastDeleted'));
+    });
+    row.appendChild(del); list.appendChild(row);
+  });
+}
+
+/* watermark settings */
+$('#wmOpacity').addEventListener('input', e=>{ $('#wmOpVal').textContent = e.target.value+'%'; drawWmPreview(); });
+$('#wmText').addEventListener('input', drawWmPreview);
+$('#saveSettings').addEventListener('click', async ()=>{
+  settings.wmText = $('#wmText').value || settings.wmText;
+  settings.wmOpacity = parseInt($('#wmOpacity').value,10);
+  await saveSettings();
+  if(gConnected()){ try{ await gPushCatalog(); toast(t('driveSynced')); return; }catch(e){ console.error(e); } }
+  toast(t('toastSaved'));
+});
+function drawWmPreview(){
+  const cv = $('#wmPreview'); const ctx = cv.getContext('2d');
+  ctx.clearRect(0,0,cv.width,cv.height);
+  ctx.fillStyle='#fff'; ctx.fillRect(0,0,cv.width,cv.height);
+  ctx.fillStyle='#333'; ctx.font='14px Georgia';
+  ctx.fillText('Lorem ipsum dolor sit amet, nội dung trang sách mẫu...', 16, 30);
+  ctx.fillText('Chương I - Tổng quan về lĩnh vực nghiên cứu.', 16, 56);
+  paintWatermark(ctx, cv.width, cv.height, $('#wmText').value, parseInt($('#wmOpacity').value,10)/100);
+}
+
+/* ---------------- watermark painter (drawn INTO the canvas) ---------------- */
+function paintWatermark(ctx, w, h, text, alpha){
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.fillStyle = '#1E3260';
+  ctx.font = `600 ${Math.max(13, Math.round(w/38))}px 'Be Vietnam Pro', sans-serif`;
+  ctx.translate(w/2, h/2);
+  ctx.rotate(-Math.PI/6);
+  const stepX = Math.max(260, w/2.4), stepY = Math.max(110, h/6);
+  const tw = ctx.measureText(text).width;
+  for(let y=-h; y<=h; y+=stepY){
+    for(let x=-w*1.2; x<=w*1.2; x+=stepX + tw){
+      ctx.fillText(text, x, y);
+    }
+  }
+  ctx.restore();
+  /* corner stamp - slightly stronger */
+  ctx.save();
+  ctx.globalAlpha = Math.min(alpha*2.2, .5);
+  ctx.fillStyle = '#5A5A5A';
+  ctx.font = `500 ${Math.max(10, Math.round(w/70))}px 'Be Vietnam Pro', sans-serif`;
+  ctx.textAlign = 'right';
+  ctx.fillText(text, w-14, h-12);
+  ctx.restore();
+}
+
+/* ---------------- upload flow ---------------- */
+const dz = $('#dropzone');
+dz.addEventListener('click', ()=>$('#fileInput').click());
+dz.addEventListener('keydown', e=>{ if(e.key==='Enter') $('#fileInput').click(); });
+dz.addEventListener('dragover', e=>{ e.preventDefault(); dz.classList.add('drag'); });
+dz.addEventListener('dragleave', ()=>dz.classList.remove('drag'));
+dz.addEventListener('drop', e=>{ e.preventDefault(); dz.classList.remove('drag'); queueFiles(e.dataTransfer.files); });
+$('#fileInput').addEventListener('change', e=>{ queueFiles(e.target.files); e.target.value=''; });
+
+let uploadQueue = [], currentUpload = null;
+function queueFiles(files){
+  for(const f of files){ if(f.type==='application/pdf' || f.name.toLowerCase().endsWith('.pdf')) uploadQueue.push(f); }
+  nextUpload();
+}
+function nextUpload(){
+  if(currentUpload || !uploadQueue.length) return;
+  currentUpload = uploadQueue.shift();
+  const sel = $('#metaCat'); sel.innerHTML='';
+  CATS.forEach(c=>{ const o=document.createElement('option'); o.value=c.id; o.textContent=c[locale]||c.vi; sel.appendChild(o); });
+  $('#metaFile').textContent = currentUpload.name + ' · ' + (currentUpload.size/1048576).toFixed(1) + ' MB';
+  $('#metaTitleInput').value = currentUpload.name.replace(/\.pdf$/i,'').replace(/[-_]+/g,' ');
+  $('#metaModal').classList.add('open');
+}
+$('#metaCancel').addEventListener('click', ()=>{ currentUpload=null; $('#metaModal').classList.remove('open'); nextUpload(); });
+$('#metaOk').addEventListener('click', async ()=>{
+  const file = currentUpload; if(!file) return;
+  $('#metaModal').classList.remove('open');
+  const title = $('#metaTitleInput').value.trim() || file.name;
+  const cat = $('#metaCat').value, lang = $('#metaLang').value;
+  const pw = $('#progressWrap'), pf = $('#progressFill'), pl = $('#progressLabel');
+  pw.style.display='block'; pf.style.width='8%'; pl.textContent=title;
+  try{
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    pf.style.width='25%';
+    /* render cover + count pages */
+    const doc = await pdfjsLib.getDocument({data: bytes.slice()}).promise;
+    const pages = doc.numPages;
+    const page = await doc.getPage(1);
+    const vp = page.getViewport({scale: 260 / page.getViewport({scale:1}).width});
+    const cv = document.createElement('canvas'); cv.width=vp.width; cv.height=vp.height;
+    await page.render({canvasContext: cv.getContext('2d'), viewport: vp}).promise;
+    const cover = cv.toDataURL('image/jpeg', .72);
+    pf.style.width='55%';
+    /* persist pdf: Drive nếu đã kết nối, ngược lại lưu cục bộ */
+    const id = uid();
+    const rec = {id, title, cat, lang, pages, cover, addedAt: Date.now()};
+    if(gConnected() && gFolderId){
+      const safeName = title.replace(/[\\/:*?"<>|]/g,' ').trim() + '.pdf';
+      const up = await gMultipartUpload(safeName, 'application/pdf', bytes);
+      await gMakePublic(up.id);
+      rec.driveId = up.id;
+    } else {
+      rec.chunks = await savePdf(id, bytes);
+    }
+    pf.style.width='90%';
+    books.push(rec);
+    await saveBooks();
+    if(rec.driveId) await gPushCatalog();
+    pf.style.width='100%';
+    toast(t('toastUploaded'));
+    renderCats(); renderBooks(); renderAdminList();
+  }catch(err){
+    console.error(err);
+    toast(err.message==='storage-full' ? t('toastTooBig') : ('Lỗi: '+err.message));
+  }finally{
+    setTimeout(()=>{ pw.style.display='none'; pf.style.width='0'; }, 900);
+    currentUpload=null; nextUpload();
+  }
+});
+
+/* ---------------- reader ---------------- */
+let rDoc=null, rPage=1, rZoom=1.15, rBookId=null, rendering=false, pendingPage=null;
+async function openReader(book){
+  $('#rTitle').textContent = book.title;
+  $('#reader').classList.add('open');
+  document.body.style.overflow='hidden';
+  rPage=1; rZoom = window.innerWidth<720 ? .8 : 1.15; rBookId=book.id;
+  try{
+    const bytes = book.driveId ? await gFetchPdf(book.driveId) : await loadPdf(book.id, book.chunks);
+    rDoc = await pdfjsLib.getDocument({data: bytes}).promise;
+    renderPage();
+  }catch(e){
+    console.error(e); toast('Lỗi mở sách: '+e.message); closeReader();
+  }
+}
+async function renderPage(){
+  if(!rDoc) return;
+  if(rendering){ pendingPage = rPage; return; }
+  rendering = true;
+  try{
+    const page = await rDoc.getPage(rPage);
+    const base = page.getViewport({scale:1});
+    const maxW = Math.min(window.innerWidth-60, 1100);
+    const scale = (maxW / base.width) * rZoom;
+    const vp = page.getViewport({scale});
+    const dpr = Math.min(window.devicePixelRatio||1, 2);
+    const canvas = $('#pdfCanvas'); const ctx = canvas.getContext('2d');
+    canvas.width = vp.width*dpr; canvas.height = vp.height*dpr;
+    canvas.style.width = vp.width+'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    await page.render({canvasContext: ctx, viewport: vp}).promise;
+    /* watermark drawn into the pixels */
+    paintWatermark(ctx, vp.width, vp.height, settings.wmText, settings.wmOpacity/100);
+    $('#pageInd').textContent = rPage + ' / ' + rDoc.numPages;
+    $('#prevPage').disabled = rPage<=1;
+    $('#nextPage').disabled = rPage>=rDoc.numPages;
+  }catch(e){ console.error(e); }
+  rendering = false;
+  if(pendingPage!==null){ pendingPage=null; renderPage(); }
+}
+$('#prevPage').addEventListener('click', ()=>{ if(rPage>1){rPage--; renderPage(); $('#readerStage').scrollTop=0;} });
+$('#nextPage').addEventListener('click', ()=>{ if(rDoc && rPage<rDoc.numPages){rPage++; renderPage(); $('#readerStage').scrollTop=0;} });
+$('#zoomIn').addEventListener('click', ()=>{ rZoom=Math.min(rZoom+.2, 3); renderPage(); });
+$('#zoomOut').addEventListener('click', ()=>{ rZoom=Math.max(rZoom-.2, .5); renderPage(); });
+$('#closeReader').addEventListener('click', closeReader);
+function closeReader(){
+  $('#reader').classList.remove('open');
+  document.body.style.overflow='';
+  if(rDoc){ try{rDoc.destroy();}catch(_){} rDoc=null; }
+}
+document.addEventListener('keydown', e=>{
+  if(!$('#reader').classList.contains('open')) return;
+  if(e.key==='ArrowRight') $('#nextPage').click();
+  if(e.key==='ArrowLeft') $('#prevPage').click();
+  if(e.key==='Escape') closeReader();
+});
+
+/* ---------------- init ---------------- */
+loadAll();
+</script>
+</body>
+</html>
