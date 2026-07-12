@@ -11,6 +11,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <style>
 :root{
   --navy-950:#0A1428; --navy-900:#0E1B36; --navy-800:#15264A; --navy-700:#1E3260;
@@ -327,6 +330,103 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
   .tts-status{margin-left:0;width:100%}
 }
 
+/* ============ CỘNG ĐỒNG: LIKE + BÌNH LUẬN ============ */
+.btn-account.logged{border-color:var(--gold);color:var(--gold-bright)}
+.social{
+  border-top:1px solid rgba(201,162,39,.22);
+  background:var(--navy-900);padding:14px 18px;
+  max-height:38vh;overflow-y:auto;
+}
+.reader.bleed .social{display:none}
+.social-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:12px}
+.social-title{font-family:var(--font-display);color:var(--gold-bright);font-size:.95rem}
+.like-btn{
+  display:flex;align-items:center;gap:7px;cursor:pointer;
+  background:var(--navy-800);border:1px solid rgba(201,162,39,.3);
+  color:var(--cream-dim);padding:7px 14px;border-radius:99px;
+  font-size:.85rem;font-weight:600;transition:all .18s;
+}
+.like-btn:hover{border-color:var(--gold);color:var(--cream)}
+.like-btn.liked{background:rgba(201,162,39,.15);border-color:var(--gold);color:var(--gold-bright)}
+.like-btn.liked svg{fill:var(--gold-bright)}
+.cmt-form{display:flex;gap:10px;align-items:flex-start;margin-bottom:14px}
+.cmt-form textarea{
+  flex:1;background:var(--navy-800);border:1px solid rgba(201,162,39,.25);
+  color:var(--cream);border-radius:10px;padding:10px 12px;
+  font-family:inherit;font-size:.88rem;resize:vertical;min-height:44px;
+}
+.cmt-form textarea:focus{outline:none;border-color:var(--gold)}
+.cmt-list{display:flex;flex-direction:column;gap:12px}
+.cmt-empty{color:var(--cream-dim);font-size:.83rem;font-style:italic;padding:8px 0}
+.cmt{display:flex;gap:11px}
+.cmt-ava{
+  width:34px;height:34px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--gold),var(--gold-dim));
+  color:var(--navy-950);font-weight:800;font-size:.9rem;
+  display:flex;align-items:center;justify-content:center;
+}
+.cmt-body{flex:1;background:var(--navy-800);border-radius:10px;padding:9px 12px;
+  border:1px solid rgba(201,162,39,.14)}
+.cmt-head{display:flex;align-items:center;gap:9px;margin-bottom:3px}
+.cmt-head b{color:var(--gold-bright);font-size:.85rem}
+.cmt-head span{color:var(--cream-dim);font-size:.72rem}
+.cmt-del{
+  margin-left:auto;background:none;border:none;color:var(--danger);
+  cursor:pointer;font-size:.8rem;opacity:.6;
+}
+.cmt-del:hover{opacity:1}
+.cmt-body p{color:var(--cream);font-size:.87rem;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+/* tabs đăng ký / đăng nhập */
+.join-tabs{display:flex;gap:8px;margin-bottom:18px}
+.jt{
+  flex:1;padding:9px;border-radius:9px;cursor:pointer;
+  background:var(--navy-800);border:1px solid rgba(201,162,39,.25);
+  color:var(--cream-dim);font-family:inherit;font-size:.85rem;font-weight:600;
+  transition:all .15s;
+}
+.jt.on{background:var(--gold);color:var(--navy-950);border-color:var(--gold)}
+/* thẻ tài khoản */
+.me-card{display:flex;align-items:center;gap:14px;
+  background:var(--navy-800);border:1px solid rgba(201,162,39,.22);
+  border-radius:12px;padding:14px;margin-bottom:16px}
+.me-ava{
+  width:52px;height:52px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--gold),var(--gold-dim));
+  color:var(--navy-950);font-weight:800;font-size:1.4rem;
+  display:flex;align-items:center;justify-content:center;
+}
+.me-name{font-family:var(--font-display);color:var(--gold-bright);font-size:1.05rem}
+.me-mail{color:var(--cream-dim);font-size:.8rem}
+.me-state{font-size:.76rem;margin-top:3px;font-weight:600}
+.me-state.ok{color:var(--ok)}
+.me-state.wait{color:var(--danger)}
+#feedbackModal textarea, #fbInput{
+  width:100%;background:var(--navy-800);border:1px solid rgba(201,162,39,.25);
+  color:var(--cream);border-radius:10px;padding:11px;
+  font-family:inherit;font-size:.9rem;resize:vertical;
+}
+#fbInput:focus{outline:none;border-color:var(--gold)}
+@media (max-width:720px){
+  .social{max-height:44vh;padding:12px 10px}
+  .cmt-form{flex-direction:column}
+  .cmt-form .btn{width:100%}
+  .social-head{gap:9px}
+}
+
+/* hộp góp ý trong quản trị */
+.fb-inbox{display:none;flex-direction:column;gap:10px;margin-top:10px}
+.fb-inbox.open{display:flex}
+.fb-item{
+  background:var(--navy-800);border:1px solid rgba(201,162,39,.18);
+  border-left:3px solid var(--gold);border-radius:10px;padding:11px 13px;
+}
+.fb-item .fh{display:flex;align-items:center;gap:9px;margin-bottom:4px}
+.fb-item .fh b{color:var(--gold-bright);font-size:.85rem}
+.fb-item .fh span{color:var(--cream-dim);font-size:.73rem}
+.fb-item .fh .fb-del{margin-left:auto;background:none;border:none;color:var(--danger);cursor:pointer;opacity:.6}
+.fb-item .fh .fb-del:hover{opacity:1}
+.fb-item p{color:var(--cream);font-size:.86rem;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+
 /* ============ 2FA / SECURITY ============ */
 .lock-badge{
   width:44px;height:44px;border-radius:12px;margin-bottom:14px;
@@ -506,6 +606,7 @@ footer{
         <button data-lang="en">EN</button>
         <button data-lang="ja">JA</button>
       </div>
+      <button class="btn btn-ghost btn-account" id="accountBtn" data-i18n="joinBtn">Đăng ký</button>
       <button class="btn btn-ghost" id="adminBtn" data-i18n="admin">Quản trị</button>
     </div>
   </div>
@@ -680,7 +781,95 @@ footer{
   <div class="reader-stage" id="readerStage">
     <div class="canvas-wrap"><canvas id="pdfCanvas"></canvas></div>
   </div>
+  <!-- KHU VỰC CỘNG ĐỒNG: thích + bình luận -->
+  <div class="social" id="socialBox">
+    <div class="social-head">
+      <button class="like-btn" id="likeBtn">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l8.8 8.8 8.8-8.8a5.5 5.5 0 0 0 0-7.8Z"/>
+        </svg>
+        <span id="likeCount">0</span>
+      </button>
+      <span class="social-title"><span data-i18n="comments">Bình luận</span> (<span id="cmtCount">0</span>)</span>
+      <button class="btn btn-ghost btn-sm" id="fbOpen" data-i18n="sendFeedback">Góp ý cho tác giả</button>
+    </div>
+    <div class="cmt-form">
+      <textarea id="cmtInput" rows="2" maxlength="2000" data-i18n-ph="cmtPlaceholder" placeholder="Viết cảm nghĩ của bạn về cuốn sách..."></textarea>
+      <button class="btn btn-gold btn-sm" id="cmtSend" data-i18n="post">Gửi</button>
+    </div>
+    <div class="cmt-list" id="cmtList"></div>
+  </div>
   <div class="reader-note" data-i18n="readerNote">© Tài liệu được bảo vệ - Watermark tác giả nhúng trên từng trang - Nghiêm cấm sao chép</div>
+</div>
+
+<!-- ================= ĐĂNG KÝ / ĐĂNG NHẬP THÀNH VIÊN ================= -->
+<div class="modal-backdrop" id="joinModal">
+  <div class="modal">
+    <div class="lock-badge" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/>
+      </svg>
+    </div>
+    <h3 id="joinTitle" data-i18n="joinTitle">Tham gia cộng đồng KK-2026</h3>
+    <p class="modal-sub" id="joinSub" data-i18n="joinSub">Đăng ký để bình luận, thích và góp ý. Chỉ cần email - chúng tôi gửi thư xác thực ngay.</p>
+
+    <div class="join-tabs">
+      <button class="jt on" id="tabSignup" data-i18n="signup">Đăng ký</button>
+      <button class="jt" id="tabLogin" data-i18n="login">Đăng nhập</button>
+    </div>
+
+    <div class="field" id="nameField">
+      <label data-i18n="yourName">Tên hiển thị</label>
+      <input type="text" id="joinName" maxlength="40" autocomplete="nickname">
+    </div>
+    <div class="field">
+      <label data-i18n="email">Email</label>
+      <input type="email" id="joinEmail" autocomplete="email">
+    </div>
+    <div class="field">
+      <label data-i18n="password">Mật khẩu</label>
+      <input type="password" id="joinPass" minlength="6" autocomplete="current-password">
+      <div class="hint" data-i18n="passHint">Tối thiểu 6 ký tự</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="joinCancel" data-i18n="cancel">Hủy</button>
+      <button class="btn btn-gold" id="joinOk" data-i18n="signup">Đăng ký</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= TÀI KHOẢN CỦA TÔI ================= -->
+<div class="modal-backdrop" id="meModal">
+  <div class="modal">
+    <h3 data-i18n="myAccount">Tài khoản của tôi</h3>
+    <div class="me-card">
+      <div class="me-ava" id="meAva">?</div>
+      <div>
+        <div class="me-name" id="meName"></div>
+        <div class="me-mail" id="meMail"></div>
+        <div class="me-state" id="meState"></div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="meResend" data-i18n="resend">Gửi lại thư xác thực</button>
+      <button class="btn btn-danger" id="meLogout" data-i18n="logout">Đăng xuất</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= GÓP Ý CHO TÁC GIẢ ================= -->
+<div class="modal-backdrop" id="feedbackModal">
+  <div class="modal">
+    <h3 data-i18n="sendFeedback">Góp ý cho tác giả</h3>
+    <p class="modal-sub" data-i18n="fbSub">Ý kiến của bạn gửi riêng tới tác giả, không hiển thị công khai.</p>
+    <div class="field">
+      <textarea id="fbInput" rows="5" maxlength="2000" data-i18n-ph="fbPlaceholder" placeholder="Chia sẻ điều bạn muốn tác giả biết..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="fbCancel" data-i18n="cancel">Hủy</button>
+      <button class="btn btn-gold" id="fbSend" data-i18n="post">Gửi</button>
+    </div>
+  </div>
 </div>
 
 <!-- ================= ADMIN LOGIN MODAL ================= -->
@@ -780,6 +969,18 @@ footer{
       <label data-i18n="driveCatalog">Mã catalog - dán vào GDRIVE.catalogFileId trong file HTML</label>
       <input type="text" id="driveCatalogIdBox" readonly onclick="this.select()">
     </div>
+
+    <div class="section-head" style="margin-top:26px;margin-bottom:4px">
+      <h2 style="font-size:1.05rem" data-i18n="fbInbox">Hộp góp ý từ độc giả</h2>
+    </div>
+    <div class="sec-row">
+      <div>
+        <div class="sec-state" id="fbInboxState">-</div>
+        <div class="sec-desc" data-i18n="fbInboxDesc">Ý kiến độc giả gửi riêng cho anh, không hiển thị công khai trên web.</div>
+      </div>
+      <button class="btn btn-gold btn-sm" id="fbInboxBtn" data-i18n="viewInbox">Xem</button>
+    </div>
+    <div class="fb-inbox" id="fbInboxList"></div>
 
     <div class="section-head" style="margin-top:26px;margin-bottom:4px">
       <h2 style="font-size:1.05rem" data-i18n="secTitle">Bảo mật 2 lớp</h2>
@@ -892,6 +1093,31 @@ const I18N = {
     driveCatalog:'Mã catalog - dán vào GDRIVE.catalogFileId trong file HTML (chỉ làm 1 lần)',
     driveNeedConnect:'Hãy bấm Kết nối Google Drive trước khi xóa sách lưu trên Drive',
     driveSynced:'Đã đồng bộ danh mục lên Google Drive',
+    fbInbox:'Hộp góp ý từ độc giả', fbInboxDesc:'Ý kiến độc giả gửi riêng cho anh, không hiển thị công khai trên web.',
+    viewInbox:'Xem', messages:'góp ý', noFeedback:'Chưa có góp ý nào.',
+    fbNeedOwnerLogin:'Hãy bấm nút Đăng ký/Đăng nhập ở trên và đăng nhập bằng chính email tác giả để đọc góp ý',
+    joinBtn:'Đăng ký', joinTitle:'Tham gia cộng đồng KK-2026',
+    joinSub:'Đăng ký để bình luận, thích và góp ý. Chỉ cần email - chúng tôi gửi thư xác thực ngay.',
+    loginSub:'Nhập email và mật khẩu để tiếp tục.',
+    signup:'Đăng ký', login:'Đăng nhập', logout:'Đăng xuất', yourName:'Tên hiển thị',
+    email:'Email', password:'Mật khẩu', passHint:'Tối thiểu 6 ký tự',
+    myAccount:'Tài khoản của tôi', resend:'Gửi lại thư xác thực',
+    verified:'Email đã xác thực', notVerified:'Chưa xác thực email - hãy kiểm tra hộp thư',
+    needVerify:'Chưa xác thực', needVerifyLong:'Hãy mở email và bấm liên kết xác thực',
+    verifySent:'Đã gửi thư xác thực - hãy kiểm tra hộp thư (cả mục Spam)',
+    welcomeBack:'Chào mừng trở lại', loggedOut:'Đã đăng xuất',
+    comments:'Bình luận', noComment:'Chưa có bình luận nào. Hãy là người đầu tiên!',
+    cmtPlaceholder:'Viết cảm nghĩ của bạn về cuốn sách...', post:'Gửi',
+    cmtSent:'Đã gửi bình luận', cmtTooLong:'Bình luận quá dài (tối đa 2000 ký tự)',
+    sendFeedback:'Góp ý cho tác giả', fbSub:'Ý kiến của bạn gửi riêng tới tác giả, không hiển thị công khai.',
+    fbPlaceholder:'Chia sẻ điều bạn muốn tác giả biết...', fbSent:'Đã gửi góp ý tới tác giả. Cảm ơn bạn!',
+    fillAll:'Vui lòng nhập đủ email và mật khẩu', passShort:'Mật khẩu tối thiểu 6 ký tự',
+    errEmailUsed:'Email này đã được đăng ký - hãy chọn Đăng nhập',
+    errEmailBad:'Email không hợp lệ', errWrongPass:'Email hoặc mật khẩu không đúng',
+    errNoUser:'Chưa có tài khoản với email này', errTooMany:'Thử quá nhiều lần - hãy đợi ít phút',
+    errGeneric:'Có lỗi xảy ra, vui lòng thử lại', errPost:'Không gửi được, hãy thử lại',
+    errLike:'Không lưu được lượt thích', errDelete:'Không xóa được',
+    fbOffline:'Hệ thống thành viên chưa sẵn sàng, hãy tải lại trang',
     toastCheckOwner:'Đang xác thực tài khoản chủ sở hữu...', toastOwnerOk:'Xác thực chủ sở hữu thành công',
     toastNotOwner:'Tài khoản Google này không có quyền quản trị', toastOwnerFail:'Không xác thực được tài khoản Google',
     ttsSpeed:'Tốc độ', ttsAuto:'Tự lật trang', ttsReading:'Đang đọc trang', ttsPaused:'Đã tạm dừng',
@@ -940,6 +1166,31 @@ const I18N = {
     driveCatalog:'Catalog ID - paste into GDRIVE.catalogFileId in the HTML file (one time only)',
     driveNeedConnect:'Please connect Google Drive before deleting Drive-stored books',
     driveSynced:'Catalog synced to Google Drive',
+    fbInbox:'Reader feedback inbox', fbInboxDesc:'Messages sent privately to you, never shown publicly.',
+    viewInbox:'View', messages:'messages', noFeedback:'No feedback yet.',
+    fbNeedOwnerLogin:'Log in with the author email above to read feedback',
+    joinBtn:'Join', joinTitle:'Join the KK-2026 community',
+    joinSub:'Sign up to comment, like and send feedback. Email only - we send a verification link instantly.',
+    loginSub:'Enter your email and password to continue.',
+    signup:'Sign up', login:'Log in', logout:'Log out', yourName:'Display name',
+    email:'Email', password:'Password', passHint:'At least 6 characters',
+    myAccount:'My account', resend:'Resend verification email',
+    verified:'Email verified', notVerified:'Email not verified - please check your inbox',
+    needVerify:'Not verified', needVerifyLong:'Open your email and click the verification link',
+    verifySent:'Verification email sent - check your inbox (and Spam)',
+    welcomeBack:'Welcome back', loggedOut:'Logged out',
+    comments:'Comments', noComment:'No comments yet. Be the first!',
+    cmtPlaceholder:'Share your thoughts on this book...', post:'Send',
+    cmtSent:'Comment posted', cmtTooLong:'Comment too long (max 2000 characters)',
+    sendFeedback:'Feedback to author', fbSub:'Your message goes privately to the author, not shown publicly.',
+    fbPlaceholder:'Tell the author what you think...', fbSent:'Feedback sent to the author. Thank you!',
+    fillAll:'Please enter both email and password', passShort:'Password must be at least 6 characters',
+    errEmailUsed:'This email is already registered - please Log in',
+    errEmailBad:'Invalid email', errWrongPass:'Wrong email or password',
+    errNoUser:'No account with this email', errTooMany:'Too many attempts - wait a few minutes',
+    errGeneric:'Something went wrong, please try again', errPost:'Could not send, please retry',
+    errLike:'Could not save your like', errDelete:'Could not delete',
+    fbOffline:'Membership system not ready, please reload the page',
     toastCheckOwner:'Verifying owner account...', toastOwnerOk:'Owner verified',
     toastNotOwner:'This Google account has no admin rights', toastOwnerFail:'Could not verify the Google account',
     ttsSpeed:'Speed', ttsAuto:'Auto page turn', ttsReading:'Reading page', ttsPaused:'Paused',
@@ -988,6 +1239,31 @@ const I18N = {
     driveCatalog:'カタログID - HTMLファイルのGDRIVE.catalogFileIdに貼付（初回のみ）',
     driveNeedConnect:'Drive上の書籍を削除する前にGoogle Driveに接続してください',
     driveSynced:'カタログをGoogle Driveに同期しました',
+    fbInbox:'読者からのご意見', fbInboxDesc:'あなた宛に直接届いたメッセージ。公開されません。',
+    viewInbox:'表示', messages:'件', noFeedback:'ご意見はまだありません。',
+    fbNeedOwnerLogin:'著者のメールでログインしてご意見をご覧ください',
+    joinBtn:'登録', joinTitle:'KK-2026 コミュニティに参加',
+    joinSub:'コメント、いいね、ご意見の送信には登録が必要です。メールのみで、確認メールを即送信します。',
+    loginSub:'メールアドレスとパスワードを入力してください。',
+    signup:'登録', login:'ログイン', logout:'ログアウト', yourName:'表示名',
+    email:'メールアドレス', password:'パスワード', passHint:'6文字以上',
+    myAccount:'マイアカウント', resend:'確認メールを再送',
+    verified:'メール確認済み', notVerified:'メール未確認 - 受信箱をご確認ください',
+    needVerify:'未確認', needVerifyLong:'メールを開き、確認リンクをクリックしてください',
+    verifySent:'確認メールを送信しました - 受信箱（迷惑メールも）をご確認ください',
+    welcomeBack:'おかえりなさい', loggedOut:'ログアウトしました',
+    comments:'コメント', noComment:'まだコメントがありません。最初の一人になりましょう！',
+    cmtPlaceholder:'この本の感想を書いてください...', post:'送信',
+    cmtSent:'コメントを投稿しました', cmtTooLong:'コメントが長すぎます（最大2000文字）',
+    sendFeedback:'著者へのご意見', fbSub:'著者に直接届きます。公開されません。',
+    fbPlaceholder:'著者に伝えたいことを書いてください...', fbSent:'著者にご意見を送信しました。ありがとうございます！',
+    fillAll:'メールアドレスとパスワードを入力してください', passShort:'パスワードは6文字以上',
+    errEmailUsed:'このメールは登録済みです - ログインしてください',
+    errEmailBad:'無効なメールアドレス', errWrongPass:'メールまたはパスワードが違います',
+    errNoUser:'このメールのアカウントはありません', errTooMany:'試行回数が多すぎます - 数分お待ちください',
+    errGeneric:'エラーが発生しました。再試行してください', errPost:'送信できませんでした',
+    errLike:'いいねを保存できませんでした', errDelete:'削除できませんでした',
+    fbOffline:'会員システムが未準備です。ページを再読み込みしてください',
     toastCheckOwner:'所有者アカウントを確認中...', toastOwnerOk:'所有者を確認しました',
     toastNotOwner:'このGoogleアカウントに管理者権限はありません', toastOwnerFail:'Googleアカウントを確認できません',
     ttsSpeed:'速度', ttsAuto:'自動ページ送り', ttsReading:'読み上げ中', ttsPaused:'一時停止',
@@ -1082,6 +1358,163 @@ const Store = (() => {
 })();
 
 const CHUNK = 2800000; // chars of base64 per chunk (~2.1MB binary), safely under limits
+
+/* ================= HỆ THỐNG THÀNH VIÊN (Firebase) ================= */
+const FB_CONFIG = {
+  apiKey: "AIzaSyAmjceSxkCM4wFglFEW9iXTUv10eHpCZ9k",
+  authDomain: "kk-book.firebaseapp.com",
+  projectId: "kk-book",
+  storageBucket: "kk-book.firebasestorage.app",
+  messagingSenderId: "564797115035",
+  appId: "1:564797115035:web:b414e680bb8c15411b943e"
+};
+let fbAuth = null, fbDb = null, fbUser = null, fbReady = false;
+
+function fbInit(){
+  try{
+    if(typeof firebase === 'undefined') return false;
+    firebase.initializeApp(FB_CONFIG);
+    fbAuth = firebase.auth();
+    fbDb = firebase.firestore();
+    fbReady = true;
+    fbAuth.onAuthStateChanged(async (u)=>{
+      fbUser = u;
+      if(u && !u.emailVerified){ await u.reload(); fbUser = fbAuth.currentUser; }
+      renderAccountBar();
+      if(rBookId) loadSocial(rBookId);
+    });
+    return true;
+  }catch(e){ console.error('Firebase:', e); return false; }
+}
+/* thành viên hợp lệ = đã xác thực email */
+const isMember = () => !!(fbUser && fbUser.emailVerified);
+const memberName = () => {
+  if(!fbUser) return '';
+  return fbUser.displayName || (fbUser.email||'').split('@')[0];
+};
+
+/* ---- thanh tài khoản trên header ---- */
+function renderAccountBar(){
+  const btn = $('#accountBtn');
+  if(!btn) return;
+  if(fbUser && fbUser.emailVerified){
+    btn.textContent = memberName();
+    btn.classList.add('logged');
+  } else if(fbUser && !fbUser.emailVerified){
+    btn.textContent = t('needVerify');
+    btn.classList.remove('logged');
+  } else {
+    btn.textContent = t('joinBtn');
+    btn.classList.remove('logged');
+  }
+}
+
+/* ---- đăng ký / đăng nhập ---- */
+async function fbSignUp(email, pass, name){
+  const cred = await fbAuth.createUserWithEmailAndPassword(email, pass);
+  if(name) await cred.user.updateProfile({displayName: name});
+  await cred.user.sendEmailVerification();
+  await fbDb.collection('members').doc(cred.user.uid).set({
+    name: name || email.split('@')[0],
+    email: email,
+    joined: firebase.firestore.FieldValue.serverTimestamp()
+  }, {merge:true});
+  return cred.user;
+}
+async function fbSignIn(email, pass){
+  const cred = await fbAuth.signInWithEmailAndPassword(email, pass);
+  await cred.user.reload();
+  return fbAuth.currentUser;
+}
+async function fbResend(){
+  if(fbAuth.currentUser) await fbAuth.currentUser.sendEmailVerification();
+}
+async function fbSignOut(){ await fbAuth.signOut(); }
+
+/* ---- bình luận + thích ---- */
+async function loadSocial(bookId){
+  if(!fbReady || !bookId) return;
+  try{
+    /* lượt thích */
+    const likeSnap = await fbDb.collection('likes').where('bookId','==',bookId).get();
+    const total = likeSnap.size;
+    const mine = fbUser ? likeSnap.docs.some(d => d.data().uid === fbUser.uid) : false;
+    $('#likeCount').textContent = total;
+    $('#likeBtn').classList.toggle('liked', mine);
+
+    /* bình luận */
+    const cSnap = await fbDb.collection('comments').where('bookId','==',bookId).get();
+    const rows = cSnap.docs.map(d => Object.assign({id:d.id}, d.data()))
+      .sort((a,b) => (b.ts?.seconds||0) - (a.ts?.seconds||0));
+    renderComments(rows);
+  }catch(e){ console.error('social:', e); }
+}
+function renderComments(rows){
+  const box = $('#cmtList');
+  $('#cmtCount').textContent = rows.length;
+  if(!rows.length){ box.innerHTML = '<div class="cmt-empty">' + t('noComment') + '</div>'; return; }
+  box.innerHTML = rows.map(r => {
+    const canDel = isMember() && (r.uid === fbUser.uid || (fbUser.email||'').toLowerCase() === OWNER_EMAIL);
+    const when = r.ts && r.ts.seconds ? new Date(r.ts.seconds*1000).toLocaleDateString('vi-VN') : '';
+    const initial = (r.name||'?').trim().charAt(0).toUpperCase();
+    return '<div class="cmt">' +
+      '<div class="cmt-ava">' + esc(initial) + '</div>' +
+      '<div class="cmt-body">' +
+        '<div class="cmt-head"><b>' + esc(r.name||'') + '</b><span>' + when + '</span>' +
+          (canDel ? '<button class="cmt-del" data-id="' + r.id + '">✕</button>' : '') +
+        '</div>' +
+        '<p>' + esc(r.text||'') + '</p>' +
+      '</div></div>';
+  }).join('');
+  box.querySelectorAll('.cmt-del').forEach(b => b.addEventListener('click', async ()=>{
+    try{ await fbDb.collection('comments').doc(b.dataset.id).delete(); loadSocial(rBookId); }
+    catch(e){ toast(t('errDelete')); }
+  }));
+}
+function esc(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+async function postComment(){
+  if(!isMember()){ openJoin(); return; }
+  const txt = $('#cmtInput').value.trim();
+  if(!txt) return;
+  if(txt.length > 2000){ toast(t('cmtTooLong')); return; }
+  try{
+    await fbDb.collection('comments').add({
+      bookId: rBookId, uid: fbUser.uid, name: memberName(), text: txt,
+      ts: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    $('#cmtInput').value = '';
+    loadSocial(rBookId);
+    toast(t('cmtSent'));
+  }catch(e){ console.error(e); toast(t('errPost')); }
+}
+async function toggleLike(){
+  if(!isMember()){ openJoin(); return; }
+  const id = rBookId + '__' + fbUser.uid;
+  const ref = fbDb.collection('likes').doc(id);
+  try{
+    const d = await ref.get();
+    if(d.exists) await ref.delete();
+    else await ref.set({bookId: rBookId, uid: fbUser.uid, ts: firebase.firestore.FieldValue.serverTimestamp()});
+    loadSocial(rBookId);
+  }catch(e){ console.error(e); toast(t('errLike')); }
+}
+/* ---- góp ý gửi riêng cho tác giả ---- */
+async function sendFeedback(){
+  if(!isMember()){ openJoin(); return; }
+  const txt = $('#fbInput').value.trim();
+  if(!txt) return;
+  try{
+    await fbDb.collection('feedback').add({
+      uid: fbUser.uid, name: memberName(), email: fbUser.email || '',
+      text: txt, ts: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    $('#fbInput').value = '';
+    $('#feedbackModal').classList.remove('open');
+    toast(t('fbSent'));
+  }catch(e){ console.error(e); toast(t('errPost')); }
+}
 
 /* ---------------- TOTP engine (RFC 6238 - tương thích Google Authenticator) ---------------- */
 const B32 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
@@ -1308,6 +1741,7 @@ function applyI18n(){
   $$('[data-i18n-ph]').forEach(el => el.placeholder = t(el.dataset.i18nPh));
   document.documentElement.lang = locale;
   renderCats(); renderBooks(); renderAdminList();
+  if(typeof renderAccountBar === 'function') renderAccountBar();
 }
 $$('.lang-switch button').forEach(b => b.addEventListener('click', () => {
   locale = b.dataset.lang;
@@ -1669,6 +2103,9 @@ async function openReader(book){
   $('#reader').classList.add('open');
   document.body.style.overflow='hidden';
   rPage=1; rZoom = window.innerWidth<720 ? .8 : 1.15; rBookId=book.id;
+  $('#cmtList').innerHTML=''; $('#cmtCount').textContent='0';
+  $('#likeCount').textContent='0'; $('#likeBtn').classList.remove('liked');
+  loadSocial(rBookId);
   try{
     const bytes = book.driveId ? await gFetchPdf(book.driveId) : await loadPdf(book.id, book.chunks);
     rDoc = await pdfjsLib.getDocument({data: bytes}).promise;
@@ -1871,8 +2308,122 @@ $('#ttsVoice').addEventListener('change', ()=>{
   if(ttsOn){ synth.cancel(); speakNext(); }
 });
 
+/* ---------------- nối nút thành viên ---------------- */
+let joinMode = 'signup';
+function openJoin(){
+  if(!fbReady){ toast(t('fbOffline')); return; }
+  $('#joinName').value=''; $('#joinEmail').value=''; $('#joinPass').value='';
+  setJoinMode('signup');
+  $('#joinModal').classList.add('open');
+  setTimeout(()=>$('#joinEmail').focus(), 60);
+}
+function setJoinMode(m){
+  joinMode = m;
+  $('#tabSignup').classList.toggle('on', m==='signup');
+  $('#tabLogin').classList.toggle('on', m==='login');
+  $('#nameField').style.display = m==='signup' ? 'block' : 'none';
+  $('#joinOk').textContent = m==='signup' ? t('signup') : t('login');
+  $('#joinSub').textContent = m==='signup' ? t('joinSub') : t('loginSub');
+}
+$('#tabSignup').addEventListener('click', ()=>setJoinMode('signup'));
+$('#tabLogin').addEventListener('click', ()=>setJoinMode('login'));
+$('#joinCancel').addEventListener('click', ()=>$('#joinModal').classList.remove('open'));
+$('#joinOk').addEventListener('click', doJoin);
+$('#joinPass').addEventListener('keydown', e=>{ if(e.key==='Enter') doJoin(); });
+
+async function doJoin(){
+  const email = $('#joinEmail').value.trim();
+  const pass  = $('#joinPass').value;
+  const name  = $('#joinName').value.trim();
+  if(!email || !pass){ toast(t('fillAll')); return; }
+  try{
+    if(joinMode === 'signup'){
+      if(pass.length < 6){ toast(t('passShort')); return; }
+      await fbSignUp(email, pass, name);
+      $('#joinModal').classList.remove('open');
+      toast(t('verifySent'));
+    } else {
+      const u = await fbSignIn(email, pass);
+      $('#joinModal').classList.remove('open');
+      toast(u && u.emailVerified ? t('welcomeBack') : t('needVerifyLong'));
+    }
+  }catch(e){
+    const c = e.code || '';
+    if(c === 'auth/email-already-in-use') toast(t('errEmailUsed'));
+    else if(c === 'auth/invalid-email') toast(t('errEmailBad'));
+    else if(c === 'auth/weak-password') toast(t('passShort'));
+    else if(c === 'auth/wrong-password' || c === 'auth/invalid-credential') toast(t('errWrongPass'));
+    else if(c === 'auth/user-not-found') toast(t('errNoUser'));
+    else if(c === 'auth/too-many-requests') toast(t('errTooMany'));
+    else toast(t('errGeneric'));
+    console.error(e);
+  }
+}
+$('#accountBtn').addEventListener('click', ()=>{
+  if(!fbReady){ toast(t('fbOffline')); return; }
+  if(!fbUser){ openJoin(); return; }
+  /* đã đăng nhập -> hiện thẻ tài khoản */
+  const ok = fbUser.emailVerified;
+  $('#meAva').textContent = (memberName()||'?').charAt(0).toUpperCase();
+  $('#meName').textContent = memberName();
+  $('#meMail').textContent = fbUser.email || '';
+  const st = $('#meState');
+  st.textContent = ok ? t('verified') : t('notVerified');
+  st.className = 'me-state ' + (ok ? 'ok' : 'wait');
+  $('#meResend').style.display = ok ? 'none' : 'inline-flex';
+  $('#meModal').classList.add('open');
+});
+$('#meLogout').addEventListener('click', async ()=>{
+  await fbSignOut();
+  $('#meModal').classList.remove('open');
+  toast(t('loggedOut'));
+});
+$('#meResend').addEventListener('click', async ()=>{
+  try{ await fbResend(); toast(t('verifySent')); }
+  catch(e){ toast(t('errGeneric')); }
+});
+$('#cmtSend').addEventListener('click', postComment);
+$('#likeBtn').addEventListener('click', toggleLike);
+$('#fbOpen').addEventListener('click', ()=>{
+  if(!isMember()){ openJoin(); return; }
+  $('#fbInput').value='';
+  $('#feedbackModal').classList.add('open');
+});
+$('#fbCancel').addEventListener('click', ()=>$('#feedbackModal').classList.remove('open'));
+$('#fbSend').addEventListener('click', sendFeedback);
+
+/* ---------------- hộp góp ý (chỉ chủ sở hữu đọc được) ---------------- */
+$('#fbInboxBtn').addEventListener('click', async ()=>{
+  const box = $('#fbInboxList');
+  if(box.classList.contains('open')){ box.classList.remove('open'); return; }
+  if(!fbReady){ toast(t('fbOffline')); return; }
+  if(!isMember() || (fbUser.email||'').toLowerCase() !== OWNER_EMAIL){
+    toast(t('fbNeedOwnerLogin')); return;
+  }
+  try{
+    const snap = await fbDb.collection('feedback').get();
+    const rows = snap.docs.map(d=>Object.assign({id:d.id}, d.data()))
+      .sort((a,b)=>(b.ts?.seconds||0)-(a.ts?.seconds||0));
+    $('#fbInboxState').textContent = rows.length + ' ' + t('messages');
+    if(!rows.length){ box.innerHTML = '<div class="cmt-empty">' + t('noFeedback') + '</div>'; }
+    else box.innerHTML = rows.map(r=>{
+      const when = r.ts && r.ts.seconds ? new Date(r.ts.seconds*1000).toLocaleString('vi-VN') : '';
+      return '<div class="fb-item"><div class="fh"><b>' + esc(r.name||'') + '</b><span>' +
+        esc(r.email||'') + '</span><span>' + when + '</span>' +
+        '<button class="fb-del" data-id="' + r.id + '">✕</button></div><p>' + esc(r.text||'') + '</p></div>';
+    }).join('');
+    box.querySelectorAll('.fb-del').forEach(b=>b.addEventListener('click', async ()=>{
+      try{ await fbDb.collection('feedback').doc(b.dataset.id).delete(); $('#fbInboxBtn').click(); $('#fbInboxBtn').click(); }
+      catch(e){ toast(t('errDelete')); }
+    }));
+    box.classList.add('open');
+  }catch(e){ console.error(e); toast(t('fbNeedOwnerLogin')); }
+});
+
 /* ---------------- init ---------------- */
 loadAll();
+fbInit();
+renderAccountBar();
 </script>
 </body>
 </html>
