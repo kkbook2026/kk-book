@@ -273,13 +273,58 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
 .icon-btn:disabled{opacity:.3;cursor:default}
 .reader-stage{
   flex:1;overflow:auto;display:flex;justify-content:center;align-items:flex-start;padding:26px;
-  position:relative;
+  position:relative;-webkit-overflow-scrolling:touch;
 }
 .canvas-wrap{position:relative;box-shadow:0 24px 70px rgba(0,0,0,.7);border-radius:4px;overflow:hidden;background:#fff}
 .canvas-wrap canvas{display:block;max-width:100%;height:auto}
+/* chế độ tràn viền: sách chiếm trọn màn hình, không lề */
+.reader.bleed .reader-stage{padding:0;align-items:stretch}
+.reader.bleed .canvas-wrap{border-radius:0;box-shadow:none;width:100%;display:flex;justify-content:center}
+.reader.bleed .reader-note{display:none}
 .reader-note{
   text-align:center;font-size:.7rem;color:var(--cream-dim);padding:8px;letter-spacing:.06em;
   border-top:1px solid rgba(201,162,39,.15);background:var(--navy-950);
+}
+
+/* ============ ĐỌC THÀNH TIẾNG (TTS) ============ */
+.btn-speak.on{background:var(--gold);color:var(--navy-950);border-color:var(--gold)}
+.tts-bar{
+  display:none;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:10px 18px;background:var(--navy-800);
+  border-bottom:1px solid rgba(201,162,39,.25);
+}
+.tts-bar.open{display:flex}
+.tts-play{
+  width:42px;height:42px;border-radius:50%;cursor:pointer;flex-shrink:0;
+  background:var(--gold);color:var(--navy-950);border:none;
+  font-size:1rem;font-weight:700;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 16px rgba(201,162,39,.4);transition:transform .15s;
+}
+.tts-play:hover{transform:scale(1.06)}
+.tts-speed{display:flex;align-items:center;gap:9px;font-size:.8rem;color:var(--cream-dim)}
+.tts-speed input[type=range]{
+  width:130px;accent-color:var(--gold);cursor:pointer;
+}
+.tts-speed b{color:var(--gold-bright);font-family:var(--font-display);min-width:38px}
+.tts-auto{display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--cream-dim);cursor:pointer}
+.tts-auto input{accent-color:var(--gold);cursor:pointer}
+.tts-voice{
+  background:var(--navy-700);color:var(--cream);border:1px solid rgba(201,162,39,.3);
+  border-radius:8px;padding:6px 10px;font-size:.78rem;max-width:200px;cursor:pointer;
+}
+.tts-status{font-size:.76rem;color:var(--gold-dim);margin-left:auto}
+@media (max-width:720px){
+  .reader-bar{padding:8px 10px;gap:6px}
+  .reader-bar .r-title{font-size:.85rem;min-width:100%;order:-1}
+  .reader-controls{width:100%;justify-content:space-between;gap:4px}
+  .icon-btn{width:34px;height:34px}
+  .reader-controls .page-ind{min-width:60px;font-size:.76rem}
+  .reader-stage{padding:0}
+  .canvas-wrap{border-radius:0;box-shadow:none}
+  .tts-bar{padding:9px 10px;gap:10px}
+  .tts-speed input[type=range]{width:96px}
+  .tts-voice{max-width:130px}
+  .tts-status{margin-left:0;width:100%}
 }
 
 /* ============ 2FA / SECURITY ============ */
@@ -600,14 +645,38 @@ footer{
   <div class="reader-bar">
     <div class="r-title" id="rTitle"></div>
     <div class="reader-controls">
+      <button class="icon-btn" id="fitBtn" title="Vừa khung / Tràn viền">⛶</button>
       <button class="icon-btn" id="zoomOut" title="Zoom out">−</button>
       <button class="icon-btn" id="zoomIn" title="Zoom in">+</button>
       <button class="icon-btn" id="prevPage" title="Previous">‹</button>
       <span class="page-ind" id="pageInd">1 / 1</span>
       <button class="icon-btn" id="nextPage" title="Next">›</button>
+      <button class="icon-btn btn-speak" id="speakBtn" title="Đọc thành tiếng">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/>
+        </svg>
+      </button>
       <button class="icon-btn" id="closeReader" title="Close" style="border-color:var(--danger)">✕</button>
     </div>
   </div>
+
+  <!-- thanh điều khiển giọng đọc -->
+  <div class="tts-bar" id="ttsBar">
+    <button class="tts-play" id="ttsToggle">▶</button>
+    <button class="icon-btn" id="ttsStop" title="Dừng hẳn">■</button>
+    <div class="tts-speed">
+      <label data-i18n="ttsSpeed">Tốc độ</label>
+      <input type="range" id="ttsRate" min="0.5" max="2" step="0.1" value="1">
+      <b id="ttsRateVal">1.0x</b>
+    </div>
+    <label class="tts-auto">
+      <input type="checkbox" id="ttsAuto" checked>
+      <span data-i18n="ttsAuto">Tự lật trang</span>
+    </label>
+    <select id="ttsVoice" class="tts-voice"></select>
+    <span class="tts-status" id="ttsStatus"></span>
+  </div>
+
   <div class="reader-stage" id="readerStage">
     <div class="canvas-wrap"><canvas id="pdfCanvas"></canvas></div>
   </div>
@@ -783,9 +852,14 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 const GDRIVE = {
   apiKey: 'AIzaSyByBzqafYN-Ytt2_DkE7GaJIbuUxcY1fQE',
   clientId: '38255041603-hn625o2dpa2eahjupd2i4jislaa1j28s.apps.googleusercontent.com',
-  folderName: 'KK-2026-Library',   // thư mục tự tạo trên Google Drive
-  catalogFileId: '1no2ekPA7AyESPd-O_RvHIy1pOtRWnvzm'   // <- đã kích hoạt kho sách chung
+  folderName: 'KK-2026-Library',
+  catalogFileId: '1no2ekPA7AyESPd-O_RvHIy1pOtRWnvzm'
 };
+
+/* Chỉ tài khoản Google này mới được vào quản trị. Đây là chốt chặn thật:
+   khách lạ không bao giờ nhìn thấy ô tạo PIN. */
+const OWNER_EMAIL = 'nguyenduydien75@gmail.com';
+let ownerVerified = false;
 
 /* ---------------- i18n ---------------- */
 const I18N = {
@@ -818,6 +892,12 @@ const I18N = {
     driveCatalog:'Mã catalog - dán vào GDRIVE.catalogFileId trong file HTML (chỉ làm 1 lần)',
     driveNeedConnect:'Hãy bấm Kết nối Google Drive trước khi xóa sách lưu trên Drive',
     driveSynced:'Đã đồng bộ danh mục lên Google Drive',
+    toastCheckOwner:'Đang xác thực tài khoản chủ sở hữu...', toastOwnerOk:'Xác thực chủ sở hữu thành công',
+    toastNotOwner:'Tài khoản Google này không có quyền quản trị', toastOwnerFail:'Không xác thực được tài khoản Google',
+    ttsSpeed:'Tốc độ', ttsAuto:'Tự lật trang', ttsReading:'Đang đọc trang', ttsPaused:'Đã tạm dừng',
+    ttsDone:'Đã đọc xong', ttsNoText:'Trang này là ảnh, không có chữ để đọc',
+    ttsNoVi:'Máy chưa có giọng tiếng Việt - hãy cài thêm giọng đọc trong cài đặt hệ điều hành',
+    ttsUnsupported:'Trình duyệt này không hỗ trợ đọc thành tiếng',
     tagline:'Tủ sách chuyên khảo · KK-2026',
     contactTitle:'Liên hệ', contactNote:'Góp ý, đề nghị hợp tác hoặc xin phép sử dụng nội dung, vui lòng gửi thư về địa chỉ trên.',
     shieldNote:'Bảo vệ bản quyền · Watermark từng trang · Bảo mật 2 lớp',
@@ -860,6 +940,12 @@ const I18N = {
     driveCatalog:'Catalog ID - paste into GDRIVE.catalogFileId in the HTML file (one time only)',
     driveNeedConnect:'Please connect Google Drive before deleting Drive-stored books',
     driveSynced:'Catalog synced to Google Drive',
+    toastCheckOwner:'Verifying owner account...', toastOwnerOk:'Owner verified',
+    toastNotOwner:'This Google account has no admin rights', toastOwnerFail:'Could not verify the Google account',
+    ttsSpeed:'Speed', ttsAuto:'Auto page turn', ttsReading:'Reading page', ttsPaused:'Paused',
+    ttsDone:'Finished', ttsNoText:'This page is an image, no text to read',
+    ttsNoVi:'No Vietnamese voice installed - add one in your system settings',
+    ttsUnsupported:'This browser does not support speech',
     tagline:'Reference Library · KK-2026',
     contactTitle:'Contact', contactNote:'For feedback, partnership enquiries or permission to use content, please write to the address above.',
     shieldNote:'Copyright protected · Watermark on every page · Two-factor security',
@@ -902,6 +988,12 @@ const I18N = {
     driveCatalog:'カタログID - HTMLファイルのGDRIVE.catalogFileIdに貼付（初回のみ）',
     driveNeedConnect:'Drive上の書籍を削除する前にGoogle Driveに接続してください',
     driveSynced:'カタログをGoogle Driveに同期しました',
+    toastCheckOwner:'所有者アカウントを確認中...', toastOwnerOk:'所有者を確認しました',
+    toastNotOwner:'このGoogleアカウントに管理者権限はありません', toastOwnerFail:'Googleアカウントを確認できません',
+    ttsSpeed:'速度', ttsAuto:'自動ページ送り', ttsReading:'読み上げ中', ttsPaused:'一時停止',
+    ttsDone:'読み上げ完了', ttsNoText:'このページは画像で、読み上げる文字がありません',
+    ttsNoVi:'ベトナム語の音声が未インストールです - OS設定で追加してください',
+    ttsUnsupported:'このブラウザは読み上げに対応していません',
     tagline:'専門書ライブラリ · KK-2026',
     contactTitle:'お問い合わせ', contactNote:'ご意見、提携のご相談、コンテンツ利用許可については上記アドレスまでご連絡ください。',
     shieldNote:'著作権保護 · 全ページ透かし · 二要素認証',
@@ -1045,7 +1137,7 @@ function requestToken(){
     if(!tokenClient){
       tokenClient = google.accounts.oauth2.initTokenClient({
         client_id: GDRIVE.clientId,
-        scope: 'https://www.googleapis.com/auth/drive.file',
+        scope: 'https://www.googleapis.com/auth/drive.file email',
         callback: ()=>{}
       });
     }
@@ -1057,6 +1149,23 @@ function requestToken(){
     };
     tokenClient.requestAccessToken({prompt: ''});
   });
+}
+
+/* Lấy email của tài khoản Google vừa đăng nhập và so với chủ sở hữu */
+async function gWhoAmI(){
+  const r = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+    headers: {'Authorization': 'Bearer ' + gToken}
+  });
+  if(!r.ok) throw new Error('userinfo ' + r.status);
+  const j = await r.json();
+  return (j.email || '').toLowerCase().trim();
+}
+async function verifyOwner(){
+  if(ownerVerified && gConnected()) return true;
+  await requestToken();
+  const email = await gWhoAmI();
+  ownerVerified = (email === OWNER_EMAIL.toLowerCase());
+  return ownerVerified;
 }
 async function gApi(url, opts={}){
   opts.headers = Object.assign({'Authorization':'Bearer '+gToken}, opts.headers||{});
@@ -1296,6 +1405,17 @@ async function deletePdf(id, nChunks){
 /* ---------------- admin auth: 2 lớp ---------------- */
 $('#adminBtn').addEventListener('click', async () => {
   if(adminUnlocked){ openAdmin(); return; }
+
+  /* ===== CHỐT CHẶN THẬT: phải là tài khoản Google của chủ sở hữu ===== */
+  if(!ownerVerified){
+    toast(t('toastCheckOwner'));
+    let ok = false;
+    try{ ok = await verifyOwner(); }
+    catch(e){ toast(t('toastOwnerFail')); return; }
+    if(!ok){ toast(t('toastNotOwner')); return; }
+    toast(t('toastOwnerOk'));
+  }
+
   const firstTime = !settings.pinHash;
   $('#loginSub').textContent = firstTime ? t('firstPin') : (settings.totpSecret ? t('enterPin2fa') : t('enterPin'));
   $('#pinConfirmField').style.display = firstTime ? 'block' : 'none';
@@ -1564,8 +1684,10 @@ async function renderPage(){
   try{
     const page = await rDoc.getPage(rPage);
     const base = page.getViewport({scale:1});
-    const maxW = Math.min(window.innerWidth-60, 1100);
-    const scale = (maxW / base.width) * rZoom;
+    const bleed = $('#reader').classList.contains('bleed');
+    const stage = $('#readerStage');
+    const availW = bleed ? stage.clientWidth : Math.min(window.innerWidth-60, 1100);
+    const scale = (availW / base.width) * rZoom;
     const vp = page.getViewport({scale});
     const dpr = Math.min(window.devicePixelRatio||1, 2);
     const canvas = $('#pdfCanvas'); const ctx = canvas.getContext('2d');
@@ -1582,13 +1704,21 @@ async function renderPage(){
   rendering = false;
   if(pendingPage!==null){ pendingPage=null; renderPage(); }
 }
-$('#prevPage').addEventListener('click', ()=>{ if(rPage>1){rPage--; renderPage(); $('#readerStage').scrollTop=0;} });
-$('#nextPage').addEventListener('click', ()=>{ if(rDoc && rPage<rDoc.numPages){rPage++; renderPage(); $('#readerStage').scrollTop=0;} });
+$('#prevPage').addEventListener('click', ()=>{ if(rPage>1){rPage--; renderPage(); $('#readerStage').scrollTop=0; if(ttsOn) speakPage();} });
+$('#nextPage').addEventListener('click', ()=>{ if(rDoc && rPage<rDoc.numPages){rPage++; renderPage(); $('#readerStage').scrollTop=0; if(ttsOn) speakPage();} });
 $('#zoomIn').addEventListener('click', ()=>{ rZoom=Math.min(rZoom+.2, 3); renderPage(); });
 $('#zoomOut').addEventListener('click', ()=>{ rZoom=Math.max(rZoom-.2, .5); renderPage(); });
+$('#fitBtn').addEventListener('click', ()=>{
+  $('#reader').classList.toggle('bleed');
+  rZoom = $('#reader').classList.contains('bleed') ? 1 : (window.innerWidth<720 ? .8 : 1.15);
+  renderPage();
+});
 $('#closeReader').addEventListener('click', closeReader);
 function closeReader(){
-  $('#reader').classList.remove('open');
+  ttsStop();
+  $('#reader').classList.remove('open','bleed');
+  $('#ttsBar').classList.remove('open');
+  $('#speakBtn').classList.remove('on');
   document.body.style.overflow='';
   if(rDoc){ try{rDoc.destroy();}catch(_){} rDoc=null; }
 }
@@ -1597,6 +1727,148 @@ document.addEventListener('keydown', e=>{
   if(e.key==='ArrowRight') $('#nextPage').click();
   if(e.key==='ArrowLeft') $('#prevPage').click();
   if(e.key==='Escape') closeReader();
+});
+/* vuốt để lật trang trên điện thoại / tablet */
+(function(){
+  let sx=0, sy=0, t0=0;
+  const stage = $('#readerStage');
+  stage.addEventListener('touchstart', e=>{
+    if(e.touches.length!==1) return;
+    sx=e.touches[0].clientX; sy=e.touches[0].clientY; t0=Date.now();
+  }, {passive:true});
+  stage.addEventListener('touchend', e=>{
+    if(!e.changedTouches.length) return;
+    const dx = e.changedTouches[0].clientX - sx;
+    const dy = e.changedTouches[0].clientY - sy;
+    if(Date.now()-t0 > 700) return;
+    if(Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy)*1.4) return;
+    if(dx < 0) $('#nextPage').click(); else $('#prevPage').click();
+  }, {passive:true});
+})();
+
+/* ---------------- ĐỌC SÁCH BẰNG GIỌNG NÓI (Web Speech API) ---------------- */
+let ttsOn=false, ttsRate=1, ttsQueue=[], ttsIdx=0, ttsVoices=[], ttsPaused=false;
+const synth = window.speechSynthesis;
+
+function loadVoices(){
+  if(!synth) return;
+  ttsVoices = synth.getVoices();
+  const sel = $('#ttsVoice');
+  sel.innerHTML = '';
+  /* ưu tiên giọng tiếng Việt */
+  const vi = ttsVoices.filter(v => /^vi/i.test(v.lang));
+  const others = ttsVoices.filter(v => !/^vi/i.test(v.lang));
+  const list = vi.concat(others);
+  list.forEach(v=>{
+    const o = document.createElement('option');
+    o.value = v.name;
+    o.textContent = v.name + ' (' + v.lang + ')';
+    sel.appendChild(o);
+  });
+  if(vi.length){ sel.value = vi[0].name; $('#ttsStatus').textContent=''; }
+  else { $('#ttsStatus').textContent = t('ttsNoVi'); }
+}
+if(synth){
+  loadVoices();
+  synth.onvoiceschanged = loadVoices;
+}
+function pickVoice(){
+  const name = $('#ttsVoice').value;
+  return ttsVoices.find(v=>v.name===name) || ttsVoices.find(v=>/^vi/i.test(v.lang)) || null;
+}
+/* lấy chữ của trang hiện tại từ PDF */
+async function pageText(n){
+  if(!rDoc) return '';
+  const page = await rDoc.getPage(n);
+  const tc = await page.getTextContent();
+  let s = tc.items.map(i=>i.str).join(' ');
+  return s.replace(/\s+/g,' ').replace(/-\s+/g,'').trim();
+}
+/* cắt thành câu ngắn để giọng đọc mượt và dừng được giữa chừng */
+function splitSentences(txt){
+  const parts = txt.match(/[^.!?…\n]+[.!?…]*/g) || [];
+  const out=[];
+  for(let p of parts){
+    p=p.trim(); if(!p) continue;
+    while(p.length > 220){ out.push(p.slice(0,220)); p = p.slice(220); }
+    out.push(p);
+  }
+  return out;
+}
+async function speakPage(){
+  if(!synth) return;
+  synth.cancel();
+  const txt = await pageText(rPage);
+  if(!txt){
+    $('#ttsStatus').textContent = t('ttsNoText');
+    if($('#ttsAuto').checked && rDoc && rPage < rDoc.numPages){
+      rPage++; renderPage(); speakPage();
+    }
+    return;
+  }
+  ttsQueue = splitSentences(txt);
+  ttsIdx = 0;
+  $('#ttsStatus').textContent = t('ttsReading') + ' ' + rPage + '/' + rDoc.numPages;
+  speakNext();
+}
+function speakNext(){
+  if(!ttsOn || ttsIdx >= ttsQueue.length){
+    if(ttsOn && $('#ttsAuto').checked && rDoc && rPage < rDoc.numPages){
+      rPage++; renderPage(); $('#readerStage').scrollTop=0;
+      setTimeout(speakPage, 350);
+    } else if(ttsOn){
+      ttsSetPlaying(false);
+      $('#ttsStatus').textContent = t('ttsDone');
+    }
+    return;
+  }
+  const u = new SpeechSynthesisUtterance(ttsQueue[ttsIdx]);
+  const v = pickVoice();
+  if(v){ u.voice = v; u.lang = v.lang; } else { u.lang = 'vi-VN'; }
+  u.rate = ttsRate;
+  u.pitch = 1;
+  u.onend = ()=>{ ttsIdx++; if(ttsOn && !ttsPaused) speakNext(); };
+  u.onerror = ()=>{ ttsIdx++; if(ttsOn && !ttsPaused) speakNext(); };
+  synth.speak(u);
+}
+function ttsSetPlaying(on){
+  ttsOn = on; ttsPaused = !on;
+  $('#ttsToggle').textContent = on ? '❚❚' : '▶';
+  $('#speakBtn').classList.toggle('on', on);
+}
+function ttsStop(){
+  if(synth) synth.cancel();
+  ttsOn=false; ttsPaused=false; ttsQueue=[]; ttsIdx=0;
+  $('#ttsToggle').textContent='▶';
+  $('#speakBtn').classList.remove('on');
+  $('#ttsStatus').textContent='';
+}
+$('#speakBtn').addEventListener('click', ()=>{
+  if(!synth){ toast(t('ttsUnsupported')); return; }
+  const bar = $('#ttsBar');
+  bar.classList.toggle('open');
+  if(!bar.classList.contains('open')) ttsStop();
+});
+$('#ttsToggle').addEventListener('click', async ()=>{
+  if(!synth) return;
+  if(ttsOn){                       /* đang đọc -> tạm dừng */
+    ttsSetPlaying(false);
+    synth.cancel();
+    $('#ttsStatus').textContent = t('ttsPaused');
+  } else {
+    ttsSetPlaying(true);
+    if(ttsQueue.length && ttsIdx < ttsQueue.length){ speakNext(); }  /* đọc tiếp */
+    else { await speakPage(); }                                       /* đọc từ đầu trang */
+  }
+});
+$('#ttsStop').addEventListener('click', ttsStop);
+$('#ttsRate').addEventListener('input', e=>{
+  ttsRate = parseFloat(e.target.value);
+  $('#ttsRateVal').textContent = ttsRate.toFixed(1) + 'x';
+  if(ttsOn){ synth.cancel(); speakNext(); }   /* áp dụng tốc độ mới ngay */
+});
+$('#ttsVoice').addEventListener('change', ()=>{
+  if(ttsOn){ synth.cancel(); speakNext(); }
 });
 
 /* ---------------- init ---------------- */
