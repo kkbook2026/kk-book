@@ -26,6 +26,26 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
+/* ============ SIÊU SẮC NÉT TOÀN TRANG ============ */
+*, *::before, *::after{
+  -webkit-font-smoothing:antialiased;      /* chữ mảnh, nét, không rỗ */
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+}
+svg{shape-rendering:geometricPrecision}     /* mọi biểu tượng vector nét tuyệt đối */
+img{image-rendering:auto}
+.book-cover img{
+  image-rendering:-webkit-optimize-contrast; /* ảnh bìa sắc, không bị mờ khi thu nhỏ */
+  backface-visibility:hidden;
+  transform:translateZ(0);                   /* ép GPU vẽ, tránh nhòe khi có transform */
+}
+#pdfCanvas{
+  image-rendering:auto;
+  backface-visibility:hidden;
+  transform:translateZ(0);
+}
+canvas{image-rendering:auto}
+
 body{
   font-family:var(--font-body);
   background:var(--navy-950);
@@ -184,31 +204,169 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
 .section-head{display:flex;align-items:baseline;gap:14px;margin-bottom:22px;flex-wrap:wrap}
 .section-head h2{font-family:var(--font-display);font-size:1.5rem;font-weight:700;color:var(--cream)}
 .section-head .count{color:var(--gold);font-size:.85rem;font-weight:600}
-.cat-shelf{
-  display:grid;gap:12px;
-  grid-template-columns:repeat(8, 1fr); /* 16 ô = 8 x 2, dàn đều tuyệt đối */
+
+/* ============ BANNER ĐỘNG 2 BÊN ============ */
+.side-banner{
+  position:fixed;top:50%;transform:translateY(-50%);
+  width:120px;height:620px;z-index:1;pointer-events:none;
+  opacity:.85;
 }
-.cat-chip{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
-  text-align:center;min-height:86px;padding:12px 8px;
-  background:var(--navy-800);border:1px solid rgba(201,162,39,.22);
-  color:var(--cream-dim);border-radius:12px;cursor:pointer;
-  font-size:.82rem;font-weight:500;font-family:var(--font-body);line-height:1.3;
-  border-top:3px solid var(--gold-dim);
-  transition:all .16s;
+.side-banner.left{left:8px}
+.side-banner.right{right:8px}
+.side-banner svg{width:100%;height:100%;overflow:visible}
+/* xung điện chạy trên bo mạch */
+.pulse-path{stroke-dasharray:70 700;stroke-dashoffset:770;animation:runWire 5.5s linear infinite}
+.pulse-path.p2{animation-duration:7s;animation-delay:1.4s}
+@keyframes runWire{to{stroke-dashoffset:0}}
+.chip{animation:chipGlow 2.8s ease-in-out infinite}
+@keyframes chipGlow{0%,100%{opacity:.55}50%{opacity:1}}
+.node{animation:nodePulse 2.4s ease-in-out infinite}
+.node.n2{animation-delay:.6s} .node.n3{animation-delay:1.2s} .node.n4{animation-delay:1.8s}
+@keyframes nodePulse{0%,100%{opacity:.3;r:3}50%{opacity:1;r:5}}
+.bin{opacity:0;animation:binFade 4s linear infinite}
+.bin.b2{animation-delay:1.3s} .bin.b3{animation-delay:2.6s}
+@keyframes binFade{0%{opacity:0;transform:translateY(6px)}25%{opacity:.9}60%{opacity:.4}100%{opacity:0;transform:translateY(-10px)}}
+/* vũ trụ */
+.stars circle{animation:twinkle 3.4s ease-in-out infinite}
+.stars circle:nth-child(2n){animation-delay:.9s}
+.stars circle:nth-child(3n){animation-delay:1.8s}
+.stars circle:nth-child(5n){animation-delay:2.6s}
+@keyframes twinkle{0%,100%{opacity:.2}50%{opacity:1}}
+.sun{animation:sunPulse 3.2s ease-in-out infinite}
+@keyframes sunPulse{0%,100%{opacity:.85;r:12}50%{opacity:1;r:15}}
+.sp{transform-origin:0 0}
+.sp1{animation:orbit 9s linear infinite}
+.sp2{animation:orbit 16s linear infinite}
+.sp3{animation:orbit 26s linear infinite reverse}
+@keyframes orbit{to{transform:rotate(360deg)}}
+.orbit{animation:orbFade 5s ease-in-out infinite}
+@keyframes orbFade{0%,100%{opacity:.5}50%{opacity:1}}
+.comet{opacity:0;animation:comet 8s linear infinite}
+@keyframes comet{
+  0%{opacity:0;transform:translate(96px,-10px)}
+  6%{opacity:.9}
+  20%{opacity:0;transform:translate(-10px,180px)}
+  100%{opacity:0;transform:translate(-10px,180px)}
 }
-.cat-chip:hover{border-color:var(--gold);color:var(--cream);transform:translateY(-3px);box-shadow:0 10px 26px rgba(0,0,0,.35)}
-.cat-chip.active{background:var(--gold);color:var(--navy-950);border-color:var(--gold);font-weight:700}
-.cat-chip .n{
-  font-size:.7rem;font-weight:700;
-  background:rgba(10,20,40,.35);border:1px solid rgba(201,162,39,.35);
-  border-radius:99px;padding:2px 10px;min-width:32px;
+/* màn hình hẹp: ẩn banner để không chèn nội dung */
+@media (max-width:1500px){ .side-banner{display:none} }
+@media (prefers-reduced-motion:reduce){
+  .pulse-path,.chip,.node,.bin,.stars circle,.sun,.sp,.orbit,.comet{animation:none}
 }
-.cat-chip.active .n{background:rgba(10,20,40,.14);border-color:rgba(10,20,40,.3)}
-@media (max-width:1180px){.cat-shelf{grid-template-columns:repeat(5,1fr)}}
-@media (max-width:900px){.cat-shelf{grid-template-columns:repeat(4,1fr)}}
-@media (max-width:640px){.cat-shelf{grid-template-columns:repeat(3,1fr)}.cat-chip{min-height:76px;font-size:.75rem}}
-@media (max-width:420px){.cat-shelf{grid-template-columns:repeat(2,1fr)}}
+
+/* ============ LĨNH VỰC: LƯỚI Ô VUÔNG NGAY NGẮN ============ */
+.cat-grid{
+  display:grid;gap:14px;
+  grid-template-columns:repeat(8, 1fr);   /* 16 ô = 2 hàng x 8 cột, đều tăm tắp */
+}
+.cat-tile{
+  position:relative;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:9px;
+  min-height:128px;padding:16px 10px 13px;
+  background:linear-gradient(160deg, rgba(255,255,255,.045), rgba(0,0,0,.22));
+  border:1px solid rgba(201,162,39,.18);
+  border-radius:16px;cursor:pointer;overflow:hidden;
+  font-family:var(--font-body);color:var(--cream-dim);
+  transition:transform .2s cubic-bezier(.34,1.4,.64,1), border-color .2s, box-shadow .2s;
+}
+.cat-tile::before{                      /* dải màu trên đỉnh ô */
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--cc);opacity:.75;transition:opacity .2s, height .2s;
+}
+.cat-tile::after{                       /* quầng sáng màu khi rê chuột */
+  content:'';position:absolute;inset:0;pointer-events:none;opacity:0;
+  background:radial-gradient(120% 80% at 50% 0%, var(--cc), transparent 62%);
+  transition:opacity .25s;
+}
+.cat-tile:hover{
+  transform:translateY(-5px);
+  border-color:var(--cc);
+  box-shadow:0 16px 36px rgba(0,0,0,.5);
+}
+.cat-tile:hover::after{opacity:.14}
+.cat-tile:hover::before{height:4px;opacity:1}
+.cat-tile.active{
+  border-color:var(--cc);
+  background:linear-gradient(160deg, rgba(255,255,255,.08), rgba(0,0,0,.28));
+  box-shadow:0 0 0 1px var(--cc) inset, 0 16px 40px rgba(0,0,0,.55);
+}
+.cat-tile.active::before{height:5px;opacity:1}
+.cat-tile.active::after{opacity:.18}
+/* biểu tượng */
+.cat-ico{
+  position:relative;z-index:1;flex-shrink:0;
+  width:46px;height:46px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--cc);
+  background:rgba(0,0,0,.3);
+  border:1.5px solid var(--cc);
+  box-shadow:0 4px 16px rgba(0,0,0,.4);
+  transition:transform .22s cubic-bezier(.34,1.5,.64,1), box-shadow .22s;
+}
+.cat-ico svg{
+  width:24px;height:24px;
+  shape-rendering:geometricPrecision;      /* nét vector tuyệt đối */
+  vector-effect:non-scaling-stroke;
+}
+.cat-tile:hover .cat-ico{transform:scale(1.1) rotate(-5deg)}
+.cat-tile.active .cat-ico{
+  background:var(--cc);color:var(--navy-950);
+  box-shadow:0 0 20px var(--cc);
+}
+.cat-label{
+  position:relative;z-index:1;
+  font-size:.76rem;font-weight:600;line-height:1.32;text-align:center;
+  color:var(--cream);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.cat-n{
+  position:relative;z-index:1;margin-top:auto;
+  font-size:.7rem;font-weight:800;color:var(--navy-950);
+  background:var(--cc);border-radius:99px;
+  padding:2px 11px;min-width:30px;text-align:center;
+}
+.cat-n.zero{background:rgba(255,255,255,.12);color:var(--cream-dim)}
+.cat-tile.wide{grid-column:span 2}        /* ô "Tất cả" rộng gấp đôi, đứng cuối */
+
+/* KHAY SỔ SÁCH (mở ra bên dưới lưới) */
+.cat-drawer{display:none;margin-top:22px}
+.cat-drawer.open{display:block;animation:drawerIn .28s ease}
+@keyframes drawerIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+.drawer-head{
+  display:flex;align-items:center;gap:12px;
+  padding:13px 18px;border-radius:14px 14px 0 0;
+  background:linear-gradient(90deg, color-mix(in srgb, var(--cc) 22%, transparent), transparent);
+  border:1px solid var(--cc);border-bottom:none;
+}
+.drawer-head .cat-ico{width:38px;height:38px;border-radius:11px}
+.drawer-head .cat-ico svg{width:20px;height:20px}
+.drawer-title{flex:1;font-family:var(--font-display);font-size:1.14rem;font-weight:700;color:var(--cream)}
+.drawer-n{font-size:.78rem;font-weight:800;color:var(--navy-950);background:var(--cc);border-radius:99px;padding:3px 12px}
+.drawer-close{
+  background:none;border:1px solid rgba(201,162,39,.35);color:var(--cream-dim);
+  width:30px;height:30px;border-radius:9px;cursor:pointer;flex-shrink:0;
+}
+.drawer-close:hover{border-color:var(--danger);color:var(--danger)}
+.drawer-body{
+  padding:22px 18px;
+  background:rgba(0,0,0,.2);
+  border:1px solid var(--cc);border-radius:0 0 14px 14px;
+}
+.cat-empty{color:var(--cream-dim);font-size:.86rem;font-style:italic;padding:10px 0;text-align:center}
+@supports not (color: color-mix(in srgb, red 50%, blue)){
+  .drawer-head{background:rgba(255,255,255,.05)}
+}
+@media (max-width:1180px){.cat-grid{grid-template-columns:repeat(6,1fr)}}
+@media (max-width:900px){.cat-grid{grid-template-columns:repeat(4,1fr)}}
+@media (max-width:640px){
+  .cat-grid{grid-template-columns:repeat(3,1fr);gap:10px}
+  .cat-tile{min-height:112px;padding:13px 7px 11px}
+  .cat-ico{width:40px;height:40px;border-radius:12px}
+  .cat-ico svg{width:21px;height:21px}
+  .cat-label{font-size:.7rem}
+  .drawer-body{padding:16px 12px}
+}
+@media (max-width:420px){.cat-grid{grid-template-columns:repeat(2,1fr)}}
 
 /* ============ BOOK GRID ============ */
 .book-grid{
@@ -275,8 +433,8 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
 .icon-btn:hover:not(:disabled){background:var(--navy-700);border-color:var(--gold)}
 .icon-btn:disabled{opacity:.3;cursor:default}
 .reader-stage{
-  flex:1;overflow:auto;display:flex;justify-content:center;align-items:flex-start;padding:26px;
-  position:relative;-webkit-overflow-scrolling:touch;
+  flex:1;overflow:auto;display:flex;justify-content:center;align-items:center;padding:22px;
+  position:relative;-webkit-overflow-scrolling:touch;min-height:0;
 }
 .canvas-wrap{position:relative;box-shadow:0 24px 70px rgba(0,0,0,.7);border-radius:4px;overflow:hidden;background:#fff}
 .canvas-wrap canvas{display:block;max-width:100%;height:auto}
@@ -330,59 +488,95 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
   .tts-status{margin-left:0;width:100%}
 }
 
-/* ============ CỘNG ĐỒNG: LIKE + BÌNH LUẬN ============ */
-.btn-account.logged{border-color:var(--gold);color:var(--gold-bright)}
-.social{
-  border-top:1px solid rgba(201,162,39,.22);
-  background:var(--navy-900);padding:14px 18px;
-  max-height:38vh;overflow-y:auto;
+/* ============ THANH TỰ ĐỘNG LẬT TRANG ============ */
+.auto-bar{
+  display:none;align-items:center;gap:12px;flex-wrap:wrap;
+  padding:10px 18px;background:var(--navy-800);
+  border-bottom:1px solid rgba(201,162,39,.25);
 }
-.reader.bleed .social{display:none}
-.social-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:12px}
-.social-title{font-family:var(--font-display);color:var(--gold-bright);font-size:.95rem}
+.auto-bar.open{display:flex}
+.ab-label{font-size:.82rem;color:var(--cream-dim);font-weight:600}
+#autoBtn.on{background:var(--gold);color:var(--navy-950);border-color:var(--gold)}
+
+/* ============ CỘNG ĐỒNG: BẢNG NỔI GÓC PHẢI DƯỚI ============ */
+.btn-account.logged{border-color:var(--gold);color:var(--gold-bright)}
+.social-fab{
+  position:absolute;right:22px;bottom:22px;z-index:30;
+  width:54px;height:54px;border-radius:50%;cursor:pointer;
+  background:var(--gold);color:var(--navy-950);border:none;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 8px 28px rgba(0,0,0,.55);transition:transform .16s;
+}
+.social-fab:hover{transform:scale(1.08)}
+.social-fab .fab-n{
+  position:absolute;top:-3px;right:-3px;
+  background:var(--danger);color:#fff;font-size:.66rem;font-weight:800;
+  border-radius:99px;min-width:19px;padding:1px 5px;
+  border:2px solid var(--navy-900);
+}
+.social-dock{
+  position:absolute;right:22px;bottom:22px;z-index:31;
+  width:380px;max-width:calc(100vw - 44px);
+  max-height:min(62vh, 560px);
+  display:none;flex-direction:column;
+  background:var(--navy-900);
+  border:1px solid rgba(201,162,39,.35);
+  border-radius:16px;overflow:hidden;
+  box-shadow:0 22px 60px rgba(0,0,0,.7);
+  animation:dockUp .22s ease;
+}
+.social-dock.open{display:flex}
+@keyframes dockUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.dock-head{
+  display:flex;align-items:center;gap:10px;flex-shrink:0;
+  padding:12px 14px;background:var(--navy-800);
+  border-bottom:1px solid rgba(201,162,39,.22);
+}
+.social-title{flex:1;font-family:var(--font-display);color:var(--gold-bright);font-size:.95rem}
+.icon-btn.sm{width:28px;height:28px;font-size:.8rem}
+.dock-actions{display:flex;align-items:center;gap:10px;padding:11px 14px 0}
 .like-btn{
   display:flex;align-items:center;gap:7px;cursor:pointer;
   background:var(--navy-800);border:1px solid rgba(201,162,39,.3);
-  color:var(--cream-dim);padding:7px 14px;border-radius:99px;
-  font-size:.85rem;font-weight:600;transition:all .18s;
+  color:var(--cream-dim);padding:7px 13px;border-radius:99px;
+  font-size:.83rem;font-weight:600;transition:all .18s;
 }
 .like-btn:hover{border-color:var(--gold);color:var(--cream)}
 .like-btn.liked{background:rgba(201,162,39,.15);border-color:var(--gold);color:var(--gold-bright)}
 .like-btn.liked svg{fill:var(--gold-bright)}
-.cmt-form{display:flex;gap:10px;align-items:flex-start;margin-bottom:14px}
+.cmt-form{display:flex;gap:9px;align-items:flex-start;padding:11px 14px}
 .cmt-form textarea{
   flex:1;background:var(--navy-800);border:1px solid rgba(201,162,39,.25);
-  color:var(--cream);border-radius:10px;padding:10px 12px;
-  font-family:inherit;font-size:.88rem;resize:vertical;min-height:44px;
+  color:var(--cream);border-radius:10px;padding:9px 11px;
+  font-family:inherit;font-size:.85rem;resize:vertical;min-height:42px;
 }
 .cmt-form textarea:focus{outline:none;border-color:var(--gold)}
-.cmt-list{display:flex;flex-direction:column;gap:12px}
-.cmt-empty{color:var(--cream-dim);font-size:.83rem;font-style:italic;padding:8px 0}
-.cmt{display:flex;gap:11px}
+.cmt-list{
+  flex:1;overflow-y:auto;padding:2px 14px 14px;
+  display:flex;flex-direction:column;gap:11px;
+}
+.cmt-empty{color:var(--cream-dim);font-size:.82rem;font-style:italic;padding:6px 0}
+.cmt{display:flex;gap:10px}
 .cmt-ava{
-  width:34px;height:34px;border-radius:50%;flex-shrink:0;
+  width:32px;height:32px;border-radius:50%;flex-shrink:0;
   background:linear-gradient(135deg,var(--gold),var(--gold-dim));
-  color:var(--navy-950);font-weight:800;font-size:.9rem;
+  color:var(--navy-950);font-weight:800;font-size:.85rem;
   display:flex;align-items:center;justify-content:center;
 }
-.cmt-body{flex:1;background:var(--navy-800);border-radius:10px;padding:9px 12px;
+.cmt-body{flex:1;background:var(--navy-800);border-radius:10px;padding:8px 11px;
   border:1px solid rgba(201,162,39,.14)}
-.cmt-head{display:flex;align-items:center;gap:9px;margin-bottom:3px}
-.cmt-head b{color:var(--gold-bright);font-size:.85rem}
-.cmt-head span{color:var(--cream-dim);font-size:.72rem}
-.cmt-del{
-  margin-left:auto;background:none;border:none;color:var(--danger);
-  cursor:pointer;font-size:.8rem;opacity:.6;
-}
+.cmt-head{display:flex;align-items:center;gap:8px;margin-bottom:3px}
+.cmt-head b{color:var(--gold-bright);font-size:.82rem}
+.cmt-head span{color:var(--cream-dim);font-size:.7rem}
+.cmt-del{margin-left:auto;background:none;border:none;color:var(--danger);cursor:pointer;font-size:.78rem;opacity:.6}
 .cmt-del:hover{opacity:1}
-.cmt-body p{color:var(--cream);font-size:.87rem;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+.cmt-body p{color:var(--cream);font-size:.85rem;line-height:1.6;white-space:pre-wrap;word-break:break-word}
 /* tabs đăng ký / đăng nhập */
 .join-tabs{display:flex;gap:8px;margin-bottom:18px}
 .jt{
   flex:1;padding:9px;border-radius:9px;cursor:pointer;
   background:var(--navy-800);border:1px solid rgba(201,162,39,.25);
-  color:var(--cream-dim);font-family:inherit;font-size:.85rem;font-weight:600;
-  transition:all .15s;
+  color:var(--cream-dim);font-family:inherit;font-size:.85rem;font-weight:600;transition:all .15s;
 }
 .jt.on{background:var(--gold);color:var(--navy-950);border-color:var(--gold)}
 /* thẻ tài khoản */
@@ -398,21 +592,13 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
 .me-name{font-family:var(--font-display);color:var(--gold-bright);font-size:1.05rem}
 .me-mail{color:var(--cream-dim);font-size:.8rem}
 .me-state{font-size:.76rem;margin-top:3px;font-weight:600}
-.me-state.ok{color:var(--ok)}
-.me-state.wait{color:var(--danger)}
-#feedbackModal textarea, #fbInput{
+.me-state.ok{color:var(--ok)} .me-state.wait{color:var(--danger)}
+#fbInput{
   width:100%;background:var(--navy-800);border:1px solid rgba(201,162,39,.25);
   color:var(--cream);border-radius:10px;padding:11px;
   font-family:inherit;font-size:.9rem;resize:vertical;
 }
 #fbInput:focus{outline:none;border-color:var(--gold)}
-@media (max-width:720px){
-  .social{max-height:44vh;padding:12px 10px}
-  .cmt-form{flex-direction:column}
-  .cmt-form .btn{width:100%}
-  .social-head{gap:9px}
-}
-
 /* hộp góp ý trong quản trị */
 .fb-inbox{display:none;flex-direction:column;gap:10px;margin-top:10px}
 .fb-inbox.open{display:flex}
@@ -426,6 +612,17 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
 .fb-item .fh .fb-del{margin-left:auto;background:none;border:none;color:var(--danger);cursor:pointer;opacity:.6}
 .fb-item .fh .fb-del:hover{opacity:1}
 .fb-item p{color:var(--cream);font-size:.86rem;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+
+@media (max-width:720px){
+  .social-dock{
+    right:0;left:0;bottom:0;width:auto;max-width:none;
+    border-radius:16px 16px 0 0;max-height:72vh;
+  }
+  .social-fab{right:14px;bottom:14px;width:48px;height:48px}
+  .cmt-form{flex-direction:column}
+  .cmt-form .btn{width:100%}
+  .auto-bar{padding:9px 10px;gap:9px}
+}
 
 /* ============ 2FA / SECURITY ============ */
 .lock-badge{
@@ -604,13 +801,85 @@ footer{
       <div class="lang-switch" role="group" aria-label="Language">
         <button data-lang="vi" class="active">VI</button>
         <button data-lang="en">EN</button>
-        <button data-lang="ja">JA</button>
       </div>
       <button class="btn btn-ghost btn-account" id="accountBtn" data-i18n="joinBtn">Đăng ký</button>
       <button class="btn btn-ghost" id="adminBtn" data-i18n="admin">Quản trị</button>
     </div>
   </div>
 </header>
+
+
+<!-- ================= BANNER ĐỘNG 2 BÊN ================= -->
+<div class="side-banner left" aria-hidden="true">
+  <svg viewBox="0 0 120 620" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="wire" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#00C2A8" stop-opacity=".05"/>
+        <stop offset="45%" stop-color="#4F8DF7" stop-opacity=".85"/>
+        <stop offset="100%" stop-color="#C9A227" stop-opacity=".05"/>
+      </linearGradient>
+      <radialGradient id="nodeG"><stop offset="0%" stop-color="#E4C158"/><stop offset="100%" stop-color="#C9A227" stop-opacity="0"/></radialGradient>
+    </defs>
+    <!-- bo mạch -->
+    <g stroke="rgba(79,141,247,.25)" stroke-width="1.2" fill="none">
+      <path d="M20 40 V180 H60 V300 H30 V440 H70 V590"/>
+      <path d="M95 20 V120 H55 V240 H90 V380 H50 V520 H85 V600"/>
+      <path d="M20 180 H95"/><path d="M30 300 H90"/><path d="M50 440 H85"/>
+    </g>
+    <!-- xung điện chạy -->
+    <path class="pulse-path" d="M20 40 V180 H60 V300 H30 V440 H70 V590"
+          stroke="url(#wire)" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    <path class="pulse-path p2" d="M95 20 V120 H55 V240 H90 V380 H50 V520 H85 V600"
+          stroke="url(#wire)" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    <!-- chip -->
+    <g class="chip">
+      <rect x="38" y="270" width="44" height="44" rx="6" fill="#0B1A33" stroke="#C9A227" stroke-width="1.6"/>
+      <rect x="48" y="280" width="24" height="24" rx="3" fill="none" stroke="#4F8DF7" stroke-width="1.2"/>
+      <circle cx="60" cy="292" r="3" fill="#E4C158"/>
+    </g>
+    <!-- nút sáng -->
+    <circle class="node n1" cx="20" cy="180" r="4" fill="#4F8DF7"/>
+    <circle class="node n2" cx="90" cy="380" r="4" fill="#00C2A8"/>
+    <circle class="node n3" cx="70" cy="440" r="4" fill="#C9A227"/>
+    <circle class="node n4" cx="95" cy="120" r="4" fill="#C46BF0"/>
+    <!-- dòng nhị phân -->
+    <text class="bin b1" x="8" y="90" font-family="monospace" font-size="9" fill="#00C2A8">10110</text>
+    <text class="bin b2" x="8" y="520" font-family="monospace" font-size="9" fill="#4F8DF7">01001</text>
+    <text class="bin b3" x="70" y="200" font-family="monospace" font-size="9" fill="#C9A227">1101</text>
+  </svg>
+</div>
+
+<div class="side-banner right" aria-hidden="true">
+  <svg viewBox="0 0 120 620" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="sunG"><stop offset="0%" stop-color="#E4C158"/><stop offset="60%" stop-color="#F2A03D"/><stop offset="100%" stop-color="#E0603C" stop-opacity=".2"/></radialGradient>
+      <radialGradient id="haloG"><stop offset="60%" stop-color="#C9A227" stop-opacity="0"/><stop offset="100%" stop-color="#C9A227" stop-opacity=".28"/></radialGradient>
+    </defs>
+    <!-- sao nền -->
+    <g class="stars">
+      <circle cx="18" cy="52" r="1.3" fill="#F6F0E1"/><circle cx="96" cy="88" r="1" fill="#F6F0E1"/>
+      <circle cx="42" cy="128" r="1.5" fill="#E4C158"/><circle cx="104" cy="186" r="1" fill="#F6F0E1"/>
+      <circle cx="14" cy="238" r="1.2" fill="#9B8CF5"/><circle cx="88" cy="286" r="1.4" fill="#F6F0E1"/>
+      <circle cx="30" cy="352" r="1" fill="#31B7D8"/><circle cx="100" cy="420" r="1.3" fill="#F6F0E1"/>
+      <circle cx="22" cy="486" r="1.5" fill="#E4C158"/><circle cx="82" cy="548" r="1" fill="#F6F0E1"/>
+      <circle cx="56" cy="596" r="1.2" fill="#9B8CF5"/><circle cx="66" cy="34" r="1" fill="#F6F0E1"/>
+    </g>
+    <!-- hệ mặt trời -->
+    <g transform="translate(60,310)">
+      <circle r="82" fill="url(#haloG)"/>
+      <ellipse class="orbit" rx="34" ry="34" fill="none" stroke="rgba(201,162,39,.22)" stroke-width="1"/>
+      <ellipse class="orbit" rx="56" ry="56" fill="none" stroke="rgba(79,141,247,.2)" stroke-width="1"/>
+      <ellipse class="orbit" rx="78" ry="78" fill="none" stroke="rgba(155,140,245,.18)" stroke-width="1"/>
+      <circle class="sun" r="13" fill="url(#sunG)"/>
+      <g class="sp sp1"><circle cx="34" cy="0" r="4" fill="#31B7D8"/></g>
+      <g class="sp sp2"><circle cx="56" cy="0" r="5.5" fill="#F06B8A"/></g>
+      <g class="sp sp3"><circle cx="78" cy="0" r="4.5" fill="#9B8CF5"/>
+        <ellipse cx="78" cy="0" rx="9" ry="2.4" fill="none" stroke="#C9A227" stroke-width="1"/></g>
+    </g>
+    <!-- sao băng -->
+    <line class="comet" x1="0" y1="0" x2="26" y2="26" stroke="#F6F0E1" stroke-width="1.4" stroke-linecap="round"/>
+  </svg>
+</div>
 
 <!-- ================= HERO BANNER ================= -->
 <div class="hero">
@@ -690,21 +959,15 @@ footer{
   </div>
 </div>
 
-<!-- ================= CATEGORIES ================= -->
+<!-- ================= LĨNH VỰC (gập/mở) ================= -->
 <div class="section">
   <div class="section-head">
     <h2 data-i18n="catTitle">Lĩnh vực</h2>
-  </div>
-  <div class="cat-shelf" id="catShelf"></div>
-</div>
-
-<!-- ================= BOOKS ================= -->
-<div class="section" style="padding-top:6px">
-  <div class="section-head">
-    <h2 data-i18n="libTitle">Tủ sách</h2>
     <span class="count" id="bookCount"></span>
+    <button class="btn btn-ghost btn-sm" id="collapseAll" data-i18n="collapseAll">Thu gọn tất cả</button>
   </div>
-  <div class="book-grid" id="bookGrid"></div>
+  <div class="cat-grid" id="catGrid"></div>
+  <div class="cat-drawer" id="catDrawer"></div>
 </div>
 
 <!-- ================= FOOTER ================= -->
@@ -752,6 +1015,17 @@ footer{
       <button class="icon-btn" id="prevPage" title="Previous">‹</button>
       <span class="page-ind" id="pageInd">1 / 1</span>
       <button class="icon-btn" id="nextPage" title="Next">›</button>
+      <button class="icon-btn" id="autoBtn" title="Tự động lật trang">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
+        </svg>
+      </button>
+      <button class="icon-btn" id="shareBtn" title="Chia sẻ">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+          <path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/>
+        </svg>
+      </button>
       <button class="icon-btn btn-speak" id="speakBtn" title="Đọc thành tiếng">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/>
@@ -778,27 +1052,53 @@ footer{
     <span class="tts-status" id="ttsStatus"></span>
   </div>
 
+  <!-- thanh tự động lật trang -->
+  <div class="auto-bar" id="autoBar">
+    <span class="ab-label" data-i18n="autoTurn">Tự động lật trang</span>
+    <select id="autoSecs" class="tts-voice">
+      <option value="15">15 giây/trang</option>
+      <option value="30" selected>30 giây/trang</option>
+      <option value="45">45 giây/trang</option>
+      <option value="60">1 phút/trang</option>
+      <option value="90">1,5 phút/trang</option>
+      <option value="120">2 phút/trang</option>
+    </select>
+    <button class="btn btn-gold btn-sm" id="autoToggle" data-i18n="start">Bắt đầu</button>
+    <span class="tts-status" id="autoStatus"></span>
+  </div>
+
   <div class="reader-stage" id="readerStage">
     <div class="canvas-wrap"><canvas id="pdfCanvas"></canvas></div>
   </div>
-  <!-- KHU VỰC CỘNG ĐỒNG: thích + bình luận -->
-  <div class="social" id="socialBox">
-    <div class="social-head">
+  <!-- nút mở bảng cộng đồng, nổi ở GÓC PHẢI DƯỚI -->
+  <button class="social-fab" id="socialFab" title="Bình luận">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.9-.9L3 21l1.9-4.6A8.4 8.4 0 0 1 3.6 11 8.4 8.4 0 0 1 12 3a8.4 8.4 0 0 1 9 8.5Z"/>
+    </svg>
+    <span class="fab-n" id="fabCount">0</span>
+  </button>
+
+  <!-- BẢNG CỘNG ĐỒNG: nổi góc phải dưới, KHÔNG đè nội dung sách -->
+  <aside class="social-dock" id="socialBox">
+    <div class="dock-head">
+      <span class="social-title"><span data-i18n="comments">Bình luận</span> (<span id="cmtCount">0</span>)</span>
+      <button class="icon-btn sm" id="socialClose" title="Đóng">✕</button>
+    </div>
+    <div class="dock-actions">
       <button class="like-btn" id="likeBtn">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l8.8 8.8 8.8-8.8a5.5 5.5 0 0 0 0-7.8Z"/>
         </svg>
         <span id="likeCount">0</span>
       </button>
-      <span class="social-title"><span data-i18n="comments">Bình luận</span> (<span id="cmtCount">0</span>)</span>
-      <button class="btn btn-ghost btn-sm" id="fbOpen" data-i18n="sendFeedback">Góp ý cho tác giả</button>
+      <button class="btn btn-ghost btn-sm" id="fbOpen" data-i18n="sendFeedback">Góp ý</button>
     </div>
     <div class="cmt-form">
       <textarea id="cmtInput" rows="2" maxlength="2000" data-i18n-ph="cmtPlaceholder" placeholder="Viết cảm nghĩ của bạn về cuốn sách..."></textarea>
       <button class="btn btn-gold btn-sm" id="cmtSend" data-i18n="post">Gửi</button>
     </div>
     <div class="cmt-list" id="cmtList"></div>
-  </div>
+  </aside>
   <div class="reader-note" data-i18n="readerNote">© Tài liệu được bảo vệ - Watermark tác giả nhúng trên từng trang - Nghiêm cấm sao chép</div>
 </div>
 
@@ -1093,6 +1393,13 @@ const I18N = {
     driveCatalog:'Mã catalog - dán vào GDRIVE.catalogFileId trong file HTML (chỉ làm 1 lần)',
     driveNeedConnect:'Hãy bấm Kết nối Google Drive trước khi xóa sách lưu trên Drive',
     driveSynced:'Đã đồng bộ danh mục lên Google Drive',
+    catEmpty:'Lĩnh vực này chưa có sách nào.', collapseAll:'Thu gọn tất cả',
+    autoTurn:'Tự động lật trang', start:'Bắt đầu', stop:'Dừng',
+    nextIn:'Trang sau sau', lastPage:'Đã đến trang cuối', share:'Chia sẻ',
+    linkCopied:'Đã sao chép liên kết chia sẻ',
+    ttsTipNatural:'Mẹo: mở web bằng Microsoft Edge để có giọng Việt AI tự nhiên nhất',
+    ownerOnly:'Chỉ tài khoản nguyenduydien75@gmail.com mới vào được quản trị',
+    catEmptyX:'',
     fbInbox:'Hộp góp ý từ độc giả', fbInboxDesc:'Ý kiến độc giả gửi riêng cho anh, không hiển thị công khai trên web.',
     viewInbox:'Xem', messages:'góp ý', noFeedback:'Chưa có góp ý nào.',
     fbNeedOwnerLogin:'Hãy bấm nút Đăng ký/Đăng nhập ở trên và đăng nhập bằng chính email tác giả để đọc góp ý',
@@ -1166,6 +1473,13 @@ const I18N = {
     driveCatalog:'Catalog ID - paste into GDRIVE.catalogFileId in the HTML file (one time only)',
     driveNeedConnect:'Please connect Google Drive before deleting Drive-stored books',
     driveSynced:'Catalog synced to Google Drive',
+    catEmpty:'No books in this category yet.', collapseAll:'Collapse all',
+    autoTurn:'Auto page turn', start:'Start', stop:'Stop',
+    nextIn:'Next page in', lastPage:'Reached the last page', share:'Share',
+    linkCopied:'Share link copied',
+    ttsTipNatural:'Tip: open in Microsoft Edge for the most natural AI Vietnamese voice',
+    ownerOnly:'Only nguyenduydien75@gmail.com can access the admin panel',
+    catEmptyX:'',
     fbInbox:'Reader feedback inbox', fbInboxDesc:'Messages sent privately to you, never shown publicly.',
     viewInbox:'View', messages:'messages', noFeedback:'No feedback yet.',
     fbNeedOwnerLogin:'Log in with the author email above to read feedback',
@@ -1210,101 +1524,30 @@ const I18N = {
     qrFail:'Could not render the QR code, please enter the secret key below manually.',
     countBooks:'books'
   },
-  ja: {
-    brandSub:'ブックライブラリ', searchPh:'書籍を検索...', admin:'管理',
-    heroA:'ベトナムの知識を、', heroB:'格調高く。',
-    heroLede:'KK-2026専門書コレクション：IT、歴史、地理から医療、経営まで。全出版物は各ページに著者の透かしを入れて著作権保護されています。',
-    statBooks:'書籍数', statCats:'分野', statLangs:'言語',
-    catTitle:'分野', libTitle:'ライブラリ', allCats:'すべて',
-    emptyTitle:'最初の一冊をお待ちしています', emptyText:'管理パネルからPDF書籍をアップロードしてください。表紙は1ページ目から自動生成されます。',
-    loginTitle:'管理者ログイン', pinLabel:'PINコード', pinConfirm:'PIN確認',
-    firstPin:'初回利用：管理者PINを作成してください（4文字以上）。',
-    enterPin:'PINを入力して管理パネルを開きます。',
-    cancel:'キャンセル', confirm:'確認', close:'閉じる', upload:'アップロード',
-    adminTitle:'KK-2026 管理パネル', adminSub:'PDF書籍のアップロード、カタログ管理、コピー防止透かしの設定。',
-    dzText:'PDFファイルをドラッグ＆ドロップ、またはクリックして選択',
-    wmLabel:'透かし署名（各ページに薄く表示）', wmOpacity:'透かしの濃さ',
-    saveSettings:'設定を保存', changePin:'PIN変更', manageBooks:'書籍管理',
-    metaTitle:'書籍情報', bookTitle:'タイトル', bookCat:'分野', bookLang:'書籍の言語',
-    readerNote:'© 保護された文書 - 各ページに著者透かし埋込 - 複製禁止',
-    footNote:'本サイトの全出版物の著作権は著者に帰属します。書面による許可なく、いかなる形式での複製・印刷・再配布も固く禁じます。',
-    pages:'ページ', delete:'削除', read:'読む',
-    toastSaved:'設定を保存しました', toastUploaded:'アップロード完了', toastDeleted:'削除しました',
-    toastWrongPin:'PINが正しくありません', toastPinSet:'PINを作成しました', toastPinShort:'PINは4文字以上', toastPinMismatch:'PIN確認が一致しません',
-    toastCopy:'著作権保護コンテンツ - KK-2026', toastTooBig:'ファイルが大きすぎます。小さいファイルをお試しください',
-    driveConnect:'Google Driveに接続', driveOk:'Google Driveに接続しました',
-    driveNotConf:'未設定：HTMLファイルを開き、スクリプト冒頭のGDRIVEにapiKeyとclientIdを入力してください。',
-    driveIdle:'未接続。下のボタンからGoogleにログインしてください。書籍はDriveのKK-2026-Libraryフォルダに保存されます。',
-    driveConnected:'接続済み - 新しい書籍はGoogle Driveに直接保存され、全訪問者に表示されます。',
-    driveCatalog:'カタログID - HTMLファイルのGDRIVE.catalogFileIdに貼付（初回のみ）',
-    driveNeedConnect:'Drive上の書籍を削除する前にGoogle Driveに接続してください',
-    driveSynced:'カタログをGoogle Driveに同期しました',
-    fbInbox:'読者からのご意見', fbInboxDesc:'あなた宛に直接届いたメッセージ。公開されません。',
-    viewInbox:'表示', messages:'件', noFeedback:'ご意見はまだありません。',
-    fbNeedOwnerLogin:'著者のメールでログインしてご意見をご覧ください',
-    joinBtn:'登録', joinTitle:'KK-2026 コミュニティに参加',
-    joinSub:'コメント、いいね、ご意見の送信には登録が必要です。メールのみで、確認メールを即送信します。',
-    loginSub:'メールアドレスとパスワードを入力してください。',
-    signup:'登録', login:'ログイン', logout:'ログアウト', yourName:'表示名',
-    email:'メールアドレス', password:'パスワード', passHint:'6文字以上',
-    myAccount:'マイアカウント', resend:'確認メールを再送',
-    verified:'メール確認済み', notVerified:'メール未確認 - 受信箱をご確認ください',
-    needVerify:'未確認', needVerifyLong:'メールを開き、確認リンクをクリックしてください',
-    verifySent:'確認メールを送信しました - 受信箱（迷惑メールも）をご確認ください',
-    welcomeBack:'おかえりなさい', loggedOut:'ログアウトしました',
-    comments:'コメント', noComment:'まだコメントがありません。最初の一人になりましょう！',
-    cmtPlaceholder:'この本の感想を書いてください...', post:'送信',
-    cmtSent:'コメントを投稿しました', cmtTooLong:'コメントが長すぎます（最大2000文字）',
-    sendFeedback:'著者へのご意見', fbSub:'著者に直接届きます。公開されません。',
-    fbPlaceholder:'著者に伝えたいことを書いてください...', fbSent:'著者にご意見を送信しました。ありがとうございます！',
-    fillAll:'メールアドレスとパスワードを入力してください', passShort:'パスワードは6文字以上',
-    errEmailUsed:'このメールは登録済みです - ログインしてください',
-    errEmailBad:'無効なメールアドレス', errWrongPass:'メールまたはパスワードが違います',
-    errNoUser:'このメールのアカウントはありません', errTooMany:'試行回数が多すぎます - 数分お待ちください',
-    errGeneric:'エラーが発生しました。再試行してください', errPost:'送信できませんでした',
-    errLike:'いいねを保存できませんでした', errDelete:'削除できませんでした',
-    fbOffline:'会員システムが未準備です。ページを再読み込みしてください',
-    toastCheckOwner:'所有者アカウントを確認中...', toastOwnerOk:'所有者を確認しました',
-    toastNotOwner:'このGoogleアカウントに管理者権限はありません', toastOwnerFail:'Googleアカウントを確認できません',
-    ttsSpeed:'速度', ttsAuto:'自動ページ送り', ttsReading:'読み上げ中', ttsPaused:'一時停止',
-    ttsDone:'読み上げ完了', ttsNoText:'このページは画像で、読み上げる文字がありません',
-    ttsNoVi:'ベトナム語の音声が未インストールです - OS設定で追加してください',
-    ttsUnsupported:'このブラウザは読み上げに対応していません',
-    tagline:'専門書ライブラリ · KK-2026',
-    contactTitle:'お問い合わせ', contactNote:'ご意見、提携のご相談、コンテンツ利用許可については上記アドレスまでご連絡ください。',
-    shieldNote:'著作権保護 · 全ページ透かし · 二要素認証',
-    otpLabel:'6桁の認証コード', otpHint:'Google Authenticatorを開き、表示されているコードを入力してください。',
-    enterPin2fa:'PINと認証アプリの6桁コードを入力してください。',
-    twofaTitle:'二要素認証の設定', twofaSub:'Google Authenticator（またはMicrosoft Authenticator）でQRコードを読み取り、6桁のコードを入力して有効化します。',
-    secretLabel:'または、この秘密鍵を手動で入力', verifyLabel:'6桁のコードを入力して確認', activate:'有効化',
-    secTitle:'二要素認証', secDesc:'第1層：PINコード。第2層：スマートフォンで30秒ごとに変わる6桁コード（Google Authenticator）。',
-    secOn:'有効', secOff:'無効', secEnable:'今すぐ有効化', secDisable:'無効化',
-    toastWrongOtp:'6桁コードが正しくありません', toastSecOn:'二要素認証を有効にしました', toastSecOff:'二要素認証を無効にしました',
-    qrFail:'QRコードを生成できません。下の秘密鍵を手動で入力してください。',
-    countBooks:'冊'
-  }
 };
 
 const CATS = [
-  {id:'it',      vi:'Công nghệ thông tin', en:'Information Technology', ja:'情報技術'},
-  {id:'sci',     vi:'Khoa học & Công nghệ', en:'Science & Technology', ja:'科学技術'},
-  {id:'edu',     vi:'Giáo dục', en:'Education', ja:'教育'},
-  {id:'health',  vi:'Y tế & Sức khỏe', en:'Healthcare', ja:'医療・健康'},
-  {id:'assist',  vi:'Siêu Trợ Lý', en:'Super Assistant', ja:'スーパーアシスタント'},
-  {id:'mgmt',    vi:'Quản lý & Lãnh đạo', en:'Management & Leadership', ja:'経営・リーダーシップ'},
-  {id:'geo',     vi:'Địa lý', en:'Geography', ja:'地理'},
-  {id:'hist',    vi:'Lịch sử', en:'History', ja:'歴史'},
-  {id:'culture', vi:'Văn hóa & Tâm linh', en:'Culture & Spirituality', ja:'文化・精神世界'},
-  {id:'sport',   vi:'Thể thao', en:'Sports', ja:'スポーツ'},
-  {id:'econ',    vi:'Kinh tế & Tài chính', en:'Economy & Finance', ja:'経済・金融'},
-  {id:'law',     vi:'Pháp luật & Chính sách', en:'Law & Policy', ja:'法律・政策'},
-  {id:'iching',  vi:'Kinh Dịch - Tử Vi', en:'I Ching - Astrology', ja:'易経・紫微斗数'},
-  {id:'ency',    vi:'Bách khoa & Tổng hợp', en:'Encyclopedia & General', ja:'百科・総合'},
-  {id:'general', vi:'KK-BOOK', en:'KK-BOOK', ja:'KK-BOOK'}
+  {id:'it',      c:'#4F8DF7', vi:'Công nghệ thông tin',   en:'Information Technology'},
+  {id:'sci',     c:'#00C2A8', vi:'Khoa học & Công nghệ',  en:'Science & Technology'},
+  {id:'edu',     c:'#F2A03D', vi:'Giáo dục',              en:'Education'},
+  {id:'health',  c:'#3ECF7A', vi:'Y tế & Sức khỏe',       en:'Healthcare'},
+  {id:'assist',  c:'#C46BF0', vi:'Siêu Trợ Lý',           en:'Super Assistant'},
+  {id:'mgmt',    c:'#F06B8A', vi:'Quản lý & Lãnh đạo',    en:'Management & Leadership'},
+  {id:'geo',     c:'#31B7D8', vi:'Địa lý',                en:'Geography'},
+  {id:'hist',    c:'#C98F3D', vi:'Lịch sử',               en:'History'},
+  {id:'culture', c:'#9B8CF5', vi:'Văn hóa & Tâm linh',    en:'Culture & Spirituality'},
+  {id:'sport',   c:'#69C13B', vi:'Thể thao',              en:'Sports'},
+  {id:'econ',    c:'#E8C33C', vi:'Kinh tế & Tài chính',   en:'Economy & Finance'},
+  {id:'law',     c:'#6E8BB5', vi:'Pháp luật & Chính sách',en:'Law & Policy'},
+  {id:'iching',  c:'#E0603C', vi:'Kinh Dịch - Tử Vi',     en:'I Ching - Astrology'},
+  {id:'ency',    c:'#4FB3A0', vi:'Bách khoa & Tổng hợp',  en:'Encyclopedia & General'},
+  {id:'general', c:'#C9A227', vi:'KK-BOOK',               en:'KK-BOOK'}
 ];
+const catColor = id => { const c = CATS.find(x=>x.id===id); return c ? c.c : '#C9A227'; };
 
 /* ---------------- state ---------------- */
 let locale = 'vi';
+const LOCALES = ['vi','en'];
 let activeCat = 'all';
 let searchQ = '';
 let books = [];            // metadata list
@@ -1452,6 +1695,7 @@ async function loadSocial(bookId){
 function renderComments(rows){
   const box = $('#cmtList');
   $('#cmtCount').textContent = rows.length;
+  $('#fabCount').textContent = rows.length;
   if(!rows.length){ box.innerHTML = '<div class="cmt-empty">' + t('noComment') + '</div>'; return; }
   box.innerHTML = rows.map(r => {
     const canDel = isMember() && (r.uid === fbUser.uid || (fbUser.email||'').toLowerCase() === OWNER_EMAIL);
@@ -1750,54 +1994,129 @@ $$('.lang-switch button').forEach(b => b.addEventListener('click', () => {
 }));
 
 /* ---------------- categories ---------------- */
-function renderCats(){
-  const shelf = $('#catShelf'); shelf.innerHTML='';
-  const mk = (id, label) => {
-    const n = id==='all' ? books.length : books.filter(b=>b.cat===id).length;
-    const btn = document.createElement('button');
-    btn.className = 'cat-chip' + (activeCat===id?' active':'');
-    btn.innerHTML = `<span>${label}</span><span class="n">${n}</span>`;
-    btn.addEventListener('click', ()=>{ activeCat=id; renderCats(); renderBooks(); });
-    shelf.appendChild(btn);
-  };
-  mk('all', t('allCats'));
-  CATS.forEach(c => mk(c.id, c[locale]||c.vi));
+
+/* ---------- BIỂU TƯỢNG NGHỆ THUẬT CHO TỪNG LĨNH VỰC ---------- */
+const ICONS = {
+  it:      '<path d="M9 18l-5-6 5-6"/><path d="M15 6l5 6-5 6"/>',
+  sci:     '<circle cx="12" cy="12" r="2.4"/><ellipse cx="12" cy="12" rx="10" ry="4.2"/><ellipse cx="12" cy="12" rx="10" ry="4.2" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4.2" transform="rotate(120 12 12)"/>',
+  edu:     '<path d="M12 3 1.5 8.2 12 13.4l10.5-5.2L12 3Z"/><path d="M5.5 10.4v5.1c0 1.9 2.9 3.5 6.5 3.5s6.5-1.6 6.5-3.5v-5.1"/><path d="M22.5 8.2v6"/>',
+  health:  '<path d="M12 20.5S3.5 15.2 3.5 9.4a4.9 4.9 0 0 1 8.5-3.3 4.9 4.9 0 0 1 8.5 3.3c0 5.8-8.5 11.1-8.5 11.1Z"/><path d="M7.5 12h2.2l1.3-2.6 1.6 4.2 1.2-1.6h2.7"/>',
+  assist:  '<rect x="4.5" y="7.5" width="15" height="11" rx="3"/><circle cx="9.2" cy="12.6" r="1.3"/><circle cx="14.8" cy="12.6" r="1.3"/><path d="M12 7.5V4.2"/><circle cx="12" cy="3" r="1.2"/><path d="M2.5 12v2.5M21.5 12v2.5"/>',
+  mgmt:    '<circle cx="12" cy="5.6" r="2.6"/><circle cx="5" cy="17" r="2.6"/><circle cx="19" cy="17" r="2.6"/><path d="M12 8.2v3.4M12 11.6 6.6 15M12 11.6 17.4 15"/>',
+  geo:     '<circle cx="12" cy="12" r="9.2"/><path d="M2.8 12h18.4"/><path d="M12 2.8a15 15 0 0 1 0 18.4 15 15 0 0 1 0-18.4Z"/>',
+  hist:    '<circle cx="12" cy="12" r="9.2"/><path d="M12 6.4V12l3.9 2.3"/>',
+  culture: '<path d="M12 2.6 14.5 9h6.7l-5.4 4 2 6.6L12 15.8 6.2 19.6l2-6.6L2.8 9h6.7L12 2.6Z"/>',
+  sport:   '<circle cx="12" cy="12" r="9.2"/><path d="M12 3.2 8.6 8.8l3.4 4.6 3.4-4.6L12 3.2Z"/><path d="m8.6 8.8-5.4.9M15.4 8.8l5.4.9M12 13.4v7.4"/>',
+  econ:    '<path d="M3.5 19.5h17"/><rect x="5" y="12" width="3.2" height="6" rx="1"/><rect x="10.4" y="8" width="3.2" height="10" rx="1"/><rect x="15.8" y="4.5" width="3.2" height="13.5" rx="1"/>',
+  law:     '<path d="M12 3.5v16M6 19.5h12"/><path d="M3.5 9 6 4l2.5 5a2.5 2.5 0 0 1-5 0Z"/><path d="M15.5 9 18 4l2.5 5a2.5 2.5 0 0 1-5 0Z"/><path d="M6 4h12"/>',
+  iching:  '<circle cx="12" cy="12" r="9.2"/><path d="M12 2.8a4.6 4.6 0 0 1 0 9.2 4.6 4.6 0 0 0 0 9.2"/><circle cx="12" cy="7.4" r="1.1" fill="currentColor"/><circle cx="12" cy="16.6" r="1.1" fill="currentColor"/>',
+  ency:    '<path d="M4 4.5h6a2.5 2.5 0 0 1 2 2.5v12a2 2 0 0 0-2-1.6H4V4.5Z"/><path d="M20 4.5h-6a2.5 2.5 0 0 0-2 2.5v12a2 2 0 0 1 2-1.6h6V4.5Z"/>',
+  general: '<rect x="3.6" y="3.6" width="16.8" height="16.8" rx="3.4"/><path d="M8 8.4v7.2M8 12l3.2-3.6M8 12l3.2 3.6"/><path d="M16 8.4v7.2M16 12l-3.2-3.6M16 12l-3.2 3.6"/>',
+  all:     '<rect x="3.4" y="3.4" width="7" height="7" rx="2"/><rect x="13.6" y="3.4" width="7" height="7" rx="2"/><rect x="3.4" y="13.6" width="7" height="7" rx="2"/><rect x="13.6" y="13.6" width="7" height="7" rx="2"/>'
+};
+const catIcon = id => ICONS[id] || ICONS.general;
+
+/* chống chèn mã độc qua tiêu đề sách / tên người dùng */
+function escapeHtml(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g,
+    c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-/* ---------------- book grid ---------------- */
-function renderBooks(){
-  const grid = $('#bookGrid'); grid.innerHTML='';
-  $('#statBooks').textContent = books.length;
-  let list = books.filter(b => activeCat==='all' || b.cat===activeCat);
-  if(searchQ) list = list.filter(b => b.title.toLowerCase().includes(searchQ));
-  $('#bookCount').textContent = list.length + ' ' + t('countBooks');
-  if(!list.length){
-    grid.innerHTML = `<div class="empty-state">
-      <svg class="logo-kk" viewBox="0 0 100 100"><rect x="4" y="4" width="92" height="92" rx="10" fill="none" stroke="#C9A227" stroke-width="3.5"/><text x="33" y="68" font-family="Playfair Display, serif" font-weight="900" font-size="52" fill="#E4C158" text-anchor="middle">K</text><g transform="translate(100,0) scale(-1,1)"><text x="33" y="68" font-family="Playfair Display, serif" font-weight="900" font-size="52" fill="#E4C158" text-anchor="middle">K</text></g></svg>
-      <h3>${t('emptyTitle')}</h3><p>${t('emptyText')}</p></div>`;
-    return;
-  }
-  list.sort((a,b)=>b.addedAt-a.addedAt).forEach(b => {
-    const card = document.createElement('div');
-    card.className='book-card'; card.tabIndex=0; card.setAttribute('role','button');
-    card.innerHTML = `
-      <div class="book-cover">
-        ${b.cover ? `<img src="${b.cover}" alt="">` : `<span class="placeholder">KK</span>`}
-        <span class="badge">${b.lang||'VI'}</span>
-      </div>
-      <div class="book-info">
-        <h3>${escapeHtml(b.title)}</h3>
-        <div class="meta"><span>${catName(b.cat)}</span><span class="pg">${b.pages} ${t('pages')}</span></div>
-      </div>`;
-    const open = ()=>openReader(b);
-    card.addEventListener('click', open);
-    card.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();open();} });
-    grid.appendChild(card);
-  });
+let openCat = null;   /* lĩnh vực đang mở - mặc định KHÔNG mở cái nào */
+
+function bookCard(b){
+  const card = document.createElement('div');
+  card.className='book-card'; card.tabIndex=0; card.setAttribute('role','button');
+  card.innerHTML = `
+    <div class="book-cover">
+      ${b.cover ? `<img src="${b.cover}" alt="" loading="lazy" decoding="async">` : `<span class="placeholder">KK</span>`}
+      <span class="badge">${b.lang||'VI'}</span>
+    </div>
+    <div class="book-info">
+      <h3>${escapeHtml(b.title)}</h3>
+      <div class="meta"><span>${catName(b.cat)}</span><span class="pg">${b.pages} ${t('pages')}</span></div>
+    </div>`;
+  const open = ()=>openReader(b);
+  card.addEventListener('click', open);
+  card.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();open();} });
+  return card;
 }
-function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
-$('#searchInput').addEventListener('input', e => { searchQ = e.target.value.trim().toLowerCase(); renderBooks(); });
-$('#brandHome').addEventListener('click', ()=>{ activeCat='all'; searchQ=''; $('#searchInput').value=''; renderCats(); renderBooks(); window.scrollTo({top:0,behavior:'smooth'}); });
+function icoSvg(id){
+  return `<span class="cat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${catIcon(id)}</svg></span>`;
+}
+function listOf(catId){
+  let list = catId==='all' ? books.slice() : books.filter(b=>b.cat===catId);
+  if(searchQ) list = list.filter(b => (b.title||'').toLowerCase().includes(searchQ));
+  return list;
+}
+
+function renderLibrary(){
+  const grid = $('#catGrid'), drawer = $('#catDrawer');
+  if(!grid) return;
+  grid.innerHTML='';
+  $('#statBooks').textContent = books.length;
+  $('#bookCount').textContent = books.length + ' ' + t('countBooks');
+
+  /* thứ tự: từng lĩnh vực trước, "Tất cả" đứng CUỐI CÙNG */
+  const order = CATS.map(c => ({id:c.id, label:(c[locale]||c.vi), color:c.c}));
+  order.push({id:'all', label:t('allCats'), color:'#C9A227', wide:true});
+
+  order.forEach(c => {
+    const n = listOf(c.id).length;
+    const tile = document.createElement('button');
+    tile.className = 'cat-tile' + (openCat===c.id ? ' active' : '') + (c.wide ? ' wide' : '');
+    tile.style.setProperty('--cc', c.color);
+    tile.setAttribute('aria-expanded', openCat===c.id ? 'true' : 'false');
+    tile.innerHTML = icoSvg(c.id) +
+      `<span class="cat-label">${escapeHtml(c.label)}</span>` +
+      `<span class="cat-n${n?'':' zero'}">${n}</span>`;
+    tile.addEventListener('click', ()=>{
+      openCat = (openCat===c.id) ? null : c.id;
+      renderLibrary();
+      if(openCat) setTimeout(()=>{
+        $('#catDrawer').scrollIntoView({behavior:'smooth', block:'nearest'});
+      }, 60);
+    });
+    grid.appendChild(tile);
+  });
+
+  /* khay sổ sách */
+  if(!openCat){ drawer.classList.remove('open'); drawer.innerHTML=''; return; }
+  const c = order.find(x=>x.id===openCat);
+  const list = listOf(openCat);
+  drawer.style.setProperty('--cc', c.color);
+  drawer.innerHTML =
+    `<div class="drawer-head" style="--cc:${c.color}">
+       ${icoSvg(c.id)}
+       <span class="drawer-title">${escapeHtml(c.label)}</span>
+       <span class="drawer-n">${list.length}</span>
+       <button class="drawer-close" id="drawerClose" title="Đóng">✕</button>
+     </div>
+     <div class="drawer-body" style="--cc:${c.color}">
+       ${list.length ? '<div class="book-grid" id="drawerGrid"></div>'
+                     : `<div class="cat-empty">${t('catEmpty')}</div>`}
+     </div>`;
+  drawer.classList.add('open');
+  if(list.length){
+    const g = $('#drawerGrid');
+    list.sort((x,y)=>(y.addedAt||0)-(x.addedAt||0)).forEach(b => g.appendChild(bookCard(b)));
+  }
+  $('#drawerClose').addEventListener('click', ()=>{ openCat=null; renderLibrary(); });
+}
+/* giữ tên cũ cho phần khác gọi không lỗi */
+function renderCats(){ renderLibrary(); }
+function renderBooks(){ renderLibrary(); }
+
+$('#collapseAll').addEventListener('click', ()=>{ openCat = null; renderLibrary(); });
+
+$('#searchInput').addEventListener('input', e => {
+  searchQ = e.target.value.trim().toLowerCase();
+  openCat = searchQ ? 'all' : null;   /* đang tìm: mở khay Tất cả; xóa ô tìm: gập lại */
+  renderLibrary();
+});
+
+$('#brandHome').addEventListener('click', ()=>{ openCat=null; searchQ=''; $('#searchInput').value=''; renderLibrary(); window.scrollTo({top:0,behavior:'smooth'}); });
 
 /* ---------------- persistence ---------------- */
 async function loadAll(){
@@ -1992,12 +2311,19 @@ $('#saveSettings').addEventListener('click', async ()=>{
 });
 function drawWmPreview(){
   const cv = $('#wmPreview'); const ctx = cv.getContext('2d');
-  ctx.clearRect(0,0,cv.width,cv.height);
-  ctx.fillStyle='#fff'; ctx.fillRect(0,0,cv.width,cv.height);
+  const dpr = Math.min(window.devicePixelRatio || 1, 3);
+  const w = cv.clientWidth || 420, h = cv.clientHeight || 200;
+  if(cv.width !== Math.round(w*dpr)){
+    cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    cv.style.width = w+'px'; cv.style.height = h+'px';
+  }
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle='#fff'; ctx.fillRect(0,0,w,h);
   ctx.fillStyle='#333'; ctx.font='14px Georgia';
   ctx.fillText('Lorem ipsum dolor sit amet, nội dung trang sách mẫu...', 16, 30);
   ctx.fillText('Chương I - Tổng quan về lĩnh vực nghiên cứu.', 16, 56);
-  paintWatermark(ctx, cv.width, cv.height, $('#wmText').value, parseInt($('#wmOpacity').value,10)/100);
+  paintWatermark(ctx, w, h, $('#wmText').value, parseInt($('#wmOpacity').value,10)/100);
 }
 
 /* ---------------- watermark painter (drawn INTO the canvas) ---------------- */
@@ -2064,10 +2390,10 @@ $('#metaOk').addEventListener('click', async ()=>{
     const doc = await pdfjsLib.getDocument({data: bytes.slice()}).promise;
     const pages = doc.numPages;
     const page = await doc.getPage(1);
-    const vp = page.getViewport({scale: 260 / page.getViewport({scale:1}).width});
+    const vp = page.getViewport({scale: 620 / page.getViewport({scale:1}).width});
     const cv = document.createElement('canvas'); cv.width=vp.width; cv.height=vp.height;
     await page.render({canvasContext: cv.getContext('2d'), viewport: vp}).promise;
-    const cover = cv.toDataURL('image/jpeg', .72);
+    const cover = cv.toDataURL('image/jpeg', .92);
     pf.style.width='55%';
     /* persist pdf: Drive nếu đã kết nối, ngược lại lưu cục bộ */
     const id = uid();
@@ -2102,9 +2428,10 @@ async function openReader(book){
   $('#rTitle').textContent = book.title;
   $('#reader').classList.add('open');
   document.body.style.overflow='hidden';
-  rPage=1; rZoom = window.innerWidth<720 ? .8 : 1.15; rBookId=book.id;
-  $('#cmtList').innerHTML=''; $('#cmtCount').textContent='0';
+  rPage=1; rZoom = 1; rBookId=book.id;
+  $('#cmtList').innerHTML=''; $('#cmtCount').textContent='0'; $('#fabCount').textContent='0';
   $('#likeCount').textContent='0'; $('#likeBtn').classList.remove('liked');
+  $('#socialBox').classList.remove('open'); $('#socialFab').style.display='flex';
   loadSocial(rBookId);
   try{
     const bytes = book.driveId ? await gFetchPdf(book.driveId) : await loadPdf(book.id, book.chunks);
@@ -2123,17 +2450,29 @@ async function renderPage(){
     const base = page.getViewport({scale:1});
     const bleed = $('#reader').classList.contains('bleed');
     const stage = $('#readerStage');
-    const availW = bleed ? stage.clientWidth : Math.min(window.innerWidth-60, 1100);
-    const scale = (availW / base.width) * rZoom;
-    const vp = page.getViewport({scale});
-    const dpr = Math.min(window.devicePixelRatio||1, 2);
-    const canvas = $('#pdfCanvas'); const ctx = canvas.getContext('2d');
-    canvas.width = vp.width*dpr; canvas.height = vp.height*dpr;
-    canvas.style.width = vp.width+'px';
-    ctx.setTransform(dpr,0,0,dpr,0,0);
-    await page.render({canvasContext: ctx, viewport: vp}).promise;
-    /* watermark drawn into the pixels */
-    paintWatermark(ctx, vp.width, vp.height, settings.wmText, settings.wmOpacity/100);
+    const pad = bleed ? 0 : (window.innerWidth < 720 ? 12 : 52);
+    const availW = Math.max(240, stage.clientWidth  - pad);
+    const availH = Math.max(240, stage.clientHeight - pad);
+    /* CÂN ĐỐI: chọn tỉ lệ nhỏ hơn giữa vừa-ngang và vừa-dọc -> trang sách lọt trọn màn hình */
+    const fitScale = Math.min(availW / base.width, availH / base.height);
+    const cssScale = fitScale * rZoom;                 /* kích thước hiển thị (px CSS) */
+    const dpr = Math.min(window.devicePixelRatio || 1, 3);   /* SIÊU NÉT: tới 3x */
+    const cssVp = page.getViewport({scale: cssScale});
+    const vp    = page.getViewport({scale: cssScale * dpr}); /* vẽ thẳng ở độ phân giải thật */
+    const canvas = $('#pdfCanvas');
+    const ctx = canvas.getContext('2d', {alpha:false});
+    canvas.width  = Math.round(vp.width);
+    canvas.height = Math.round(vp.height);
+    canvas.style.width  = Math.round(cssVp.width)  + 'px';
+    canvas.style.height = Math.round(cssVp.height) + 'px';
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    await page.render({canvasContext: ctx, viewport: vp, intent:'display'}).promise;
+    /* watermark vẽ thẳng vào điểm ảnh, theo đúng tỉ lệ nét cao */
+    ctx.save(); ctx.setTransform(dpr,0,0,dpr,0,0);
+    paintWatermark(ctx, cssVp.width, cssVp.height, settings.wmText, settings.wmOpacity/100);
+    ctx.restore();
     $('#pageInd').textContent = rPage + ' / ' + rDoc.numPages;
     $('#prevPage').disabled = rPage<=1;
     $('#nextPage').disabled = rPage>=rDoc.numPages;
@@ -2147,12 +2486,16 @@ $('#zoomIn').addEventListener('click', ()=>{ rZoom=Math.min(rZoom+.2, 3); render
 $('#zoomOut').addEventListener('click', ()=>{ rZoom=Math.max(rZoom-.2, .5); renderPage(); });
 $('#fitBtn').addEventListener('click', ()=>{
   $('#reader').classList.toggle('bleed');
-  rZoom = $('#reader').classList.contains('bleed') ? 1 : (window.innerWidth<720 ? .8 : 1.15);
+  rZoom = 1;
   renderPage();
 });
 $('#closeReader').addEventListener('click', closeReader);
 function closeReader(){
   ttsStop();
+  if(typeof autoStop === 'function') autoStop();
+  $('#autoBar').classList.remove('open');
+  $('#socialBox').classList.remove('open');
+  $('#socialFab').style.display = 'flex';
   $('#reader').classList.remove('open','bleed');
   $('#ttsBar').classList.remove('open');
   $('#speakBtn').classList.remove('on');
@@ -2183,89 +2526,136 @@ document.addEventListener('keydown', e=>{
   }, {passive:true});
 })();
 
+let _rsz;
+window.addEventListener('resize', ()=>{
+  if(!$('#reader').classList.contains('open')) return;
+  clearTimeout(_rsz); _rsz = setTimeout(()=>renderPage(), 180);
+});
+
 /* ---------------- ĐỌC SÁCH BẰNG GIỌNG NÓI (Web Speech API) ---------------- */
 let ttsOn=false, ttsRate=1, ttsQueue=[], ttsIdx=0, ttsVoices=[], ttsPaused=false;
 const synth = window.speechSynthesis;
 
+/* xếp hạng giọng: giọng AI thần kinh (Natural/Online) đứng đầu, rồi giọng Việt, rồi còn lại */
+function voiceScore(v){
+  let sc = 0;
+  const n = (v.name||'').toLowerCase();
+  if(/^vi/i.test(v.lang)) sc += 100;                    /* tiếng Việt */
+  if(/natural|neural/.test(n)) sc += 40;                /* giọng AI thần kinh - hay nhất */
+  if(/online/.test(n)) sc += 20;                        /* giọng đám mây - mượt hơn offline */
+  if(/hoaimy|nammin|namminh/.test(n)) sc += 15;         /* giọng Việt của Microsoft */
+  if(/google/.test(n)) sc += 10;
+  if(v.localService === false) sc += 5;
+  return sc;
+}
 function loadVoices(){
   if(!synth) return;
   ttsVoices = synth.getVoices();
   const sel = $('#ttsVoice');
+  const prev = sel.value;
   sel.innerHTML = '';
-  /* ưu tiên giọng tiếng Việt */
-  const vi = ttsVoices.filter(v => /^vi/i.test(v.lang));
-  const others = ttsVoices.filter(v => !/^vi/i.test(v.lang));
-  const list = vi.concat(others);
+  const list = ttsVoices.slice().sort((x,y)=>voiceScore(y)-voiceScore(x));
   list.forEach(v=>{
     const o = document.createElement('option');
     o.value = v.name;
-    o.textContent = v.name + ' (' + v.lang + ')';
+    const star = /natural|neural/i.test(v.name) ? '★ ' : '';
+    o.textContent = star + v.name + ' (' + v.lang + ')';
     sel.appendChild(o);
   });
-  if(vi.length){ sel.value = vi[0].name; $('#ttsStatus').textContent=''; }
-  else { $('#ttsStatus').textContent = t('ttsNoVi'); }
+  const vi = list.filter(v => /^vi/i.test(v.lang));
+  if(prev && list.some(v=>v.name===prev)) sel.value = prev;
+  else if(vi.length) sel.value = vi[0].name;
+
+  if(!vi.length) $('#ttsStatus').textContent = t('ttsNoVi');
+  else if(!/natural|neural|online/i.test(vi[0].name)) $('#ttsStatus').textContent = t('ttsTipNatural');
+  else $('#ttsStatus').textContent = '';
 }
-if(synth){
-  loadVoices();
-  synth.onvoiceschanged = loadVoices;
-}
+if(synth){ loadVoices(); synth.onvoiceschanged = loadVoices; }
 function pickVoice(){
   const name = $('#ttsVoice').value;
   return ttsVoices.find(v=>v.name===name) || ttsVoices.find(v=>/^vi/i.test(v.lang)) || null;
 }
-/* lấy chữ của trang hiện tại từ PDF */
+
+/* --- làm sạch chữ lấy từ PDF để giọng đọc nghe tự nhiên --- */
+function cleanForSpeech(raw){
+  let s = raw;
+  s = s.replace(/\u00AD/g,'');                      /* gạch nối mềm */
+  s = s.replace(/-\s*\n\s*/g,'');                  /* từ bị ngắt cuối dòng */
+  s = s.replace(/\s+/g,' ');
+  s = s.replace(/\.{3,}/g,'…');                     /* ... -> dấu lửng */
+  s = s.replace(/\s*[•·▪◦●○]\s*/g,'. ');            /* đầu dòng gạch -> ngắt câu */
+  s = s.replace(/\bTr\.\s*(\d+)/gi,'trang $1');
+  s = s.replace(/\bTS\./g,'Tiến sĩ ').replace(/\bTS\b/g,'Tiến sĩ');
+  s = s.replace(/\bGS\./g,'Giáo sư ').replace(/\bThS\./g,'Thạc sĩ ');
+  s = s.replace(/\bTP\./g,'Thành phố ').replace(/\bTK\b/g,'thế kỷ');
+  s = s.replace(/\bvv\.|\bv\.v\./gi,'vân vân.');
+  s = s.replace(/(\d)\s*%/g,'$1 phần trăm');
+  s = s.replace(/\bKK-2026\b/g,'K K hai không hai sáu');
+  s = s.replace(/\s*\|\s*/g,'. ');
+  s = s.replace(/\s+([,.;:!?])/g,'$1');             /* bỏ khoảng trắng trước dấu câu */
+  s = s.replace(/^\s*\d+\s*$/,'');                 /* trang chỉ có số */
+  return s.trim();
+}
 async function pageText(n){
   if(!rDoc) return '';
   const page = await rDoc.getPage(n);
   const tc = await page.getTextContent();
-  let s = tc.items.map(i=>i.str).join(' ');
-  return s.replace(/\s+/g,' ').replace(/-\s+/g,'').trim();
+  /* nối theo dòng, chèn dấu chấm ở nơi xuống dòng lớn -> ngắt nghỉ đúng chỗ */
+  let out = '', lastY = null;
+  tc.items.forEach(i=>{
+    const y = i.transform ? i.transform[5] : null;
+    if(lastY !== null && y !== null && Math.abs(lastY - y) > 14) out += ' \n ';
+    out += i.str + ' ';
+    if(y !== null) lastY = y;
+  });
+  return cleanForSpeech(out);
 }
-/* cắt thành câu ngắn để giọng đọc mượt và dừng được giữa chừng */
+/* cắt theo dấu câu, gộp câu quá ngắn, tách câu quá dài -> đọc mượt, ngắt nghỉ tự nhiên */
 function splitSentences(txt){
-  const parts = txt.match(/[^.!?…\n]+[.!?…]*/g) || [];
-  const out=[];
-  for(let p of parts){
-    p=p.trim(); if(!p) continue;
-    while(p.length > 220){ out.push(p.slice(0,220)); p = p.slice(220); }
-    out.push(p);
-  }
-  return out;
-}
-async function speakPage(){
-  if(!synth) return;
-  synth.cancel();
-  const txt = await pageText(rPage);
-  if(!txt){
-    $('#ttsStatus').textContent = t('ttsNoText');
-    if($('#ttsAuto').checked && rDoc && rPage < rDoc.numPages){
-      rPage++; renderPage(); speakPage();
+  const raw = txt.match(/[^.!?…\n]+[.!?…]*/g) || [];
+  const out = [];
+  let buf = '';
+  for(let p of raw){
+    p = p.trim();
+    if(!p) continue;
+    if(p.length < 28 && buf.length + p.length < 200){ buf += (buf ? ' ' : '') + p; continue; }
+    if(buf){ out.push(buf); buf = ''; }
+    while(p.length > 240){
+      let cut = p.lastIndexOf(',', 240);
+      if(cut < 120) cut = p.lastIndexOf(' ', 240);
+      if(cut < 60) cut = 240;
+      out.push(p.slice(0, cut).trim());
+      p = p.slice(cut).trim();
     }
-    return;
+    if(p) out.push(p);
   }
-  ttsQueue = splitSentences(txt);
-  ttsIdx = 0;
-  $('#ttsStatus').textContent = t('ttsReading') + ' ' + rPage + '/' + rDoc.numPages;
-  speakNext();
+  if(buf) out.push(buf);
+  return out.filter(x => /[\p{L}\p{N}]/u.test(x));
 }
 function speakNext(){
   if(!ttsOn || ttsIdx >= ttsQueue.length){
     if(ttsOn && $('#ttsAuto').checked && rDoc && rPage < rDoc.numPages){
       rPage++; renderPage(); $('#readerStage').scrollTop=0;
-      setTimeout(speakPage, 350);
+      setTimeout(speakPage, 420);          /* nghỉ nhẹ khi sang trang */
     } else if(ttsOn){
       ttsSetPlaying(false);
       $('#ttsStatus').textContent = t('ttsDone');
     }
     return;
   }
-  const u = new SpeechSynthesisUtterance(ttsQueue[ttsIdx]);
+  const line = ttsQueue[ttsIdx];
+  const u = new SpeechSynthesisUtterance(line);
   const v = pickVoice();
   if(v){ u.voice = v; u.lang = v.lang; } else { u.lang = 'vi-VN'; }
-  u.rate = ttsRate;
-  u.pitch = 1;
-  u.onend = ()=>{ ttsIdx++; if(ttsOn && !ttsPaused) speakNext(); };
-  u.onerror = ()=>{ ttsIdx++; if(ttsOn && !ttsPaused) speakNext(); };
+  u.rate  = ttsRate;
+  u.pitch = 1.0;
+  u.volume = 1;
+  /* câu kết thúc bằng dấu chấm/hỏi -> nghỉ dài hơn một chút cho giống người đọc */
+  const pause = /[.!?…]$/.test(line) ? 260 : 90;
+  u.onend = ()=>{ ttsIdx++; if(ttsOn && !ttsPaused) setTimeout(speakNext, pause); };
+  u.onerror = ()=>{ ttsIdx++; if(ttsOn && !ttsPaused) setTimeout(speakNext, 60); };
+  $('#ttsStatus').textContent = t('ttsReading') + ' ' + rPage + '/' + rDoc.numPages +
+    '  ·  ' + (ttsIdx+1) + '/' + ttsQueue.length;
   synth.speak(u);
 }
 function ttsSetPlaying(on){
@@ -2382,6 +2772,70 @@ $('#meResend').addEventListener('click', async ()=>{
   try{ await fbResend(); toast(t('verifySent')); }
   catch(e){ toast(t('errGeneric')); }
 });
+/* ---------- TỰ ĐỘNG LẬT TRANG ---------- */
+let autoTimer = null;
+function autoStop(){
+  if(autoTimer){ clearInterval(autoTimer); autoTimer = null; }
+  $('#autoToggle').textContent = t('start');
+  $('#autoBtn').classList.remove('on');
+  $('#autoStatus').textContent = '';
+}
+function autoStart(){
+  autoStop();
+  const secs = parseInt($('#autoSecs').value, 10) || 30;
+  $('#autoToggle').textContent = t('stop');
+  $('#autoBtn').classList.add('on');
+  let left = secs;
+  $('#autoStatus').textContent = t('nextIn') + ' ' + left + 's';
+  autoTimer = setInterval(()=>{
+    left--;
+    if(left <= 0){
+      if(rDoc && rPage < rDoc.numPages){
+        rPage++; renderPage(); $('#readerStage').scrollTop = 0;
+        left = secs;
+      } else {
+        autoStop();
+        $('#autoStatus').textContent = t('lastPage');
+        return;
+      }
+    }
+    $('#autoStatus').textContent = t('nextIn') + ' ' + left + 's';
+  }, 1000);
+}
+$('#autoBtn').addEventListener('click', ()=>{
+  const bar = $('#autoBar');
+  bar.classList.toggle('open');
+  if(!bar.classList.contains('open')) autoStop();
+});
+$('#autoToggle').addEventListener('click', ()=>{ autoTimer ? autoStop() : autoStart(); });
+$('#autoSecs').addEventListener('change', ()=>{ if(autoTimer) autoStart(); });
+
+/* ---------- CHIA SẺ ---------- */
+$('#shareBtn').addEventListener('click', async ()=>{
+  const url = location.origin + location.pathname + '?book=' + encodeURIComponent(rBookId);
+  const title = $('#rTitle').textContent || 'KK-BOOK';
+  const data = { title: title, text: title + ' - KK-2026 · Thư Viện Sách', url: url };
+  try{
+    if(navigator.share){ await navigator.share(data); return; }
+    await navigator.clipboard.writeText(url);
+    toast(t('linkCopied'));
+  }catch(e){
+    if(e && e.name === 'AbortError') return;   /* người dùng bấm hủy */
+    try{ await navigator.clipboard.writeText(url); toast(t('linkCopied')); }
+    catch(_){ toast(t('errGeneric')); }
+  }
+});
+
+/* ---------- BẢNG CỘNG ĐỒNG NỔI ---------- */
+$('#socialFab').addEventListener('click', ()=>{
+  $('#socialBox').classList.add('open');
+  $('#socialFab').style.display = 'none';
+});
+$('#socialClose').addEventListener('click', ()=>{
+  $('#socialBox').classList.remove('open');
+  $('#socialFab').style.display = 'flex';
+});
+
 $('#cmtSend').addEventListener('click', postComment);
 $('#likeBtn').addEventListener('click', toggleLike);
 $('#fbOpen').addEventListener('click', ()=>{
@@ -2420,8 +2874,16 @@ $('#fbInboxBtn').addEventListener('click', async ()=>{
   }catch(e){ console.error(e); toast(t('fbNeedOwnerLogin')); }
 });
 
+/* ---------------- mở sách trực tiếp qua link chia sẻ ?book=... ---------------- */
+function openSharedBook(){
+  const id = new URLSearchParams(location.search).get('book');
+  if(!id) return;
+  const b = books.find(x => String(x.id) === String(id));
+  if(b){ openCat = b.cat; renderLibrary(); setTimeout(()=>openReader(b), 260); }
+}
+
 /* ---------------- init ---------------- */
-loadAll();
+loadAll().then(openSharedBook);
 fbInit();
 renderAccountBar();
 </script>
