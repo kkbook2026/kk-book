@@ -3868,7 +3868,12 @@ function laChuTrang(email){
   return (adminCfg.emails||[]).some(x => (x||'').toLowerCase().trim() === e);
 }
 function toiLaChuTrang(){
-  return !!(fbUser && fbUser.emailVerified && laChuTrang(fbUser.email));
+  if(!fbUser) return false;
+  const e = (fbUser.email||'').toLowerCase().trim();
+  /* Chủ chính (email cố định): KHÔNG cần email đã xác thực - khớp với Firestore rules */
+  if(e === OWNER_EMAIL.toLowerCase()) return true;
+  /* Admin phụ: cần email đã xác thực cho an toàn */
+  return !!(fbUser.emailVerified && laChuTrang(fbUser.email));
 }
 
 /* ---- đọc cấu hình từ Firebase ---- */
@@ -4204,11 +4209,15 @@ function initAdminExtras(){
   /* --- yêu cầu thanh toán chờ duyệt --- */
   $('#payReqBtn').addEventListener('click', taiYeuCauThanhToan);
   async function taiYeuCauThanhToan(){
-    if(!chiChuTrang()) return;
     const list = $('#payReqList');
     list.classList.add('open');
+    if(!toiLaChuTrang()){
+      list.innerHTML = '<div class="fb-empty">Hãy bấm nút "Đăng ký / Đăng nhập" (góc phải trên) và đăng nhập bằng email quản trị trước.</div>';
+      return;
+    }
     list.innerHTML = '<div class="fb-empty">Đang tải...</div>';
     try{
+      if(fbUser) await fbUser.getIdToken(true);   /* làm mới token để có quyền mới nhất */
       const snap = await fbDb.collection('payments').where('status','==','pending').limit(50).get();
       $('#payReqState').textContent = snap.size + ' yêu cầu đang chờ';
       if(snap.empty){ list.innerHTML = '<div class="fb-empty">Chưa có yêu cầu nào.</div>'; return; }
@@ -4248,6 +4257,7 @@ function initAdminExtras(){
   /* --- mã mở khoá --- */
   $('#genCodeBtn').addEventListener('click', async ()=>{
     if(!chiChuTrang()) return;
+    try{ if(fbUser) await fbUser.getIdToken(true); }catch(e){}   /* làm mới token */
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     let ma = 'KK';
     for(let i=0;i<6;i++) ma += chars[Math.floor(Math.random()*chars.length)];
