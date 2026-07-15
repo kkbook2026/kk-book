@@ -1888,9 +1888,12 @@ footer{
     <div class="sec-row">
       <div>
         <div class="sec-state" id="codeState">Tạo mã để tặng hoặc bán trực tiếp</div>
-        <div class="sec-desc">Độc giả nhập mã là đọc được ngay, không cần chờ duyệt. Mỗi mã dùng 1 lần.</div>
+        <div class="sec-desc">Mỗi mã chỉ mở khoá ĐÚNG 1 cuốn sách được chọn. Độc giả nhập mã là đọc được ngay. Mỗi mã dùng 1 lần.</div>
       </div>
-      <button class="btn btn-gold btn-sm" id="genCodeBtn">Tạo mã mới</button>
+    </div>
+    <div style="display:flex;gap:8px;margin:8px 0;flex-wrap:wrap;align-items:center">
+      <select id="genCodeBook" class="aa-select" style="flex:1;min-width:180px"></select>
+      <button class="btn btn-gold btn-sm" id="genCodeBtn">Tạo mã cho sách này</button>
     </div>
     <div class="fb-inbox" id="codeList"></div>
 
@@ -4059,15 +4062,23 @@ function apDungBaoTri(){
 /* ---- quyền đọc của tôi ---- */
 async function loadMyAccess(){
   myAccess = { all:false, books:{} };
-  /* khách đã mở khoá trên máy này (lưu localStorage) */
-  try{ if(localStorage.getItem('kkUnlockAll') === '1') myAccess.all = true; }catch(e){}
+  /* khách: đọc quyền TỪNG CUỐN đã mở khoá trên máy này */
+  try{
+    for(let i=0;i<localStorage.length;i++){
+      const k = localStorage.key(i);
+      if(k && k.indexOf('kkUnlock_') === 0){
+        myAccess.books[k.slice('kkUnlock_'.length)] = true;
+      }
+    }
+  }catch(e){}
   if(!fbReady || !fbDb || !fbUser) return;
   try{
     const d = await fbDb.collection('access').doc(fbUser.uid).get();
     if(d.exists){
       const v = d.data();
-      myAccess.all   = !!v.all;
-      myAccess.books = v.books || {};
+      /* chỉ mở toàn bộ nếu là chủ trang (admin cũ), độc giả thường chỉ mở từng cuốn */
+      if(toiLaChuTrang()) myAccess.all = !!v.all;
+      myAccess.books = Object.assign(myAccess.books, v.books || {});
     }
   }catch(e){ console.warn('access', e && e.code); }
 }
@@ -4181,22 +4192,36 @@ async function dungMaMoKhoa(){
     const ref = fbDb.collection('codes').doc(ma);
     const d = await ref.get();
     if(!d.exists){ note.className='pw-note err'; note.textContent='Mã không đúng hoặc không tồn tại.'; return; }
-    if(d.data().used){ note.className='pw-note err'; note.textContent='Mã này đã được dùng rồi.'; return; }
+    const cd = d.data();
+    if(cd.used){ note.className='pw-note err'; note.textContent='Mã này đã được dùng rồi.'; return; }
+
+    /* Mã gắn với ĐÚNG 1 cuốn sách. Nếu mã cũ không có bookId -> gắn với cuốn đang đọc */
+    const bookId = cd.bookId || rBookId;
+    if(!bookId){ note.className='pw-note err'; note.textContent='Mã không hợp lệ (thiếu thông tin sách).'; return; }
+
+    /* nếu mã gắn với cuốn khác cuốn đang đọc -> báo rõ, vẫn mở đúng cuốn của mã */
+    const dungCuonNay = (bookId === rBookId);
 
     /* đánh dấu mã đã dùng */
     await ref.set({ used:true,
                     usedBy: fbUser ? (fbUser.email || fbUser.uid) : 'khach',
                     usedAt: firebase.firestore.FieldValue.serverTimestamp() }, {merge:true});
-    /* mở khoá: có đăng nhập -> lưu Firestore; khách -> lưu localStorage máy này */
+    /* mở khoá CHỈ cuốn sách này: có đăng nhập -> Firestore; khách -> localStorage riêng cuốn */
     if(fbUser){
-      await fbDb.collection('access').doc(fbUser.uid).set({ all:true }, {merge:true});
+      await fbDb.collection('access').doc(fbUser.uid).set({ books: { [bookId]: true } }, {merge:true});
     } else {
-      try{ localStorage.setItem('kkUnlockAll', '1'); }catch(e){}
+      try{ localStorage.setItem('kkUnlock_' + bookId, '1'); }catch(e){}
     }
-    myAccess.all = true;
+    myAccess.books[bookId] = true;
+
+    const tenSach = (typeof books!=='undefined') ? ((books.find(b=>b.id===bookId)||{}).title || '') : '';
     note.className = 'pw-note ok';
-    note.textContent = 'Mở khoá thành công! Chúc bạn đọc sách vui vẻ.';
-    setTimeout(()=>{ dongTuongThuPhi(); toast('Đã mở khoá toàn bộ thư viện'); }, 900);
+    if(dungCuonNay){
+      note.textContent = 'Mở khoá thành công! Bạn đã mở khoá cuốn sách này.';
+      setTimeout(()=>{ dongTuongThuPhi(); toast('Đã mở khoá: ' + (tenSach||'cuốn sách này')); }, 900);
+    } else {
+      note.textContent = 'Mã này dành cho cuốn "' + (tenSach||bookId) + '". Đã mở khoá cuốn đó cho bạn - hãy mở cuốn đó để đọc.';
+    }
   }catch(e){
     note.className = 'pw-note err';
     note.textContent = 'Lỗi: ' + (e && e.code ? e.code : 'không kết nối được');
@@ -4389,7 +4414,7 @@ function initAdminExtras(){
           (r.guest ? ' <span style="color:var(--gold-dim)">(khách)</span>' : '') + '</div>' +
           (lienHe ? '<div class="fb-text" style="font-size:.78rem;color:var(--cream-dim)">Liên hệ: ' + escapeHtml(lienHe) + '</div>' : '<div class="fb-text" style="font-size:.78rem;color:var(--danger)">Khách chưa để lại liên hệ</div>') +
           '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">' +
-          '<button class="btn btn-gold btn-sm" data-ok="' + doc.id + '" data-uid="' + escapeHtml(r.uid) + '" data-contact="' + escapeHtml(lienHe) + '" data-book="' + escapeHtml(r.bookTitle||'') + '">Duyệt + gửi mã</button>' +
+          '<button class="btn btn-gold btn-sm" data-ok="' + doc.id + '" data-uid="' + escapeHtml(r.uid) + '" data-contact="' + escapeHtml(lienHe) + '" data-bookid="' + escapeHtml(r.bookId||'') + '" data-book="' + escapeHtml(r.bookTitle||'') + '">Duyệt + gửi mã</button>' +
           '<button class="btn btn-ghost btn-sm" data-no="' + doc.id + '">Từ chối</button></div>' +
           '<div class="pay-result" data-result="' + doc.id + '"></div>';
         list.appendChild(el);
@@ -4397,19 +4422,22 @@ function initAdminExtras(){
       list.querySelectorAll('[data-ok]').forEach(b => b.addEventListener('click', async ()=>{
         b.disabled = true; b.textContent = 'Đang xử lý...';
         try{
-          /* 1. sinh mã mở khoá riêng cho khách này */
+          /* 1. sinh mã mở khoá riêng cho khách này - GẮN với đúng 1 cuốn sách */
           const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
           let ma = 'KK';
           for(let i=0;i<6;i++) ma += chars[Math.floor(Math.random()*chars.length)];
+          const bookId = b.dataset.bookid || '';
           await fbDb.collection('codes').doc(ma).set({
             used:false,
+            bookId: bookId,
+            bookTitle: b.dataset.book || '',
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
             forContact: b.dataset.contact || '',
             fromPayment: b.dataset.ok
           });
-          /* 2. nếu khách đã đăng nhập -> mở khoá luôn cho họ */
-          if(b.dataset.uid && b.dataset.uid !== 'khach'){
-            try{ await fbDb.collection('access').doc(b.dataset.uid).set({ all:true }, {merge:true}); }catch(e){}
+          /* 2. nếu khách đã đăng nhập -> mở khoá ĐÚNG CUỐN đó cho họ */
+          if(b.dataset.uid && b.dataset.uid !== 'khach' && bookId){
+            try{ await fbDb.collection('access').doc(b.dataset.uid).set({ books: { [bookId]: true } }, {merge:true}); }catch(e){}
           }
           /* 3. đánh dấu payment đã trả + lưu mã đã cấp */
           await fbDb.collection('payments').doc(b.dataset.ok).set({
@@ -4421,7 +4449,8 @@ function initAdminExtras(){
           const box = list.querySelector('[data-result="' + b.dataset.ok + '"]');
           const lienHe = b.dataset.contact || '';
           const laEmail = lienHe.includes('@');
-          const noiDung = 'Chao ban, cam on ban da ung ho KK-2026. Ma mo khoa doc tron bo sach cua ban la: ' + ma + ' . Nhap ma nay tai muc "Nhap ma mo khoa" khi doc sach. Chuc ban doc sach vui ve!';
+          const tenSachGui = b.dataset.book || 'cuon sach ban da mua';
+          const noiDung = 'Chao ban, cam on ban da ung ho KK-2026. Ma mo khoa cho cuon "' + tenSachGui + '" cua ban la: ' + ma + ' . Nhap ma nay tai muc "Nhap ma mo khoa" khi doc dung cuon sach do. Moi ma chi dung 1 lan. Chuc ban doc sach vui ve!';
           let html = '<div class="pay-code-ok">✅ Đã tạo mã: <b>' + ma + '</b></div>';
           if(lienHe && laEmail){
             const mailto = 'mailto:' + encodeURIComponent(lienHe) +
@@ -4450,32 +4479,47 @@ function initAdminExtras(){
     }catch(e){ list.innerHTML = '<div class="fb-empty">Lỗi: ' + (e.code||e.message) + '</div>'; }
   }
 
-  /* --- mã mở khoá --- */
+  /* --- mã mở khoá: nạp danh sách sách vào dropdown --- */
+  function napDanhSachSachChonMa(){
+    const sel = $('#genCodeBook');
+    if(!sel || typeof books==='undefined') return;
+    if(sel.dataset.filled) return;
+    sel.innerHTML = books.map(b => '<option value="' + b.id + '">' + escapeHtml(b.title) + '</option>').join('');
+    sel.dataset.filled = '1';
+  }
   $('#genCodeBtn').addEventListener('click', async ()=>{
     if(!chiChuTrang()) return;
+    napDanhSachSachChonMa();
+    const sel = $('#genCodeBook');
+    const bookId = sel ? sel.value : '';
+    if(!bookId){ toast('Hãy chọn cuốn sách cho mã này'); return; }
+    const tenSach = sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].text : '';
     try{ if(fbUser) await fbUser.getIdToken(true); }catch(e){}   /* làm mới token */
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     let ma = 'KK';
     for(let i=0;i<6;i++) ma += chars[Math.floor(Math.random()*chars.length)];
     try{
       await fbDb.collection('codes').doc(ma).set({
-        used:false, createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        used:false, bookId: bookId, bookTitle: tenSach,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
-      toast('Đã tạo mã: ' + ma);
+      toast('Đã tạo mã ' + ma + ' cho: ' + tenSach);
       taiDanhSachMa();
     }catch(e){ toast('Lỗi: ' + (e.code||e.message)); }
   });
   async function taiDanhSachMa(){
     const list = $('#codeList');
     list.classList.add('open');
+    napDanhSachSachChonMa();
     try{
-      const snap = await fbDb.collection('codes').limit(40).get();
+      const snap = await fbDb.collection('codes').limit(60).get();
       const chuaDung = [];
-      snap.forEach(d => { if(!d.data().used) chuaDung.push(d.id); });
+      snap.forEach(d => { const c=d.data(); if(!c.used) chuaDung.push({ma:d.id, sach:c.bookTitle||c.bookId||'(mọi sách - mã cũ)'}); });
       $('#codeState').textContent = chuaDung.length + ' mã chưa dùng';
       list.innerHTML = chuaDung.length
-        ? chuaDung.map(m => '<div class="fb-item"><b style="letter-spacing:.12em;color:var(--gold-bright)">' + m + '</b></div>').join('')
-        : '<div class="fb-empty">Chưa có mã nào. Bấm "Tạo mã mới".</div>';
+        ? chuaDung.map(m => '<div class="fb-item"><b style="letter-spacing:.12em;color:var(--gold-bright)">' + escapeHtml(m.ma) + '</b>' +
+            '<span style="font-size:.76rem;color:var(--cream-dim);margin-left:8px">→ ' + escapeHtml(m.sach) + '</span></div>').join('')
+        : '<div class="fb-empty">Chưa có mã nào. Chọn sách rồi bấm "Tạo mã".</div>';
     }catch(e){ list.innerHTML = '<div class="fb-empty">Lỗi: ' + (e.code||e.message) + '</div>'; }
   }
   window.__taiDanhSachMa = taiDanhSachMa;
