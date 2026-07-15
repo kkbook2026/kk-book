@@ -913,6 +913,38 @@ body.maint-on{overflow:hidden}
 }
 .maint-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 
+/* ===== Ô đăng nhập tài khoản quản trị trong bảng Quản trị ===== */
+.admin-auth{margin:4px 0 20px}
+.admin-auth-in{
+  display:none;gap:14px;align-items:flex-start;
+  padding:16px;border-radius:14px;
+  background:linear-gradient(160deg, rgba(201,162,39,.1), rgba(0,0,0,.2));
+  border:1px solid rgba(201,162,39,.35);
+}
+.admin-auth.need-login .admin-auth-in{display:flex}
+.aa-icon{font-size:1.6rem;flex-shrink:0;line-height:1.2}
+.aa-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.aa-title{font-family:var(--font-display);font-weight:700;color:var(--gold-bright);font-size:1rem}
+.aa-sub{font-size:.8rem;color:var(--cream-dim);line-height:1.4;margin-bottom:4px}
+.admin-auth-in input{
+  width:100%;padding:10px 12px;border-radius:9px;
+  border:1px solid rgba(201,162,39,.3);background:rgba(255,255,255,.05);
+  color:var(--cream);font-size:.88rem;
+}
+.aa-actions{display:flex;gap:8px;margin-top:4px}
+.aa-note{font-size:.8rem;line-height:1.4;min-height:1em}
+.aa-note.err{color:var(--danger)}
+.aa-note.ok{color:#3ECF7A}
+.admin-auth-ok{
+  display:none;align-items:center;gap:9px;
+  padding:11px 15px;border-radius:12px;font-size:.85rem;color:var(--cream);
+  background:rgba(62,207,122,.1);border:1px solid rgba(62,207,122,.35);
+}
+.admin-auth.logged-in .admin-auth-ok{display:flex}
+.aa-ok-dot{width:9px;height:9px;border-radius:50%;background:#3ECF7A;box-shadow:0 0 8px #3ECF7A;flex-shrink:0}
+.aa-ok-dot{animation:aaPulse 2s ease-in-out infinite}
+@keyframes aaPulse{0%,100%{opacity:1}50%{opacity:.4}}
+
 .admin-badge{
   position:absolute;top:-7px;right:-7px;min-width:18px;height:18px;
   padding:0 5px;border-radius:99px;background:var(--danger);color:#fff;
@@ -1532,30 +1564,22 @@ footer{
         <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/>
       </svg>
     </div>
-    <h3 id="joinTitle" data-i18n="joinTitle">Tham gia cộng đồng KK-2026</h3>
-    <p class="modal-sub" id="joinSub">Chỉ cần email và mật khẩu. Không bắt buộc đăng nhập để đọc thử 5 trang đầu.</p>
+    <h3 id="joinTitle">Tham gia cộng đồng KK-2026</h3>
+    <p class="modal-sub" id="joinSub">Chỉ cần email và mật khẩu để bình luận, thích và góp ý. Không cần đăng nhập vẫn đọc thử được 5 trang đầu mỗi sách.</p>
 
-    <div class="join-tabs">
-      <button class="jt on" id="tabSignup" data-i18n="signup">Đăng ký</button>
-      <button class="jt" id="tabLogin" data-i18n="login">Đăng nhập</button>
-    </div>
-
-    <div class="field" id="nameField">
-      <label>Tên hiển thị <span style="opacity:.6;font-weight:400">(tuỳ chọn)</span></label>
-      <input type="text" id="joinName" maxlength="40" autocomplete="nickname" placeholder="Ví dụ: Duy Điển">
+    <div class="field">
+      <label>Email</label>
+      <input type="email" id="joinEmail" autocomplete="email" placeholder="email@cua-ban.com">
     </div>
     <div class="field">
-      <label data-i18n="email">Email</label>
-      <input type="email" id="joinEmail" autocomplete="email">
+      <label>Mật khẩu</label>
+      <input type="password" id="joinPass" minlength="6" autocomplete="current-password" placeholder="Tối thiểu 6 ký tự">
+      <div class="hint">Chưa có tài khoản? Hệ thống tự tạo mới cho bạn khi bấm Tiếp tục.</div>
     </div>
-    <div class="field">
-      <label data-i18n="password">Mật khẩu</label>
-      <input type="password" id="joinPass" minlength="6" autocomplete="current-password">
-      <div class="hint" data-i18n="passHint">Tối thiểu 6 ký tự</div>
-    </div>
+    <input type="text" id="joinName" style="display:none">
     <div class="modal-actions">
-      <button class="btn btn-ghost" id="joinCancel" data-i18n="cancel">Hủy</button>
-      <button class="btn btn-gold" id="joinOk" data-i18n="signup">Đăng ký</button>
+      <button class="btn btn-ghost" id="joinCancel">Hủy</button>
+      <button class="btn btn-gold" id="joinOk">Tiếp tục</button>
     </div>
   </div>
 </div>
@@ -1655,6 +1679,29 @@ footer{
   <div class="modal" style="max-width:640px">
     <h3 data-i18n="adminTitle">Bảng quản trị KK-2026</h3>
     <p class="modal-sub" data-i18n="adminSub">Tải sách PDF lên, quản lý danh mục và cấu hình watermark chống sao chép.</p>
+
+    <!-- ĐĂNG NHẬP TÀI KHOẢN QUẢN TRỊ - cần cho thu phí, mã mở khoá, duyệt thanh toán -->
+    <div class="admin-auth" id="adminAuthBox">
+      <div class="admin-auth-in" id="adminAuthIn">
+        <div class="aa-icon">🔑</div>
+        <div class="aa-body">
+          <div class="aa-title">Đăng nhập tài khoản quản trị</div>
+          <div class="aa-sub">Để dùng Thu phí, Mã mở khoá và duyệt thanh toán, hãy đăng nhập bằng email quản trị.</div>
+          <input type="email" id="adminAuthEmail" placeholder="Email quản trị" autocomplete="username">
+          <input type="password" id="adminAuthPass" placeholder="Mật khẩu" autocomplete="current-password">
+          <div class="aa-actions">
+            <button class="btn btn-gold btn-sm" id="adminAuthLogin">Đăng nhập</button>
+            <button class="btn btn-ghost btn-sm" id="adminAuthSignup">Tạo tài khoản</button>
+          </div>
+          <div class="aa-note" id="adminAuthNote"></div>
+        </div>
+      </div>
+      <div class="admin-auth-ok" id="adminAuthOk">
+        <span class="aa-ok-dot"></span>
+        <span>Đã đăng nhập quản trị: <b id="adminAuthWho"></b></span>
+        <button class="btn btn-ghost btn-sm" id="adminAuthLogout" style="margin-left:auto">Đăng xuất</button>
+      </div>
+    </div>
 
     <div class="dropzone" id="dropzone" tabindex="0">
       <div class="dz-icon">📚</div>
@@ -1886,7 +1933,8 @@ const GDRIVE = {
 
 /* Chỉ tài khoản Google này mới được vào quản trị. Đây là chốt chặn thật:
    khách lạ không bao giờ nhìn thấy ô tạo PIN. */
-const OWNER_EMAIL = 'nguyenduydien75@gmail.com';
+const OWNER_EMAIL = 'nguyenduydien75@gmail.com';  /* tài khoản Google có Drive */
+const OWNER_EMAILS = ['nguyenduydien75@gmail.com', 'sales@dtic.com.vn'];  /* các email quản trị */
 let ownerVerified = false;
 
 /* ---------------- i18n ---------------- */
@@ -2180,6 +2228,7 @@ function fbInit(){
       fbUser = u;
       if(u && !u.emailVerified){ await u.reload(); fbUser = fbAuth.currentUser; }
       renderAccountBar();
+      if(typeof capNhatOAdminAuth==='function') capNhatOAdminAuth();   /* cập nhật ô đăng nhập quản trị */
       await loadMyAccess();          /* quyền đọc của tài khoản này */
       apDungBaoTri();                /* chủ trang đăng nhập -> tự bỏ màn bảo trì */
       if($('#lockSiteBtn')) veTrangThaiQuanTri();
@@ -2893,8 +2942,73 @@ $('#twofaOk').addEventListener('click', async ()=>{
 
 /* ---------------- admin panel ---------------- */
 function openAdmin(){ renderAdminList(); updateDriveUI(); updateSecUI(); $('#adminModal').classList.add('open');
+  capNhatOAdminAuth();
   loadSiteConfig().then(veTrangThaiQuanTri);
   if(window.__taiDanhSachMa) window.__taiDanhSachMa(); }
+
+/* hiện ô đăng nhập admin hoặc trạng thái đã đăng nhập */
+function capNhatOAdminAuth(){
+  const box = $('#adminAuthBox');
+  if(!box) return;
+  if(toiLaChuTrang()){
+    box.classList.remove('need-login');
+    box.classList.add('logged-in');
+    $('#adminAuthWho').textContent = (fbUser && fbUser.email) || '';
+  } else {
+    box.classList.add('need-login');
+    box.classList.remove('logged-in');
+    const em = $('#adminAuthEmail');
+    if(em && !em.value) em.value = OWNER_EMAIL;   /* gợi ý sẵn email chính */
+  }
+}
+
+/* nối nút đăng nhập / tạo tài khoản / đăng xuất quản trị */
+(function noiAdminAuth(){
+  const btnLogin  = $('#adminAuthLogin');
+  const btnSignup = $('#adminAuthSignup');
+  const btnLogout = $('#adminAuthLogout');
+  if(!btnLogin) return;
+  const note = ()=>$('#adminAuthNote');
+
+  async function dangNhap(taoMoi){
+    const email = ($('#adminAuthEmail').value||'').trim();
+    const pass  = $('#adminAuthPass').value || '';
+    const n = note();
+    if(!email || !pass){ n.className='aa-note err'; n.textContent='Hãy nhập email và mật khẩu.'; return; }
+    if(!laChuTrang(email)){
+      n.className='aa-note err';
+      n.textContent='Email này không phải tài khoản quản trị. Chỉ dùng ' + OWNER_EMAILS.join(' hoặc ') + '.';
+      return;
+    }
+    n.className='aa-note'; n.textContent = taoMoi ? 'Đang tạo tài khoản...' : 'Đang đăng nhập...';
+    try{
+      if(taoMoi){ await fbSignUp(email, pass, 'Quản trị'); }
+      else      { await fbSignIn(email, pass); }
+      try{ if(fbUser) await fbUser.getIdToken(true); }catch(e){}
+      n.className='aa-note ok'; n.textContent='Đăng nhập thành công! Toàn quyền quản trị đã mở.';
+      capNhatOAdminAuth();
+      loadSiteConfig().then(veTrangThaiQuanTri);
+      if(window.__taiDanhSachMa) window.__taiDanhSachMa();
+      capNhatBadgeYeuCau && capNhatBadgeYeuCau();
+    }catch(e){
+      const c = e.code || '';
+      n.className='aa-note err';
+      if(c==='auth/wrong-password'||c==='auth/invalid-credential') n.textContent='Sai mật khẩu. Nếu chưa có tài khoản, bấm "Tạo tài khoản".';
+      else if(c==='auth/user-not-found') n.textContent='Chưa có tài khoản này. Bấm "Tạo tài khoản" để tạo mới.';
+      else if(c==='auth/email-already-in-use') n.textContent='Email đã có tài khoản. Bấm "Đăng nhập".';
+      else if(c==='auth/weak-password') n.textContent='Mật khẩu quá ngắn (tối thiểu 6 ký tự).';
+      else n.textContent='Lỗi: ' + (c || 'không kết nối được');
+    }
+  }
+  btnLogin.addEventListener('click', ()=>dangNhap(false));
+  btnSignup.addEventListener('click', ()=>dangNhap(true));
+  $('#adminAuthPass').addEventListener('keydown', e=>{ if(e.key==='Enter') dangNhap(false); });
+  btnLogout.addEventListener('click', async ()=>{
+    try{ await fbSignOut(); }catch(e){}
+    capNhatOAdminAuth();
+    toast('Đã đăng xuất tài khoản quản trị');
+  });
+})();
 $('#adminClose').addEventListener('click', ()=>$('#adminModal').classList.remove('open'));
 
 $('#driveConnectBtn').addEventListener('click', async ()=>{
@@ -3651,55 +3765,53 @@ $('#ttsVoice').addEventListener('change', ()=>{
 });
 
 /* ---------------- nối nút thành viên ---------------- */
-let joinMode = 'signup';
 function openJoin(){
   if(!fbReady){ toast(t('fbOffline')); return; }
-  $('#joinName').value=''; $('#joinEmail').value=''; $('#joinPass').value='';
-  setJoinMode('signup');
+  $('#joinEmail').value=''; $('#joinPass').value='';
   $('#joinModal').classList.add('open');
   setTimeout(()=>$('#joinEmail').focus(), 60);
 }
-function setJoinMode(m){
-  joinMode = m;
-  $('#tabSignup').classList.toggle('on', m==='signup');
-  $('#tabLogin').classList.toggle('on', m==='login');
-  $('#nameField').style.display = m==='signup' ? 'block' : 'none';
-  $('#joinOk').textContent = m==='signup' ? t('signup') : t('login');
-  $('#joinSub').textContent = m==='signup' ? t('joinSub') : t('loginSub');
-}
-$('#tabSignup').addEventListener('click', ()=>setJoinMode('signup'));
-$('#tabLogin').addEventListener('click', ()=>setJoinMode('login'));
 $('#joinCancel').addEventListener('click', ()=>$('#joinModal').classList.remove('open'));
 $('#joinOk').addEventListener('click', doJoin);
 $('#joinPass').addEventListener('keydown', e=>{ if(e.key==='Enter') doJoin(); });
+$('#joinEmail').addEventListener('keydown', e=>{ if(e.key==='Enter') $('#joinPass').focus(); });
 
+/* ĐĂNG NHẬP THÔNG MINH: tự đăng nhập nếu đã có tài khoản, tự tạo mới nếu chưa */
 async function doJoin(){
-  const email = $('#joinEmail').value.trim();
-  const pass  = $('#joinPass').value;
-  let   name  = $('#joinName').value.trim();
-  if(!name && email.includes('@')) name = email.split('@')[0];   /* tự đặt tên từ email */
+  const email = ($('#joinEmail').value||'').trim();
+  const pass  = $('#joinPass').value || '';
+  const name  = email.includes('@') ? email.split('@')[0] : '';
   if(!email || !pass){ toast('Hãy nhập email và mật khẩu.'); return; }
+  if(pass.length < 6){ toast('Mật khẩu tối thiểu 6 ký tự.'); return; }
+  const btn = $('#joinOk');
+  btn.disabled = true; const chuCu = btn.textContent; btn.textContent = 'Đang xử lý...';
   try{
-    if(joinMode === 'signup'){
-      if(pass.length < 6){ toast(t('passShort')); return; }
-      await fbSignUp(email, pass, name);
-      $('#joinModal').classList.remove('open');
-      toast(t('verifySent'));
-    } else {
-      const u = await fbSignIn(email, pass);
-      $('#joinModal').classList.remove('open');
-      toast(u && u.emailVerified ? t('welcomeBack') : t('needVerifyLong'));
-    }
+    /* thử ĐĂNG NHẬP trước */
+    await fbSignIn(email, pass);
+    $('#joinModal').classList.remove('open');
+    toast('Chào mừng bạn quay lại!');
   }catch(e){
     const c = e.code || '';
-    if(c === 'auth/email-already-in-use') toast(t('errEmailUsed'));
-    else if(c === 'auth/invalid-email') toast(t('errEmailBad'));
-    else if(c === 'auth/weak-password') toast(t('passShort'));
-    else if(c === 'auth/wrong-password' || c === 'auth/invalid-credential') toast(t('errWrongPass'));
-    else if(c === 'auth/user-not-found') toast(t('errNoUser'));
-    else if(c === 'auth/too-many-requests') toast(t('errTooMany'));
-    else toast(t('errGeneric'));
-    console.error(e);
+    if(c === 'auth/user-not-found' || c === 'auth/invalid-credential'){
+      /* chưa có tài khoản -> TẠO MỚI */
+      try{
+        await fbSignUp(email, pass, name);
+        $('#joinModal').classList.remove('open');
+        toast('Đã tạo tài khoản! Kiểm tra email để xác thực (không bắt buộc để đọc sách).');
+      }catch(e2){
+        const c2 = e2.code || '';
+        if(c2 === 'auth/email-already-in-use') toast('Email đã có tài khoản nhưng mật khẩu chưa đúng. Thử lại mật khẩu.');
+        else if(c2 === 'auth/invalid-email') toast('Email không hợp lệ.');
+        else if(c2 === 'auth/weak-password') toast('Mật khẩu quá ngắn (tối thiểu 6 ký tự).');
+        else toast('Lỗi: ' + (c2 || 'không kết nối được'));
+      }
+    }
+    else if(c === 'auth/wrong-password') toast('Sai mật khẩu. Vui lòng thử lại.');
+    else if(c === 'auth/invalid-email') toast('Email không hợp lệ.');
+    else if(c === 'auth/too-many-requests') toast('Thử quá nhiều lần, hãy đợi một lát.');
+    else toast('Lỗi: ' + (c || 'không kết nối được'));
+  }finally{
+    btn.disabled = false; btn.textContent = chuCu;
   }
 }
 $('#accountBtn').addEventListener('click', ()=>{
@@ -3864,15 +3976,15 @@ let myAccess  = { all:false, books:{} };
 function laChuTrang(email){
   const e = (email||'').toLowerCase().trim();
   if(!e) return false;
-  if(e === OWNER_EMAIL.toLowerCase()) return true;
+  if(OWNER_EMAILS.some(x => x.toLowerCase() === e)) return true;   /* 2 email quản trị cố định */
   return (adminCfg.emails||[]).some(x => (x||'').toLowerCase().trim() === e);
 }
 function toiLaChuTrang(){
   if(!fbUser) return false;
   const e = (fbUser.email||'').toLowerCase().trim();
-  /* Chủ chính (email cố định): KHÔNG cần email đã xác thực - khớp với Firestore rules */
-  if(e === OWNER_EMAIL.toLowerCase()) return true;
-  /* Admin phụ: cần email đã xác thực cho an toàn */
+  /* 2 email quản trị cố định: KHÔNG cần xác thực email - khớp với Firestore rules */
+  if(OWNER_EMAILS.some(x => x.toLowerCase() === e)) return true;
+  /* Admin phụ thêm sau: cần email đã xác thực cho an toàn */
   return !!(fbUser.emailVerified && laChuTrang(fbUser.email));
 }
 
