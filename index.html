@@ -926,6 +926,11 @@ body.maint-on{overflow:hidden}
 .aa-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
 .aa-title{font-family:var(--font-display);font-weight:700;color:var(--gold-bright);font-size:1rem}
 .aa-sub{font-size:.8rem;color:var(--cream-dim);line-height:1.4;margin-bottom:4px}
+.aa-select{
+  width:100%;padding:10px 12px;border-radius:9px;
+  border:1px solid rgba(201,162,39,.3);background:var(--navy-800);
+  color:var(--cream);font-size:.88rem;cursor:pointer;
+}
 .admin-auth-in input{
   width:100%;padding:10px 12px;border-radius:9px;
   border:1px solid rgba(201,162,39,.3);background:rgba(255,255,255,.05);
@@ -1187,7 +1192,7 @@ footer{
         </svg>
         <span class="view-txt">Máy tính</span>
       </button>
-      <button class="btn btn-ghost btn-account" id="accountBtn" data-i18n="joinBtn">Đăng ký</button>
+      <button class="btn btn-ghost btn-account" id="accountBtn" data-i18n="joinBtn" style="display:none">Đăng ký</button>
       <button class="btn btn-ghost" id="adminBtn" data-i18n="admin" style="position:relative">Quản trị<span class="admin-badge" id="adminBadge" style="display:none">0</span></button>
     </div>
   </div>
@@ -1685,13 +1690,16 @@ footer{
       <div class="admin-auth-in" id="adminAuthIn">
         <div class="aa-icon">🔑</div>
         <div class="aa-body">
-          <div class="aa-title">Đăng nhập tài khoản quản trị</div>
-          <div class="aa-sub">Để dùng Thu phí, Mã mở khoá và duyệt thanh toán, hãy đăng nhập bằng email quản trị.</div>
-          <input type="email" id="adminAuthEmail" placeholder="Email quản trị" autocomplete="username">
+          <div class="aa-title">Đăng nhập quyền quản trị</div>
+          <div class="aa-sub">Đăng nhập 1 lần bằng 1 trong 2 email quản trị, máy sẽ tự ghi nhớ cho các lần sau. Sau khi đăng nhập, mọi chức năng (Thu phí, Mã mở khoá, duyệt thanh toán) mở toàn quyền.</div>
+          <select id="adminAuthEmail" class="aa-select">
+            <option value="nguyenduydien75@gmail.com">nguyenduydien75@gmail.com</option>
+            <option value="sales@dtic.com.vn">sales@dtic.com.vn</option>
+          </select>
           <input type="password" id="adminAuthPass" placeholder="Mật khẩu" autocomplete="current-password">
           <div class="aa-actions">
             <button class="btn btn-gold btn-sm" id="adminAuthLogin">Đăng nhập</button>
-            <button class="btn btn-ghost btn-sm" id="adminAuthSignup">Tạo tài khoản</button>
+            <button class="btn btn-ghost btn-sm" id="adminAuthSignup">Tạo mật khẩu lần đầu</button>
           </div>
           <div class="aa-note" id="adminAuthNote"></div>
         </div>
@@ -2224,9 +2232,10 @@ function fbInit(){
     fbAuth = firebase.auth();
     fbDb = firebase.firestore();
     fbReady = true;
+    /* GIỮ ĐĂNG NHẬP LÂU DÀI: đăng nhập 1 lần, tự động giữ trên máy này (kể cả tắt trình duyệt) */
+    try{ fbAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL); }catch(e){}
     fbAuth.onAuthStateChanged(async (u)=>{
       fbUser = u;
-      if(u && !u.emailVerified){ await u.reload(); fbUser = fbAuth.currentUser; }
       renderAccountBar();
       if(typeof capNhatOAdminAuth==='function') capNhatOAdminAuth();   /* cập nhật ô đăng nhập quản trị */
       await loadMyAccess();          /* quyền đọc của tài khoản này */
@@ -2248,16 +2257,8 @@ const memberName = () => {
 function renderAccountBar(){
   const btn = $('#accountBtn');
   if(!btn) return;
-  if(fbUser && fbUser.emailVerified){
-    btn.textContent = memberName();
-    btn.classList.add('logged');
-  } else if(fbUser && !fbUser.emailVerified){
-    btn.textContent = t('needVerify');
-    btn.classList.remove('logged');
-  } else {
-    btn.textContent = t('joinBtn');
-    btn.classList.remove('logged');
-  }
+  /* Mục đăng ký thành viên đã tạm ẩn - luôn giữ ẩn nút này */
+  btn.style.display = 'none';
 }
 
 /* ---- đăng ký / đăng nhập ---- */
@@ -2954,11 +2955,12 @@ function capNhatOAdminAuth(){
     box.classList.remove('need-login');
     box.classList.add('logged-in');
     $('#adminAuthWho').textContent = (fbUser && fbUser.email) || '';
+    /* Đã đăng nhập -> tự động tải danh sách yêu cầu + mã ngay */
+    if(window.__taiYeuCauThanhToan) window.__taiYeuCauThanhToan();
+    if(window.__taiDanhSachMa) window.__taiDanhSachMa();
   } else {
     box.classList.add('need-login');
     box.classList.remove('logged-in');
-    const em = $('#adminAuthEmail');
-    if(em && !em.value) em.value = OWNER_EMAIL;   /* gợi ý sẵn email chính */
   }
 }
 
@@ -4395,6 +4397,7 @@ function initAdminExtras(){
     }catch(e){ list.innerHTML = '<div class="fb-empty">Lỗi: ' + (e.code||e.message) + '</div>'; }
   }
   window.__taiDanhSachMa = taiDanhSachMa;
+  window.__taiYeuCauThanhToan = taiYeuCauThanhToan;
 }
 
 /* ---------------- BỘ ĐẾM LƯỢT TRUY CẬP ---------------- */
