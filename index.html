@@ -573,7 +573,18 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 .reader-controls{display:flex;align-items:center;gap:8px}
-.reader-controls .page-ind{font-size:.84rem;color:var(--cream-dim);min-width:86px;text-align:center}
+.reader-controls .page-ind{
+  font-size:.86rem;color:var(--gold-bright);font-weight:700;min-width:86px;text-align:center;
+  font-family:var(--font-display);
+}
+/* nhóm điều hướng trang: viền bao quanh cho dễ nhận biết */
+.nav-group{
+  display:flex;align-items:center;gap:4px;
+  padding:3px;border-radius:12px;background:rgba(201,162,39,.08);
+  border:1px solid rgba(201,162,39,.2);
+}
+.nav-group .icon-btn{border-color:transparent;background:transparent}
+.nav-group .icon-btn:hover:not(:disabled){background:var(--navy-700)}
 .icon-btn{
   background:var(--navy-800);border:1px solid rgba(201,162,39,.35);color:var(--cream);
   width:36px;height:36px;border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;
@@ -581,7 +592,6 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
 }
 .icon-btn:hover:not(:disabled){background:var(--navy-700);border-color:var(--gold)}
 .icon-btn:disabled{opacity:.3;cursor:default}
-.reader{position:relative}
 .reader-stage{
   flex:1;overflow:auto;display:flex;justify-content:center;align-items:center;padding:22px;
   position:relative;-webkit-overflow-scrolling:touch;min-height:0;
@@ -636,9 +646,16 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
   padding-top:6px;border-top:1px solid rgba(255,255,255,.07);
 }
 @media (max-width:820px){
-  :root{ --dock-w: 100%; }
-  .tts-bar, .auto-bar{width:100%;border-left:none;border-top:1px solid rgba(201,162,39,.28)}
-  .reader.dock-open .reader-stage{padding-right:0;display:none}
+  /* Điện thoại: bảng điều khiển trượt lên từ ĐÁY, che nửa dưới.
+     Trang sách CO LẠI ở nửa trên - KHÔNG BAO GIỜ bị ẩn hoàn toàn. */
+  .tts-bar, .auto-bar{
+    top:auto;left:0;right:0;bottom:0;width:100%;height:auto;max-height:52vh;
+    border-left:none;border-top:1px solid rgba(201,162,39,.35);
+    border-radius:18px 18px 0 0;
+    box-shadow:0 -12px 34px rgba(0,0,0,.5);
+  }
+  .reader.dock-open .reader-stage{padding-right:0;padding-bottom:52vh}
+  .reader.dock-open.bleed .reader-stage{padding-right:0;padding-bottom:52vh}
 }
 .old-tts-bar{
   display:none;align-items:center;gap:14px;flex-wrap:wrap;
@@ -1347,9 +1364,11 @@ footer{
       <button class="icon-btn" id="fitBtn" title="Vừa khung / Tràn viền">⛶</button>
       <button class="icon-btn" id="zoomOut" title="Zoom out">−</button>
       <button class="icon-btn" id="zoomIn" title="Zoom in">+</button>
-      <button class="icon-btn" id="prevPage" title="Previous">‹</button>
-      <span class="page-ind" id="pageInd">1 / 1</span>
-      <button class="icon-btn" id="nextPage" title="Next">›</button>
+      <div class="nav-group">
+        <button class="icon-btn" id="prevPage" title="Trang trước">‹</button>
+        <span class="page-ind" id="pageInd">1 / 1</span>
+        <button class="icon-btn" id="nextPage" title="Trang sau">›</button>
+      </div>
       <button class="icon-btn" id="autoBtn" title="Tự động lật trang">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
@@ -3881,6 +3900,8 @@ function apDungBaoTri(){
 /* ---- quyền đọc của tôi ---- */
 async function loadMyAccess(){
   myAccess = { all:false, books:{} };
+  /* khách đã mở khoá trên máy này (lưu localStorage) */
+  try{ if(localStorage.getItem('kkUnlockAll') === '1') myAccess.all = true; }catch(e){}
   if(!fbReady || !fbDb || !fbUser) return;
   try{
     const d = await fbDb.collection('access').doc(fbUser.uid).get();
@@ -3996,20 +4017,23 @@ async function dungMaMoKhoa(){
   const note = $('#pwNote');
   const ma = ($('#pwCode').value || '').trim().toUpperCase();
   if(!ma){ note.className='pw-note err'; note.textContent='Hãy nhập mã mở khoá.'; return; }
-  if(!isMember()){
-    note.className = 'pw-note err';
-    note.textContent = 'Hãy đăng ký / đăng nhập trước khi nhập mã.';
-    return;
-  }
+  if(!fbReady){ note.className='pw-note err'; note.textContent='Hệ thống chưa sẵn sàng, hãy tải lại trang.'; return; }
   try{
     const ref = fbDb.collection('codes').doc(ma);
     const d = await ref.get();
-    if(!d.exists){ note.className='pw-note err'; note.textContent='Mã không tồn tại.'; return; }
+    if(!d.exists){ note.className='pw-note err'; note.textContent='Mã không đúng hoặc không tồn tại.'; return; }
     if(d.data().used){ note.className='pw-note err'; note.textContent='Mã này đã được dùng rồi.'; return; }
 
-    await fbDb.collection('access').doc(fbUser.uid).set({ all:true }, {merge:true});
-    await ref.set({ used:true, usedBy: fbUser.email || fbUser.uid,
+    /* đánh dấu mã đã dùng */
+    await ref.set({ used:true,
+                    usedBy: fbUser ? (fbUser.email || fbUser.uid) : 'khach',
                     usedAt: firebase.firestore.FieldValue.serverTimestamp() }, {merge:true});
+    /* mở khoá: có đăng nhập -> lưu Firestore; khách -> lưu localStorage máy này */
+    if(fbUser){
+      await fbDb.collection('access').doc(fbUser.uid).set({ all:true }, {merge:true});
+    } else {
+      try{ localStorage.setItem('kkUnlockAll', '1'); }catch(e){}
+    }
     myAccess.all = true;
     note.className = 'pw-note ok';
     note.textContent = 'Mở khoá thành công! Chúc bạn đọc sách vui vẻ.';
