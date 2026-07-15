@@ -926,6 +926,24 @@ body.maint-on{overflow:hidden}
 .aa-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
 .aa-title{font-family:var(--font-display);font-weight:700;color:var(--gold-bright);font-size:1rem}
 .aa-sub{font-size:.8rem;color:var(--cream-dim);line-height:1.4;margin-bottom:4px}
+.stat-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0;
+}
+.stat-card{
+  padding:16px 14px;border-radius:14px;text-align:center;
+  background:linear-gradient(160deg, rgba(201,162,39,.12), rgba(0,0,0,.15));
+  border:1px solid rgba(201,162,39,.25);
+}
+.stat-num{font-family:var(--font-display);font-size:1.5rem;font-weight:800;color:var(--gold-bright);line-height:1.1}
+.stat-lb{font-size:.76rem;color:var(--cream-dim);margin-top:5px}
+.stat-detail{margin-top:10px}
+.stat-detail table{width:100%;border-collapse:collapse;font-size:.8rem}
+.stat-detail th,.stat-detail td{padding:7px 9px;text-align:left;border-bottom:1px solid rgba(255,255,255,.08)}
+.stat-detail th{color:var(--gold-dim);font-weight:600}
+.stat-detail td{color:var(--cream-dim)}
+.pay-result{margin-top:8px;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.pay-code-ok{font-size:.9rem;color:#3ECF7A;font-weight:600}
+@media(max-width:560px){.stat-grid{grid-template-columns:repeat(2,1fr)}}
 .aa-select{
   width:100%;padding:10px 12px;border-radius:9px;
   border:1px solid rgba(201,162,39,.3);background:var(--navy-800);
@@ -1875,6 +1893,27 @@ footer{
       <button class="btn btn-gold btn-sm" id="genCodeBtn">Tạo mã mới</button>
     </div>
     <div class="fb-inbox" id="codeList"></div>
+
+    <!-- ===== THỐNG KÊ DOANH THU ===== -->
+    <div class="section-head" style="margin-top:26px;margin-bottom:4px">
+      <h2 style="font-size:1.05rem">📊 Thống kê doanh thu</h2>
+    </div>
+    <div class="sec-row">
+      <div>
+        <div class="sec-state" id="statState">Tổng hợp mã, độc giả trả tiền và doanh thu</div>
+        <div class="sec-desc">Số liệu lấy từ các yêu cầu đã duyệt và mã đã dùng.</div>
+      </div>
+      <button class="btn btn-gold btn-sm" id="statRefresh">Cập nhật số liệu</button>
+    </div>
+    <div class="stat-grid" id="statGrid" style="display:none">
+      <div class="stat-card"><div class="stat-num" id="stTien">0 đ</div><div class="stat-lb">Tổng doanh thu</div></div>
+      <div class="stat-card"><div class="stat-num" id="stDocGia">0</div><div class="stat-lb">Độc giả đã trả tiền</div></div>
+      <div class="stat-card"><div class="stat-num" id="stMaDung">0</div><div class="stat-lb">Mã đã dùng</div></div>
+      <div class="stat-card"><div class="stat-num" id="stMaChua">0</div><div class="stat-lb">Mã chưa dùng</div></div>
+      <div class="stat-card"><div class="stat-num" id="stChoDuyet">0</div><div class="stat-lb">Đang chờ duyệt</div></div>
+      <div class="stat-card"><div class="stat-num" id="stTuChoi">0</div><div class="stat-lb">Đã từ chối</div></div>
+    </div>
+    <div class="stat-detail" id="statDetail"></div>
 
     <div class="section-head" style="margin-top:26px;margin-bottom:4px">
       <h2 style="font-size:1.05rem" data-i18n="manageBooks">Quản lý sách</h2>
@@ -2958,6 +2997,7 @@ function capNhatOAdminAuth(){
     /* Đã đăng nhập -> tự động tải danh sách yêu cầu + mã ngay */
     if(window.__taiYeuCauThanhToan) window.__taiYeuCauThanhToan();
     if(window.__taiDanhSachMa) window.__taiDanhSachMa();
+    if(window.__taiThongKe) window.__taiThongKe();
   } else {
     box.classList.add('need-login');
     box.classList.remove('logged-in');
@@ -4338,25 +4378,67 @@ function initAdminExtras(){
       list.innerHTML = '';
       snap.forEach(doc => {
         const r = doc.data();
+        const lienHe = r.contact || r.email || '';
         const el = document.createElement('div');
         el.className = 'fb-item';
         el.innerHTML =
-          '<div class="fb-top"><b>' + escapeHtml(r.email || r.uid) + '</b>' +
-          '<span class="fb-time">' + escapeHtml(r.code || '') + '</span></div>' +
+          '<div class="fb-top"><b>' + escapeHtml(lienHe || r.uid) + '</b>' +
+          '<span class="fb-time">Mã CK: ' + escapeHtml(r.code || '') + '</span></div>' +
           '<div class="fb-text">' + escapeHtml(r.bookTitle || r.bookId || '') +
-          ' - ' + tienVN(r.amount) + '</div>' +
-          '<div style="display:flex;gap:8px;margin-top:8px">' +
-          '<button class="btn btn-gold btn-sm" data-ok="' + doc.id + '" data-uid="' + escapeHtml(r.uid) + '">Duyệt (mở toàn bộ)</button>' +
-          '<button class="btn btn-ghost btn-sm" data-no="' + doc.id + '">Từ chối</button></div>';
+          ' - <b>' + tienVN(r.amount) + '</b>' +
+          (r.guest ? ' <span style="color:var(--gold-dim)">(khách)</span>' : '') + '</div>' +
+          (lienHe ? '<div class="fb-text" style="font-size:.78rem;color:var(--cream-dim)">Liên hệ: ' + escapeHtml(lienHe) + '</div>' : '<div class="fb-text" style="font-size:.78rem;color:var(--danger)">Khách chưa để lại liên hệ</div>') +
+          '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">' +
+          '<button class="btn btn-gold btn-sm" data-ok="' + doc.id + '" data-uid="' + escapeHtml(r.uid) + '" data-contact="' + escapeHtml(lienHe) + '" data-book="' + escapeHtml(r.bookTitle||'') + '">Duyệt + gửi mã</button>' +
+          '<button class="btn btn-ghost btn-sm" data-no="' + doc.id + '">Từ chối</button></div>' +
+          '<div class="pay-result" data-result="' + doc.id + '"></div>';
         list.appendChild(el);
       });
       list.querySelectorAll('[data-ok]').forEach(b => b.addEventListener('click', async ()=>{
+        b.disabled = true; b.textContent = 'Đang xử lý...';
         try{
-          await fbDb.collection('access').doc(b.dataset.uid).set({ all:true }, {merge:true});
-          await fbDb.collection('payments').doc(b.dataset.ok).set({ status:'paid' }, {merge:true});
-          toast('Đã duyệt và mở khoá');
-          taiYeuCauThanhToan();
-        }catch(e){ toast('Lỗi: ' + (e.code||e.message)); }
+          /* 1. sinh mã mở khoá riêng cho khách này */
+          const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+          let ma = 'KK';
+          for(let i=0;i<6;i++) ma += chars[Math.floor(Math.random()*chars.length)];
+          await fbDb.collection('codes').doc(ma).set({
+            used:false,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            forContact: b.dataset.contact || '',
+            fromPayment: b.dataset.ok
+          });
+          /* 2. nếu khách đã đăng nhập -> mở khoá luôn cho họ */
+          if(b.dataset.uid && b.dataset.uid !== 'khach'){
+            try{ await fbDb.collection('access').doc(b.dataset.uid).set({ all:true }, {merge:true}); }catch(e){}
+          }
+          /* 3. đánh dấu payment đã trả + lưu mã đã cấp */
+          await fbDb.collection('payments').doc(b.dataset.ok).set({
+            status:'paid', codeSent: ma,
+            paidAt: firebase.firestore.FieldValue.serverTimestamp()
+          }, {merge:true});
+
+          /* 4. chuẩn bị gửi mã cho khách qua email/SĐT */
+          const box = list.querySelector('[data-result="' + b.dataset.ok + '"]');
+          const lienHe = b.dataset.contact || '';
+          const laEmail = lienHe.includes('@');
+          const noiDung = 'Chao ban, cam on ban da ung ho KK-2026. Ma mo khoa doc tron bo sach cua ban la: ' + ma + ' . Nhap ma nay tai muc "Nhap ma mo khoa" khi doc sach. Chuc ban doc sach vui ve!';
+          let html = '<div class="pay-code-ok">✅ Đã tạo mã: <b>' + ma + '</b></div>';
+          if(lienHe && laEmail){
+            const mailto = 'mailto:' + encodeURIComponent(lienHe) +
+              '?subject=' + encodeURIComponent('Mã mở khoá KK-2026: ' + ma) +
+              '&body=' + encodeURIComponent(noiDung);
+            html += '<a class="btn btn-gold btn-sm" href="' + mailto + '" target="_blank" style="margin-top:6px">📧 Gửi mã qua email cho khách</a>';
+          } else if(lienHe){
+            const sms = 'sms:' + lienHe.replace(/[^0-9+]/g,'') + '?body=' + encodeURIComponent(noiDung);
+            html += '<a class="btn btn-gold btn-sm" href="' + sms + '" style="margin-top:6px">💬 Gửi mã qua tin nhắn SMS</a>';
+          }
+          html += '<button class="btn btn-ghost btn-sm" data-copy="' + noiDung.replace(/"/g,'&quot;') + '" style="margin-top:6px">📋 Sao chép lời nhắn (dán vào Zalo/SMS)</button>';
+          box.innerHTML = html;
+          const cp = box.querySelector('[data-copy]');
+          if(cp) cp.addEventListener('click', ()=>{ navigator.clipboard.writeText(noiDung).then(()=>toast('Đã sao chép lời nhắn kèm mã')); });
+          toast('Đã duyệt + tạo mã ' + ma);
+          $('#payReqState').textContent = 'Đã duyệt 1 yêu cầu';
+        }catch(e){ toast('Lỗi: ' + (e.code||e.message)); b.disabled=false; b.textContent='Duyệt + gửi mã'; }
       }));
       list.querySelectorAll('[data-no]').forEach(b => b.addEventListener('click', async ()=>{
         try{
@@ -4398,6 +4480,64 @@ function initAdminExtras(){
   }
   window.__taiDanhSachMa = taiDanhSachMa;
   window.__taiYeuCauThanhToan = taiYeuCauThanhToan;
+
+  /* ===== THỐNG KÊ DOANH THU ===== */
+  async function taiThongKe(){
+    if(!toiLaChuTrang()) return;
+    const grid = $('#statGrid'), detail = $('#statDetail');
+    $('#statState').textContent = 'Đang tính toán...';
+    try{
+      if(fbUser) await fbUser.getIdToken(true);
+      const [paySnap, codeSnap] = await Promise.all([
+        fbDb.collection('payments').limit(500).get(),
+        fbDb.collection('codes').limit(500).get()
+      ]);
+      let tongTien = 0, soPaid = 0, soPending = 0, soRejected = 0;
+      const daTra = [];
+      paySnap.forEach(d => {
+        const r = d.data();
+        if(r.status === 'paid'){ soPaid++; tongTien += (r.amount || 0); daTra.push(r); }
+        else if(r.status === 'pending') soPending++;
+        else if(r.status === 'rejected') soRejected++;
+      });
+      let maDung = 0, maChua = 0;
+      const dsMaDung = [];
+      codeSnap.forEach(d => {
+        const c = d.data();
+        if(c.used){ maDung++; dsMaDung.push({ma:d.id, boi:c.usedBy||c.forContact||'', luc:c.usedAt}); }
+        else maChua++;
+      });
+
+      $('#stTien').textContent    = tienVN(tongTien);
+      $('#stDocGia').textContent  = soPaid;
+      $('#stMaDung').textContent  = maDung;
+      $('#stMaChua').textContent  = maChua;
+      $('#stChoDuyet').textContent= soPending;
+      $('#stTuChoi').textContent  = soRejected;
+      grid.style.display = 'grid';
+      $('#statState').textContent = 'Đã cập nhật lúc ' + new Date().toLocaleString('vi-VN');
+
+      /* bảng chi tiết mã đã dùng */
+      if(dsMaDung.length){
+        let html = '<table><thead><tr><th>Mã đã dùng</th><th>Người dùng</th><th>Thời gian</th></tr></thead><tbody>';
+        dsMaDung.slice(0,30).forEach(m => {
+          let luc = '';
+          try{ if(m.luc && m.luc.toDate) luc = m.luc.toDate().toLocaleString('vi-VN'); }catch(e){}
+          html += '<tr><td style="color:var(--gold-bright);letter-spacing:.1em">' + escapeHtml(m.ma) + '</td>' +
+                  '<td>' + escapeHtml(m.boi || '-') + '</td><td>' + luc + '</td></tr>';
+        });
+        html += '</tbody></table>';
+        detail.innerHTML = html;
+      } else {
+        detail.innerHTML = '<div class="fb-empty">Chưa có mã nào được sử dụng.</div>';
+      }
+    }catch(e){
+      $('#statState').textContent = 'Lỗi: ' + (e.code || e.message);
+    }
+  }
+  const stBtn = $('#statRefresh');
+  if(stBtn) stBtn.addEventListener('click', taiThongKe);
+  window.__taiThongKe = taiThongKe;
 }
 
 /* ---------------- BỘ ĐẾM LƯỢT TRUY CẬP ---------------- */
