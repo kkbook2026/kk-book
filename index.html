@@ -87,29 +87,45 @@ header{
 }
 .brand{display:flex;align-items:center;gap:14px;cursor:pointer;padding:2px 4px;border-radius:12px;transition:background .18s}
 .brand:hover{background:rgba(201,162,39,.06)}
-.logo-kk{width:52px;height:52px;flex-shrink:0;filter:drop-shadow(0 2px 8px rgba(201,162,39,.25))}
+.logo-kk{width:60px;height:60px;flex-shrink:0;filter:drop-shadow(0 2px 8px rgba(201,162,39,.28))}
 /* dải phân cách mảnh giữa logo và chữ cho bố cục cân đối, tinh tế */
 .brand-text{
-  display:flex;flex-direction:column;justify-content:center;gap:4px;
-  padding-left:14px;border-left:1px solid rgba(201,162,39,.28);
+  display:flex;flex-direction:column;justify-content:center;gap:2px;
+  padding-left:16px;border-left:1px solid rgba(201,162,39,.28);
 }
 .brand-text .brand-name{
-  font-family:var(--font-display);font-weight:900;font-size:1.22rem;
-  color:var(--gold-bright);letter-spacing:.14em;line-height:1;
+  font-family:var(--font-display);font-weight:900;font-size:1.34rem;
+  color:var(--gold-bright);letter-spacing:.16em;line-height:1.05;
   white-space:nowrap;text-transform:uppercase;
 }
-.brand-text .brand-sub{
-  font-size:.66rem;letter-spacing:.28em;text-transform:uppercase;
-  color:var(--gold);opacity:.82;white-space:nowrap;font-weight:600;
+.brand-text .brand-name2{
+  font-size:1.16rem;letter-spacing:.42em;color:var(--gold);
+  padding-left:.06em;
 }
 @media(max-width:560px){
   .brand{gap:10px}
-  .brand-text{padding-left:10px}
-  .brand-text .brand-name{font-size:.92rem;letter-spacing:.08em}
-  .brand-text .brand-sub{font-size:.54rem;letter-spacing:.18em}
-  .logo-kk{width:42px;height:42px}
+  .brand-text{padding-left:11px}
+  .brand-text .brand-name{font-size:1rem;letter-spacing:.1em}
+  .brand-text .brand-name2{font-size:.86rem;letter-spacing:.3em}
+  .logo-kk{width:48px;height:48px}
 }
 .header-tools{margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+/* ===== MENU 3 CHỨC NĂNG ===== */
+.main-nav{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.nav-item{
+  padding:9px 16px;border-radius:10px;cursor:pointer;
+  background:transparent;border:1px solid transparent;
+  color:var(--cream);font-family:var(--font-body);font-size:.9rem;font-weight:600;
+  transition:all .18s;white-space:nowrap;
+}
+.nav-item:hover{background:rgba(201,162,39,.12);border-color:rgba(201,162,39,.35);color:var(--gold-bright)}
+.nav-item.active{background:rgba(201,162,39,.18);border-color:var(--gold);color:var(--gold-bright)}
+@media(max-width:900px){
+  .main-nav{order:3;width:100%;justify-content:center;margin-top:4px;border-top:1px solid rgba(201,162,39,.15);padding-top:8px}
+}
+@media(max-width:560px){
+  .nav-item{padding:7px 11px;font-size:.82rem}
+}
 .search-box{position:relative}
 .search-box input{
   background:var(--navy-800);border:1px solid rgba(201,162,39,.3);color:var(--cream);
@@ -1352,6 +1368,119 @@ footer{
   .chatbot-fab{bottom:20px;left:20px;width:50px;height:50px}
   .chatbot-panel{bottom:0;left:0;width:100vw;max-width:100vw;height:80vh;border-radius:18px 18px 0 0}
 }
+/* ============ TRANG CHỨC NĂNG (Về KK-BOOK / Dịch vụ / Quiz) ============ */
+.modal-page{
+  max-width:920px;width:96vw;padding:0;overflow:hidden;
+  display:flex;flex-direction:column;max-height:92vh;
+}
+.page-head{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:20px 28px;border-bottom:1px solid rgba(201,162,39,.28);
+  background:linear-gradient(180deg, rgba(201,162,39,.1), transparent);flex-shrink:0;
+}
+.page-head h3{margin:0;font-size:1.3rem}
+.page-body{overflow-y:auto;padding:24px 28px 30px;flex:1;min-height:0}
+/* Về KK-BOOK */
+.page-body h4{font-family:var(--font-display);color:var(--gold-bright);font-size:1.12rem;margin:20px 0 8px}
+.page-body p{line-height:1.75;color:var(--cream);margin:0 0 12px}
+.about-lead{font-size:1.05rem;color:var(--cream)}
+.about-hi{color:var(--gold-bright);font-weight:600}
+/* Dịch vụ */
+.svc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.svc-card{
+  text-align:left;padding:22px;border-radius:16px;cursor:pointer;
+  background:var(--navy-800);border:1px solid rgba(201,162,39,.28);
+  transition:all .18s;color:var(--cream);font-family:var(--font-body);
+}
+.svc-card:hover:not(.svc-soon){border-color:var(--gold);transform:translateY(-2px);box-shadow:0 12px 30px rgba(0,0,0,.4)}
+.svc-soon{opacity:.55;cursor:default}
+.svc-ico{font-size:2rem;margin-bottom:10px}
+.svc-name{font-family:var(--font-display);font-weight:700;color:var(--gold-bright);font-size:1.05rem;margin-bottom:6px}
+.svc-desc{font-size:.85rem;color:var(--cream-dim);line-height:1.5}
+/* Tử Vi */
+.tuvi-back{background:none;border:none;color:var(--gold);cursor:pointer;font-size:.88rem;padding:0;margin-bottom:14px}
+.tuvi-back:hover{color:var(--gold-bright)}
+.tuvi-title{font-family:var(--font-display);color:var(--gold-bright);font-size:1.35rem;margin:0 0 6px}
+.tuvi-sub{font-size:.9rem;color:var(--cream-dim);line-height:1.6;margin-bottom:18px}
+.tuvi-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:14px}
+.tuvi-form label{display:flex;flex-direction:column;gap:6px;font-size:.84rem;color:var(--cream-dim)}
+.tuvi-form input, .tuvi-form select{
+  padding:11px 13px;border-radius:10px;font-size:.95rem;
+  background:var(--navy-800);border:1px solid rgba(201,162,39,.3);color:var(--cream);
+}
+.tuvi-form input:focus, .tuvi-form select:focus{outline:none;border-color:var(--gold-bright)}
+.tuvi-result{margin-top:22px}
+.tv-info{
+  background:rgba(201,162,39,.08);border:1px solid rgba(201,162,39,.25);
+  border-radius:12px;padding:16px 18px;margin-bottom:18px;font-size:.9rem;line-height:1.8;
+}
+.tv-info b{color:var(--gold-bright)}
+/* Bàn lá số 4x4, tâm là thông tin */
+.tv-chart{
+  display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,minmax(96px,auto));
+  gap:4px;background:rgba(201,162,39,.25);border:2px solid var(--gold);border-radius:10px;
+  padding:4px;margin-bottom:18px;
+}
+.tv-cell{
+  background:var(--navy-900);border-radius:6px;padding:7px 8px;position:relative;
+  min-height:96px;display:flex;flex-direction:column;
+}
+.tv-center{
+  grid-column:2 / 4;grid-row:2 / 4;background:linear-gradient(160deg,var(--navy-800),var(--navy-950));
+  align-items:center;justify-content:center;text-align:center;gap:6px;
+}
+.tv-center .tvc-name{font-family:var(--font-display);color:var(--gold-bright);font-size:1.05rem;font-weight:700}
+.tv-center .tvc-row{font-size:.78rem;color:var(--cream);line-height:1.7}
+.tv-cell .tvc-stars{flex:1;display:flex;flex-wrap:wrap;gap:2px 7px;align-content:flex-start;font-size:.74rem;line-height:1.35}
+.tv-cell .st-chinh{color:var(--gold-bright);font-weight:700}
+.tv-cell .st-phu{color:var(--cream)}
+.tv-cell .st-hoa{color:#E86A5C;font-weight:700}
+.tv-cell .tvc-foot{margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end;gap:6px;padding-top:4px}
+.tv-cell .tvc-cung{font-size:.72rem;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:.02em}
+.tv-cell .tvc-chi{font-size:.7rem;color:var(--cream-dim)}
+.tv-cell.tv-menh{background:rgba(201,162,39,.12);border:1px solid var(--gold)}
+.tv-cell.tv-than::after{content:'Thân';position:absolute;top:5px;right:6px;font-size:.62rem;color:#5FC98A;font-weight:700}
+.tv-actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.tv-luan-free{font-size:.92rem;line-height:1.8;color:var(--cream)}
+.tv-luan-free h4{color:var(--gold-bright);font-family:var(--font-display);margin:16px 0 6px;font-size:1rem}
+.tv-luan-locked{
+  margin-top:14px;padding:18px;border-radius:12px;text-align:center;
+  background:rgba(201,162,39,.06);border:1px dashed rgba(201,162,39,.4);
+}
+@media(max-width:560px){
+  .tv-chart{grid-template-rows:repeat(4,minmax(74px,auto));gap:3px}
+  .tv-cell{min-height:74px;padding:5px 6px}
+  .tv-cell .tvc-stars{font-size:.64rem}
+}
+/* Games Quiz */
+.quiz-intro{font-size:.95rem;color:var(--cream-dim);line-height:1.6;margin-bottom:18px}
+.quiz-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.quiz-card{
+  text-align:left;padding:20px;border-radius:16px;cursor:pointer;
+  background:var(--navy-800);border:1px solid rgba(201,162,39,.28);transition:all .18s;
+  color:var(--cream);font-family:var(--font-body);
+}
+.quiz-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 12px 30px rgba(0,0,0,.4)}
+.quiz-card .qc-ico{font-size:1.8rem;margin-bottom:8px}
+.quiz-card .qc-name{font-family:var(--font-display);font-weight:700;color:var(--gold-bright);font-size:1.05rem;margin-bottom:5px}
+.quiz-card .qc-meta{font-size:.8rem;color:var(--cream-dim)}
+.quiz-q{margin-bottom:8px}
+.quiz-prog{font-size:.82rem;color:var(--gold);margin-bottom:6px;font-weight:600}
+.quiz-qtext{font-family:var(--font-display);font-size:1.2rem;color:var(--cream);margin-bottom:18px;line-height:1.5}
+.quiz-opts{display:flex;flex-direction:column;gap:10px}
+.quiz-opt{
+  padding:14px 16px;border-radius:12px;cursor:pointer;text-align:left;
+  background:var(--navy-800);border:1px solid rgba(201,162,39,.28);
+  color:var(--cream);font-size:.95rem;font-family:var(--font-body);transition:all .15s;
+}
+.quiz-opt:hover:not(:disabled){border-color:var(--gold);background:var(--navy-700)}
+.quiz-opt.correct{border-color:#3FA66A;background:rgba(63,166,106,.2);color:#8FE0AC}
+.quiz-opt.wrong{border-color:var(--danger);background:rgba(196,81,74,.18)}
+.quiz-opt:disabled{cursor:default}
+.quiz-next{margin-top:18px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.quiz-fb{font-size:.88rem;color:var(--cream-dim)}
+.quiz-done{text-align:center;padding:20px}
+.quiz-score{font-family:var(--font-display);font-size:2.6rem;color:var(--gold-bright);font-weight:900;margin:10px 0}
 </style>
 </head>
 <body>
@@ -1369,10 +1498,15 @@ footer{
         </g>
       </svg>
       <div class="brand-text">
-        <div class="brand-name">THƯ VIỆN SÁCH CÁ NHÂN</div>
-        <div class="brand-sub" data-i18n="brandSub">KK-2026 · Nguyễn Duy Điển</div>
+        <div class="brand-name">THƯ VIỆN SÁCH</div>
+        <div class="brand-name brand-name2">CÁ NHÂN</div>
       </div>
     </div>
+    <nav class="main-nav" id="mainNav">
+      <button class="nav-item" id="navAbout">Về KK-BOOK</button>
+      <button class="nav-item" id="navServices">Dịch vụ khác</button>
+      <button class="nav-item" id="navQuiz">Games Quiz</button>
+    </nav>
     <div class="header-tools">
       <div class="search-box">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F6F0E1" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
@@ -5258,7 +5392,724 @@ if(document.readyState === 'loading'){
 } else {
   setTimeout(initChatbot, 0);
 }
+
+/* ==================================================================
+   ENGINE TỬ VI ĐẨU SỐ - an sao tự động
+   Đổi dương->âm theo thuật toán Hồ Ngọc Đức (chuẩn lịch VN, múi giờ 7)
+   ================================================================== */
+var TV_CAN = ['Giáp','Ất','Bính','Đinh','Mậu','Kỷ','Canh','Tân','Nhâm','Quý'];
+var TV_CHI = ['Tý','Sửu','Dần','Mão','Thìn','Tỵ','Ngọ','Mùi','Thân','Dậu','Tuất','Hợi'];
+
+function tvJd(dd,mm,yy){
+  var a=Math.floor((14-mm)/12), y=yy+4800-a, m=mm+12*a-3;
+  var jd=dd+Math.floor((153*m+2)/5)+365*y+Math.floor(y/4)-Math.floor(y/100)+Math.floor(y/400)-32045;
+  if(jd<2299161) jd=dd+Math.floor((153*m+2)/5)+365*y+Math.floor(y/4)-32083;
+  return jd;
+}
+function tvNewMoon(k){
+  var T=k/1236.85, T2=T*T, T3=T2*T, dr=Math.PI/180;
+  var J=2415020.75933+29.53058868*k+0.0001178*T2-0.000000155*T3;
+  J=J+0.00033*Math.sin((166.56+132.87*T-0.009173*T2)*dr);
+  var M=359.2242+29.10535608*k-0.0000333*T2-0.00000347*T3;
+  var Mp=306.0253+385.81691806*k+0.0107306*T2+0.00001236*T3;
+  var F=21.2964+390.67050646*k-0.0016528*T2-0.00000239*T3;
+  var C=(0.1734-0.000393*T)*Math.sin(M*dr)+0.0021*Math.sin(2*dr*M);
+  C=C-0.4068*Math.sin(Mp*dr)+0.0161*Math.sin(dr*2*Mp);
+  C=C-0.0004*Math.sin(dr*3*Mp)+0.0104*Math.sin(dr*2*F)-0.0051*Math.sin(dr*(M+Mp));
+  C=C-0.0074*Math.sin(dr*(M-Mp))+0.0004*Math.sin(dr*(2*F+M))-0.0004*Math.sin(dr*(2*F-M));
+  C=C-0.0006*Math.sin(dr*(2*F+Mp))+0.0010*Math.sin(dr*(2*F-Mp))+0.0005*Math.sin(dr*(2*Mp+M));
+  var dt;
+  if(T<-11) dt=0.001+0.000839*T+0.0002261*T2-0.00000845*T3-0.000000081*T*T3;
+  else dt=-0.000278+0.000265*T+0.000262*T2;
+  return J+C-dt;
+}
+function tvSunLong(jdn){
+  var T=(jdn-2451545.0)/36525, T2=T*T, dr=Math.PI/180;
+  var M=357.52910+35999.05030*T-0.0001559*T2-0.00000048*T*T2;
+  var L0=280.46645+36000.76983*T+0.0003032*T2;
+  var DL=(1.914600-0.004817*T-0.000014*T2)*Math.sin(dr*M);
+  DL=DL+(0.019993-0.000101*T)*Math.sin(dr*2*M)+0.000290*Math.sin(dr*3*M);
+  var L=(L0+DL)*dr;
+  L=L-Math.PI*2*Math.floor(L/(Math.PI*2));
+  return L;
+}
+function tvGetSunLong(dn,tz){ return Math.floor(tvSunLong(dn-0.5-tz/24)/Math.PI*6); }
+function tvGetNewMoon(k,tz){ return Math.floor(tvNewMoon(k)+0.5+tz/24); }
+function tvMonth11(yy,tz){
+  var off=tvJd(31,12,yy)-2415021, k=Math.floor(off/29.530588853);
+  var nm=tvGetNewMoon(k,tz);
+  if(tvGetSunLong(nm,tz)>=9) nm=tvGetNewMoon(k-1,tz);
+  return nm;
+}
+function tvLeapOffset(a11,tz){
+  var k=Math.floor((a11-2415021.076998695)/29.530588853+0.5), last=0, i=1;
+  var arc=tvGetSunLong(tvGetNewMoon(k+i,tz),tz);
+  do{ last=arc; i++; arc=tvGetSunLong(tvGetNewMoon(k+i,tz),tz); }while(arc!=last && i<14);
+  return i-1;
+}
+function tvSolar2Lunar(dd,mm,yy,tz){
+  var dn=tvJd(dd,mm,yy);
+  var k=Math.floor((dn-2415021.076998695)/29.530588853);
+  var ms=tvGetNewMoon(k+1,tz);
+  if(ms>dn) ms=tvGetNewMoon(k,tz);
+  var a11=tvMonth11(yy,tz), b11=a11, ly;
+  if(a11>=ms){ ly=yy; a11=tvMonth11(yy-1,tz); } else { ly=yy+1; b11=tvMonth11(yy+1,tz); }
+  var ld=dn-ms+1, diff=Math.floor((ms-a11)/29), leap=0, lm=diff+11;
+  if(b11-a11>365){
+    var lo=tvLeapOffset(a11,tz);
+    if(diff>=lo){ lm=diff+10; if(diff==lo) leap=1; }
+  }
+  if(lm>12) lm=lm-12;
+  if(lm>=11 && diff<4) ly-=1;
+  return {ngay:ld, thang:lm, nam:ly, nhuan:leap};
+}
+
+/* nạp âm 30 cặp (ngũ hành) từ Giáp Tý */
+var TV_NAPAM = ['Kim','Hỏa','Mộc','Thổ','Kim','Hỏa','Thủy','Thổ','Kim','Mộc','Thủy','Thổ','Hỏa','Mộc','Thủy','Kim','Hỏa','Thổ','Mộc','Kim','Hỏa','Thủy','Thổ','Kim','Mộc','Thủy','Thổ','Hỏa','Mộc','Thủy'];
+var TV_NAPAM_TEN = ['Hải Trung Kim','Lư Trung Hỏa','Đại Lâm Mộc','Lộ Bàng Thổ','Kiếm Phong Kim','Sơn Đầu Hỏa','Giản Hạ Thủy','Thành Đầu Thổ','Bạch Lạp Kim','Dương Liễu Mộc','Tuyền Trung Thủy','Ốc Thượng Thổ','Tích Lịch Hỏa','Tùng Bách Mộc','Trường Lưu Thủy','Sa Trung Kim','Sơn Hạ Hỏa','Bình Địa Mộc','Bích Thượng Thổ','Kim Bạch Kim','Phú Đăng Hỏa','Thiên Hà Thủy','Đại Trạch Thổ','Thoa Xuyến Kim','Tang Đố Mộc','Đại Khê Thủy','Sa Trung Thổ','Thiên Thượng Hỏa','Thạch Lựu Mộc','Đại Hải Thủy'];
+var TV_CUC_SO = {'Thủy':2,'Mộc':3,'Kim':4,'Thổ':5,'Hỏa':6};
+var TV_CUC_TEN = {2:'Thủy Nhị Cục',3:'Mộc Tam Cục',4:'Kim Tứ Cục',5:'Thổ Ngũ Cục',6:'Hỏa Lục Cục'};
+
+function tvCanChi60(can,chi){ for(var n=0;n<60;n++){ if(n%10===can && n%12===chi) return n; } return 0; }
+
+/* an sao: trả về đối tượng lá số */
+function anSaoLaSo(D,M,Y,gioIdx,gioiTinh,ten){
+  var al = tvSolar2Lunar(D,M,Y,7);
+  var namCan = ((al.nam+6)%10+10)%10;
+  var namChi = ((al.nam+8)%12+12)%12;
+  var thang = al.thang, ngay = al.ngay, gio = gioIdx;
+
+  /* an Mệnh - Thân (khởi Dần là tháng 1, thuận đến tháng sinh; Mệnh nghịch giờ, Thân thuận giờ) */
+  var monthPos = (2 + (thang-1)) % 12;
+  var menh = ((monthPos - gio) % 12 + 12) % 12;
+  var than = (monthPos + gio) % 12;
+
+  /* Can của cung Dần theo Ngũ Dần */
+  var canDan = [2,4,6,8,0,2,4,6,8,0][namCan]; /* Giáp/Kỷ->Bính... */
+  var menhCan = (canDan + ((menh - 2 + 12) % 12)) % 10;
+  /* Cục theo nạp âm của (menhCan, menh) */
+  var idx60 = tvCanChi60(menhCan, menh);
+  var hanh = TV_NAPAM[Math.floor(idx60/2)];
+  var napAmTen = TV_NAPAM_TEN[Math.floor(idx60/2)];
+  var cuc = TV_CUC_SO[hanh];
+
+  /* an Tử Vi */
+  var Q = Math.ceil(ngay/cuc);
+  var muon = Q*cuc - ngay;
+  var X = (2 + Q - 1) % 12;
+  var tuvi = (muon % 2 === 0) ? (X + muon) % 12 : ((X - muon) % 12 + 12) % 12;
+
+  var sao = {}; /* chi -> [ {ten,loai} ] */
+  function dat(chi, tenSao, loai){ if(!sao[chi]) sao[chi]=[]; sao[chi].push({ten:tenSao, loai:loai||'phu'}); }
+  var N=function(x){ return ((x%12)+12)%12; };
+
+  /* Tử Vi tinh hệ (nghịch) */
+  dat(tuvi,'Tử Vi','chinh');
+  dat(N(tuvi-1),'Thiên Cơ','chinh');
+  dat(N(tuvi-3),'Thái Dương','chinh');
+  dat(N(tuvi-4),'Vũ Khúc','chinh');
+  dat(N(tuvi-5),'Thiên Đồng','chinh');
+  dat(N(tuvi-8),'Liêm Trinh','chinh');
+  /* Thiên Phủ tinh hệ (thuận) */
+  var tphu = N(4 - tuvi);
+  dat(tphu,'Thiên Phủ','chinh');
+  dat(N(tphu+1),'Thái Âm','chinh');
+  dat(N(tphu+2),'Tham Lang','chinh');
+  dat(N(tphu+3),'Cự Môn','chinh');
+  dat(N(tphu+4),'Thiên Tướng','chinh');
+  dat(N(tphu+5),'Thiên Lương','chinh');
+  dat(N(tphu+6),'Thất Sát','chinh');
+  dat(N(tphu+10),'Phá Quân','chinh');
+
+  /* phụ tinh quan trọng */
+  var locTon = [2,3,5,6,5,6,8,9,11,0][namCan];
+  dat(locTon,'Lộc Tồn','phu');
+  dat(N(locTon+1),'Kình Dương','phu');
+  dat(N(locTon-1),'Đà La','phu');
+  dat(N(10-gio),'Văn Xương','phu');
+  dat(N(4+gio),'Văn Khúc','phu');
+  dat(N(4+thang-1),'Tả Phù','phu');
+  dat(N(10-(thang-1)),'Hữu Bật','phu');
+  var khoiViet = [[1,7],[0,8],[11,9],[11,9],[1,7],[0,8],[1,7],[6,2],[3,5],[3,5]][namCan];
+  dat(khoiViet[0],'Thiên Khôi','phu');
+  dat(khoiViet[1],'Thiên Việt','phu');
+
+  /* Tứ Hóa theo Can năm */
+  var HOA = [
+    {loc:'Liêm Trinh',quyen:'Phá Quân',khoa:'Vũ Khúc',ky:'Thái Dương'},
+    {loc:'Thiên Cơ',quyen:'Thiên Lương',khoa:'Tử Vi',ky:'Thái Âm'},
+    {loc:'Thiên Đồng',quyen:'Thiên Cơ',khoa:'Văn Xương',ky:'Liêm Trinh'},
+    {loc:'Thái Âm',quyen:'Thiên Đồng',khoa:'Thiên Cơ',ky:'Cự Môn'},
+    {loc:'Tham Lang',quyen:'Thái Âm',khoa:'Hữu Bật',ky:'Thiên Cơ'},
+    {loc:'Vũ Khúc',quyen:'Tham Lang',khoa:'Thiên Lương',ky:'Văn Khúc'},
+    {loc:'Thái Dương',quyen:'Vũ Khúc',khoa:'Thái Âm',ky:'Thiên Đồng'},
+    {loc:'Cự Môn',quyen:'Thái Dương',khoa:'Văn Khúc',ky:'Văn Xương'},
+    {loc:'Thiên Lương',quyen:'Tử Vi',khoa:'Tả Phù',ky:'Vũ Khúc'},
+    {loc:'Phá Quân',quyen:'Cự Môn',khoa:'Thái Âm',ky:'Tham Lang'}
+  ][namCan];
+  var hoaMap = {}; hoaMap[HOA.loc]='Lộc'; hoaMap[HOA.quyen]='Quyền'; hoaMap[HOA.khoa]='Khoa'; hoaMap[HOA.ky]='Kỵ';
+  Object.keys(sao).forEach(function(chi){
+    sao[chi].forEach(function(s){ if(hoaMap[s.ten]) s.hoa = hoaMap[s.ten]; });
+  });
+
+  /* 12 cung tên đặt nghịch từ Mệnh */
+  var CUNG = ['Mệnh','Phụ Mẫu','Phúc Đức','Điền Trạch','Quan Lộc','Nô Bộc','Thiên Di','Tật Ách','Tài Bạch','Tử Tức','Phu Thê','Huynh Đệ'];
+  var cungTen = {};
+  for(var i=0;i<12;i++){ cungTen[N(menh - i)] = CUNG[i]; }
+
+  return {
+    ten: ten||'', gioiTinh: gioiTinh,
+    duong:{ngay:D,thang:M,nam:Y}, gioIdx:gio,
+    am: al,
+    namCan:namCan, namChi:namChi,
+    menh:menh, than:than, menhCan:menhCan,
+    hanh:hanh, napAm:napAmTen, cuc:cuc, cucTen:TV_CUC_TEN[cuc],
+    tuvi:tuvi, sao:sao, cungTen:cungTen
+  };
+}
+
+/* vẽ lá số ra bàn 4x4 */
+function veLaSo(ls){
+  var chiPos = {5:{r:1,c:1},6:{r:1,c:2},7:{r:1,c:3},8:{r:1,c:4},4:{r:2,c:1},9:{r:2,c:4},3:{r:3,c:1},10:{r:3,c:4},2:{r:4,c:1},1:{r:4,c:2},0:{r:4,c:3},11:{r:4,c:4}};
+  var html = '';
+  /* tâm */
+  html += '<div class="tv-cell tv-center" style="grid-column:2/4;grid-row:2/4">' +
+    '<div class="tvc-name">'+ (ls.ten? escapeHtml(ls.ten) : 'LÁ SỐ TỬ VI') +'</div>' +
+    '<div class="tvc-row">'+(ls.gioiTinh==='nam'?'Nam mệnh':'Nữ mệnh')+'</div>' +
+    '<div class="tvc-row">DL: '+ls.duong.ngay+'/'+ls.duong.thang+'/'+ls.duong.nam+' · Giờ '+TV_CHI[ls.gioIdx]+'</div>' +
+    '<div class="tvc-row">ÂL: '+ls.am.ngay+'/'+ls.am.thang+'/'+ls.am.nam+(ls.am.nhuan?' (nhuận)':'')+'</div>' +
+    '<div class="tvc-row">Tuổi: <b>'+TV_CAN[ls.namCan]+' '+TV_CHI[ls.namChi]+'</b></div>' +
+    '<div class="tvc-row">Bản mệnh: <b>'+ls.napAm+'</b></div>' +
+    '<div class="tvc-row">Cục: <b>'+ls.cucTen+'</b></div>' +
+    '</div>';
+  /* 12 cung */
+  for(var chi=0; chi<12; chi++){
+    var p = chiPos[chi];
+    var stars = (ls.sao[chi]||[]).slice().sort(function(a,b){ return (a.loai==='chinh'?0:1)-(b.loai==='chinh'?0:1); });
+    var starHtml = stars.map(function(s){
+      var cls = s.loai==='chinh' ? 'st-chinh' : 'st-phu';
+      var t = s.ten;
+      if(s.hoa) t += ' <span class="st-hoa">('+s.hoa+')</span>';
+      return '<span class="'+cls+'">'+t+'</span>';
+    }).join('');
+    var cls = 'tv-cell';
+    if(chi===ls.menh) cls += ' tv-menh';
+    if(chi===ls.than) cls += ' tv-than';
+    html += '<div class="'+cls+'" style="grid-row:'+p.r+';grid-column:'+p.c+'">' +
+      '<div class="tvc-stars">'+starHtml+'</div>' +
+      '<div class="tvc-foot"><span class="tvc-cung">'+(ls.cungTen[chi]||'')+'</span><span class="tvc-chi">'+TV_CHI[chi]+'</span></div>' +
+      '</div>';
+  }
+  document.getElementById('tvChart').innerHTML = html;
+
+  document.getElementById('tvInfo').innerHTML =
+    '<b>'+(ls.ten?escapeHtml(ls.ten)+' · ':'')+'</b>'+(ls.gioiTinh==='nam'?'Nam':'Nữ')+' · '+
+    'Sinh ngày '+ls.duong.ngay+'/'+ls.duong.thang+'/'+ls.duong.nam+' (DL), giờ '+TV_CHI[ls.gioIdx]+'. ' +
+    'Âm lịch: '+ls.am.ngay+'/'+ls.am.thang+'/'+ls.am.nam+'. ' +
+    'Tuổi <b>'+TV_CAN[ls.namCan]+' '+TV_CHI[ls.namChi]+'</b>, bản mệnh <b>'+ls.napAm+'</b>, <b>'+ls.cucTen+'</b>.';
+}
+
+/* diễn giải ngắn 14 chính tinh */
+var TV_LUAN = {
+  'Tử Vi':'đế tinh, chủ về quyền uy, phong thái đường bệ, có khả năng lãnh đạo và được người kính trọng.',
+  'Thiên Cơ':'trí tinh, thông minh mưu lược, giỏi tính toán, tâm tư nhạy bén, hợp nghề tham mưu.',
+  'Thái Dương':'quý tinh, quang minh chính đại, nhiệt thành, thích giúp người, chủ về danh tiếng.',
+  'Vũ Khúc':'tài tinh, cương nghị quyết đoán, giỏi về tài chính, hành động thực tế.',
+  'Thiên Đồng':'phúc tinh, hiền hòa lạc quan, hưởng phúc, tính tình ôn nhu dễ gần.',
+  'Liêm Trinh':'囚 tinh, cá tính mạnh, nguyên tắc, khi tốt thì liêm khiết, chủ về chuyển biến.',
+  'Thiên Phủ':'khố tinh, ổn trọng bao dung, biết tích lũy, quản lý tốt, cuộc sống sung túc.',
+  'Thái Âm':'phú tinh, dịu dàng tinh tế, giàu tình cảm, chủ về tài sản và điền trạch.',
+  'Tham Lang':'đào hoa tinh, đa tài đa nghệ, giao thiệp rộng, ham học hỏi, nhiều ham muốn.',
+  'Cự Môn':'ám tinh, khẩu tài giỏi, giỏi ăn nói và tranh biện, hợp nghề dùng lời.',
+  'Thiên Tướng':'ấn tinh, trung hậu công bằng, thích giúp đỡ, có phong độ, hợp làm phụ tá.',
+  'Thiên Lương':'ấm tinh, cao thượng che chở, giỏi giải nạn, có lòng nhân, hợp y - giáo.',
+  'Thất Sát':'tướng tinh, quả cảm độc lập, dám nghĩ dám làm, thích khai phá, uy dũng.',
+  'Phá Quân':'hao tinh, cá tính mạnh mẽ, thích thay đổi phá cách, tiên phong đổi mới.'
+};
+
+function luanGiaiFree(ls){
+  var menhStars = (ls.sao[ls.menh]||[]).filter(function(s){return s.loai==='chinh';});
+  var body = '<h4>Luận giải sơ bộ cung Mệnh</h4>';
+  if(!menhStars.length){
+    body += '<p>Cung Mệnh vô chính diệu (không có chính tinh) - cần mượn sao ở cung xung chiếu để luận. Người mệnh vô chính diệu thường linh hoạt, thích ứng tốt, cuộc đời nhiều biến chuyển thú vị.</p>';
+  } else {
+    body += '<p>Cung Mệnh của bạn có chính tinh: <b>' + menhStars.map(function(s){return s.ten;}).join(', ') + '</b>.</p>';
+    menhStars.forEach(function(s){
+      if(TV_LUAN[s.ten]) body += '<p><b>'+s.ten+'</b>: '+TV_LUAN[s.ten]+'</p>';
+    });
+  }
+  body += '<p style="color:var(--cream-dim);font-size:.86rem">Bản mệnh <b>'+ls.napAm+'</b>, <b>'+ls.cucTen+'</b>. Đây mới là phần luận sơ bộ. Phần luận giải chi tiết đầy đủ 12 cung (công danh, tài lộc, hôn nhân, gia đạo, sức khỏe, đại vận...) có trong mục luận giải chi tiết bên dưới.</p>';
+  return body;
+}
+
+/* luận giải ĐẦY ĐỦ (sau khi mở khoá) - tự sinh theo 12 cung */
+function luanGiaiFull(ls){
+  var CUNG_MOTA = {
+    'Mệnh':'bản thân, tính cách, vận mệnh tổng quát',
+    'Phụ Mẫu':'cha mẹ, bề trên, học vấn',
+    'Phúc Đức':'phúc phần, hưởng thụ, tinh thần',
+    'Điền Trạch':'nhà cửa, đất đai, tài sản cố định',
+    'Quan Lộc':'sự nghiệp, công danh, chức vị',
+    'Nô Bộc':'bạn bè, cấp dưới, quan hệ xã hội',
+    'Thiên Di':'ra ngoài, đi xa, môi trường bên ngoài',
+    'Tật Ách':'sức khỏe, bệnh tật, tai ách',
+    'Tài Bạch':'tiền bạc, tài chính, thu nhập',
+    'Tử Tức':'con cái, sinh nở',
+    'Phu Thê':'vợ chồng, hôn nhân, tình duyên',
+    'Huynh Đệ':'anh chị em, cộng sự'
+  };
+  var order = ['Mệnh','Phu Thê','Tài Bạch','Quan Lộc','Điền Trạch','Phúc Đức','Thiên Di','Tật Ách','Phụ Mẫu','Tử Tức','Nô Bộc','Huynh Đệ'];
+  var chiCuaCung = {};
+  Object.keys(ls.cungTen).forEach(function(chi){ chiCuaCung[ls.cungTen[chi]] = parseInt(chi,10); });
+  var html = '<h4>Luận giải chi tiết 12 cung</h4>';
+  order.forEach(function(ten){
+    var chi = chiCuaCung[ten];
+    var stars = (ls.sao[chi]||[]);
+    var chinh = stars.filter(function(s){return s.loai==='chinh';});
+    html += '<p><b style="color:var(--gold-bright)">Cung '+ten+'</b> (tại '+TV_CHI[chi]+' - '+CUNG_MOTA[ten]+'): ';
+    if(chinh.length){
+      html += 'có ' + chinh.map(function(s){return s.ten + (s.hoa?' Hóa '+s.hoa:'');}).join(', ') + '. ';
+      chinh.forEach(function(s){ if(TV_LUAN[s.ten]) html += TV_LUAN[s.ten].charAt(0).toUpperCase()+TV_LUAN[s.ten].slice(1)+' '; });
+    } else {
+      html += 'vô chính diệu, tính chất linh hoạt, chịu ảnh hưởng của cung xung chiếu. ';
+    }
+    var phu = stars.filter(function(s){return s.loai==='phu';});
+    if(phu.length) html += '<span style="color:var(--cream-dim)">Phụ tinh: '+phu.map(function(s){return s.ten+(s.hoa?' Hóa '+s.hoa:'');}).join(', ')+'.</span>';
+    html += '</p>';
+  });
+  html += '<p style="color:var(--cream-dim);font-size:.85rem;margin-top:14px">Lưu ý: Luận giải tự động mang tính tham khảo, cung cấp cái nhìn tổng quan dựa trên vị trí các sao. Để có luận đoán sâu sắc theo cách cục, tam hợp, đại vận và lưu niên, nên tham vấn thêm chuyên gia.</p>';
+  return html;
+}
+
+/* xuất lá số ra PDF (qua cửa sổ in -> Lưu thành PDF) */
+function xuatPdfLaSo(){
+  var ls = window.__laso;
+  if(!ls){ toast('Chưa có lá số để xuất.'); return; }
+  var chiPos = {5:{r:1,c:1},6:{r:1,c:2},7:{r:1,c:3},8:{r:1,c:4},4:{r:2,c:1},9:{r:2,c:4},3:{r:3,c:1},10:{r:3,c:4},2:{r:4,c:1},1:{r:4,c:2},0:{r:4,c:3},11:{r:4,c:4}};
+  var cells='';
+  cells += '<div class="c center" style="grid-column:2/4;grid-row:2/4">' +
+    '<div class="nm">'+(ls.ten?escapeHtml(ls.ten):'LÁ SỐ TỬ VI')+'</div>' +
+    '<div>'+(ls.gioiTinh==='nam'?'Nam mệnh':'Nữ mệnh')+'</div>' +
+    '<div>DL: '+ls.duong.ngay+'/'+ls.duong.thang+'/'+ls.duong.nam+' - Giờ '+TV_CHI[ls.gioIdx]+'</div>' +
+    '<div>ÂL: '+ls.am.ngay+'/'+ls.am.thang+'/'+ls.am.nam+'</div>' +
+    '<div>Tuổi: '+TV_CAN[ls.namCan]+' '+TV_CHI[ls.namChi]+'</div>' +
+    '<div>Bản mệnh: '+ls.napAm+'</div><div>Cục: '+ls.cucTen+'</div></div>';
+  for(var chi=0;chi<12;chi++){
+    var p=chiPos[chi];
+    var stars=(ls.sao[chi]||[]).slice().sort(function(a,b){return (a.loai==='chinh'?0:1)-(b.loai==='chinh'?0:1);});
+    var sh=stars.map(function(s){ var t=s.ten+(s.hoa?' ('+s.hoa+')':''); return '<span class="'+(s.loai==='chinh'?'chinh':'phu')+'">'+t+'</span>'; }).join(' ');
+    cells += '<div class="c'+(chi===ls.menh?' menh':'')+'" style="grid-row:'+p.r+';grid-column:'+p.c+'">' +
+      '<div class="stars">'+sh+'</div>' +
+      '<div class="foot"><b>'+(ls.cungTen[chi]||'')+'</b> · '+TV_CHI[chi]+(chi===ls.than?' · Thân':'')+'</div></div>';
+  }
+  var w = window.open('', '_blank');
+  if(!w){ toast('Trình duyệt chặn cửa sổ in. Hãy cho phép popup rồi thử lại.'); return; }
+  w.document.write(
+    '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Lá số Tử Vi - '+(ls.ten||'')+'</title>' +
+    '<style>' +
+    '*{box-sizing:border-box;font-family:"Segoe UI",Arial,sans-serif}' +
+    'body{margin:0;padding:18px;background:#fff;color:#111}' +
+    'h1{text-align:center;font-size:18px;margin:0 0 4px;color:#7a5c00}' +
+    '.meta{text-align:center;font-size:12px;color:#555;margin-bottom:12px}' +
+    '.grid{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,150px);gap:3px;border:2px solid #b8912a;padding:3px}' +
+    '.c{border:1px solid #d8c58a;border-radius:4px;padding:5px 6px;font-size:11px;display:flex;flex-direction:column;min-height:0}' +
+    '.c.center{align-items:center;justify-content:center;text-align:center;gap:3px;background:#faf6ea}' +
+    '.c.center .nm{font-size:14px;font-weight:800;color:#7a5c00}' +
+    '.c.menh{background:#fdf3d6}' +
+    '.stars{flex:1;line-height:1.5}' +
+    '.stars .chinh{color:#8a1f1f;font-weight:700;margin-right:5px;white-space:nowrap}' +
+    '.stars .phu{color:#333;margin-right:5px;white-space:nowrap}' +
+    '.foot{margin-top:auto;font-size:10px;color:#7a5c00;border-top:1px solid #eee;padding-top:3px}' +
+    '.sign{text-align:right;font-size:11px;color:#999;font-style:italic;margin-top:10px}' +
+    '@media print{body{padding:0}}' +
+    '</style></head><body>' +
+    '<h1>LÁ SỐ TỬ VI ĐẨU SỐ</h1>' +
+    '<div class="meta">'+(ls.ten?escapeHtml(ls.ten)+' - ':'')+(ls.gioiTinh==='nam'?'Nam':'Nữ')+' - Sinh '+ls.duong.ngay+'/'+ls.duong.thang+'/'+ls.duong.nam+' (DL) giờ '+TV_CHI[ls.gioIdx]+'</div>' +
+    '<div class="grid">'+cells+'</div>' +
+    '<div class="sign">Lập bởi THƯ VIỆN SÁCH CÁ NHÂN - KK-2026 - Tác giả : Nguyễn Duy Điển</div>' +
+    '</body></html>'
+  );
+  w.document.close();
+  setTimeout(function(){ try{ w.focus(); w.print(); }catch(_){} }, 400);
+}
+
+/* ======= PAYWALL LUẬN GIẢI 99.000đ ======= */
+var TV_GIA_LUAN = 99000;
+function moPaywallLuan(){
+  var ls = window.__laso;
+  if(!ls){ toast('Chưa có lá số.'); return; }
+  var box = document.getElementById('tvLuanFree');
+  /* đã mở khoá luận giải tử vi rồi -> hiện luôn */
+  if(typeof duocDocTiep==='function' && duocDocTiep('tuvi-luan')){
+    box.innerHTML = luanGiaiFull(ls);
+    box.scrollIntoView({behavior:'smooth'});
+    return;
+  }
+  var ma = 'TV' + (ls.namCan) + (ls.namChi) + Math.random().toString(36).slice(2,6).toUpperCase();
+  var qr = '';
+  if(typeof payCfg!=='undefined' && payCfg.bank && payCfg.acc){
+    var url='https://img.vietqr.io/image/'+encodeURIComponent(payCfg.bank)+'-'+encodeURIComponent(payCfg.acc)+
+      '-compact2.png?amount='+TV_GIA_LUAN+'&addInfo='+encodeURIComponent(ma)+'&accountName='+encodeURIComponent(payCfg.name||'');
+    qr = '<img src="'+url+'" alt="QR" style="width:180px;height:180px;border-radius:10px;background:#fff;padding:6px">';
+  }
+  box.innerHTML =
+    '<div class="tv-luan-locked">' +
+    '<h4 style="margin-top:0">Luận giải chi tiết 12 cung</h4>' +
+    '<p style="color:var(--cream-dim);font-size:.9rem">Phần luận giải chi tiết đầy đủ có phí <b style="color:var(--gold-bright)">'+TV_GIA_LUAN.toLocaleString('vi-VN')+' đ</b>. Quét mã QR để chuyển khoản, nhập Email/SĐT để nhận mã mở luận giải.</p>' +
+    '<div style="margin:12px 0">'+qr+'</div>' +
+    (typeof payCfg!=='undefined' && payCfg.acc ? '<div style="font-size:.85rem;line-height:1.7">Ngân hàng: <b>'+escapeHtml(payCfg.bank||'')+'</b> · STK: <b>'+escapeHtml(payCfg.acc||'')+'</b><br>Số tiền: <b>'+TV_GIA_LUAN.toLocaleString('vi-VN')+' đ</b> · Nội dung: <b>'+ma+'</b></div>' : '') +
+    '<div style="max-width:340px;margin:14px auto 0;text-align:left">' +
+    '<label style="font-size:.82rem;color:var(--gold-bright);display:block;margin-bottom:5px">Email hoặc SĐT của bạn <span style="color:#E86A5C">* bắt buộc</span></label>' +
+    '<input type="text" id="tvContact" placeholder="email@gmail.com hoặc 0912345678" maxlength="60" style="width:100%;padding:11px 13px;border-radius:10px;background:var(--navy-800);border:1px solid rgba(201,162,39,.3);color:var(--cream);margin-bottom:8px">' +
+    '<button class="btn btn-gold" id="tvPaid" style="width:100%">Tôi đã chuyển khoản</button>' +
+    '<div style="margin-top:14px;border-top:1px solid rgba(201,162,39,.2);padding-top:12px">' +
+    '<label style="font-size:.82rem;color:var(--cream-dim);display:block;margin-bottom:5px">Đã có mã mở luận giải?</label>' +
+    '<input type="text" id="tvCode" placeholder="Nhập mã mở khoá" maxlength="20" style="width:100%;padding:11px 13px;border-radius:10px;background:var(--navy-800);border:1px solid rgba(201,162,39,.3);color:var(--cream);margin-bottom:8px;text-transform:uppercase">' +
+    '<button class="btn btn-ghost" id="tvUnlock" style="width:100%">Mở luận giải</button>' +
+    '</div>' +
+    '<div id="tvPayNote" style="font-size:.84rem;margin-top:10px;text-align:center"></div>' +
+    '</div></div>';
+
+  document.getElementById('tvPaid').addEventListener('click', function(){ guiYeuCauLuanTuVi(ma); });
+  document.getElementById('tvUnlock').addEventListener('click', function(){ moKhoaLuanTuVi(); });
+  box.scrollIntoView({behavior:'smooth'});
+}
+
+async function guiYeuCauLuanTuVi(ma){
+  var note = document.getElementById('tvPayNote');
+  var lienHe = (document.getElementById('tvContact').value||'').trim();
+  var hopLe = /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(lienHe) || (lienHe.replace(/\D/g,'').length>=9);
+  if(!hopLe){ note.style.color='#E86A5C'; note.textContent='Vui lòng nhập đúng Email hoặc số điện thoại để nhận mã.'; return; }
+  if(typeof fbReady==='undefined' || !fbReady){ note.style.color='#E86A5C'; note.textContent='Hệ thống chưa sẵn sàng, hãy tải lại trang.'; return; }
+  try{
+    var ip = (typeof layIP==='function') ? await layIP() : '';
+    await fbDb.collection('payments').add({
+      loai:'tuvi', contact: lienHe, ip: ip||'không rõ',
+      bookId:'tuvi-luan', bookTitle:'Luận giải Tử Vi'+(window.__laso&&window.__laso.ten?' - '+window.__laso.ten:''),
+      code: ma, amount: TV_GIA_LUAN, status:'pending',
+      thoiGian: new Date().toLocaleString('vi-VN'),
+      ts: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    note.style.color='#5FC98A';
+    note.innerHTML='Đã gửi yêu cầu! Tác giả sẽ gửi <b>mã mở luận giải</b> đến '+escapeHtml(lienHe)+' trong thời gian sớm nhất. Khi có mã, nhập vào ô "Đã có mã" phía trên.';
+  }catch(e){ note.style.color='#E86A5C'; note.textContent='Lỗi gửi yêu cầu: '+(e&&e.code?e.code:'không kết nối được'); }
+}
+
+async function moKhoaLuanTuVi(){
+  var note = document.getElementById('tvPayNote');
+  var ma = (document.getElementById('tvCode').value||'').trim().toUpperCase();
+  if(!ma){ note.style.color='#E86A5C'; note.textContent='Hãy nhập mã mở luận giải.'; return; }
+  if(typeof fbReady==='undefined' || !fbReady){ note.style.color='#E86A5C'; note.textContent='Hệ thống chưa sẵn sàng.'; return; }
+  try{
+    var ref = fbDb.collection('codes').doc(ma);
+    var d = await ref.get();
+    if(!d.exists){ note.style.color='#E86A5C'; note.textContent='Mã không đúng hoặc không tồn tại.'; return; }
+    var cd = d.data();
+    if(cd.used){ note.style.color='#E86A5C'; note.textContent='Mã này đã được dùng rồi.'; return; }
+    await ref.set({used:true, usedBy: (typeof fbUser!=='undefined'&&fbUser)?(fbUser.email||fbUser.uid):'khach', usedAt: firebase.firestore.FieldValue.serverTimestamp()}, {merge:true});
+    if(typeof myAccess!=='undefined'){ myAccess.books['tuvi-luan']=true; }
+    if(typeof fbUser!=='undefined' && fbUser){
+      await fbDb.collection('access').doc(fbUser.uid).set({books:{'tuvi-luan':true}},{merge:true});
+    } else { try{ localStorage.setItem('kkUnlock_tuvi-luan','1'); }catch(e){} }
+    document.getElementById('tvLuanFree').innerHTML = luanGiaiFull(window.__laso);
+    toast('Đã mở khoá luận giải chi tiết!');
+  }catch(e){ note.style.color='#E86A5C'; note.textContent='Lỗi: '+(e&&e.code?e.code:'không kết nối được'); }
+}
+
+
+/* ==================================================================
+   MENU 3 CHỨC NĂNG: Về KK-BOOK · Dịch vụ (Tử Vi) · Games Quiz
+   ================================================================== */
+(function initMenuChucNang(){
+  function moModal(id){ const m=document.getElementById(id); if(m) m.classList.add('open'); }
+  function dongModal(id){ const m=document.getElementById(id); if(m) m.classList.remove('open'); }
+  function noi(id, fn){ const e=document.getElementById(id); if(e) e.addEventListener('click', fn); }
+
+  /* ---- điều hướng menu ---- */
+  noi('navAbout',    ()=>{ renderAbout(); moModal('aboutModal'); });
+  noi('navServices', ()=>{ showSvcHome(); moModal('servicesModal'); });
+  noi('navQuiz',     ()=>{ renderQuizHome(); moModal('quizModal'); });
+  noi('aboutClose',    ()=>dongModal('aboutModal'));
+  noi('servicesClose', ()=>dongModal('servicesModal'));
+  noi('quizClose',     ()=>dongModal('quizModal'));
+
+  /* =============== VỀ KK-BOOK =============== */
+  function renderAbout(){
+    const b = document.getElementById('aboutBody');
+    if(!b || b.dataset.done) return;
+    b.dataset.done = '1';
+    b.innerHTML =
+      '<p class="about-lead">Chào mừng bạn đến với <span class="about-hi">THƯ VIỆN SÁCH CÁ NHÂN - KK-2026</span>, không gian đọc sách trực tuyến do tác giả <span class="about-hi">Nguyễn Duy Điển</span> xây dựng và biên soạn.</p>' +
+      '<h4>KK-BOOK là gì?</h4>' +
+      '<p>KK-BOOK (kk-book.com) là thư viện sách điện tử cá nhân, nơi tập hợp những đầu sách chuyên khảo do chính tác giả Nguyễn Duy Điển sáng tác và biên soạn trong nhiều năm. Từ lịch sử, văn hoá, khoa học, công nghệ, quản trị cho tới nghệ thuật sống, mỗi cuốn sách là một công trình được đầu tư nghiêm túc về nội dung và hình thức.</p>' +
+      '<h4>Sứ mệnh</h4>' +
+      '<p>Chúng tôi tin rằng tri thức cần được lan toả một cách đẹp đẽ và dễ tiếp cận. KK-BOOK mang đến trải nghiệm đọc mượt mà trên mọi thiết bị - máy tính, máy tính bảng hay điện thoại - với chất lượng hình ảnh sắc nét, khả năng đọc thành tiếng và giao diện được chăm chút tới từng chi tiết.</p>' +
+      '<h4>Điều làm nên KK-BOOK</h4>' +
+      '<p><span class="about-hi">Nội dung nguyên bản:</span> Toàn bộ sách là tác phẩm gốc, sole-author, thuộc bản quyền của tác giả Nguyễn Duy Điển (KK-2026).<br>' +
+      '<span class="about-hi">Đọc thử miễn phí:</span> Mỗi cuốn đều cho đọc miễn phí những trang đầu để bạn cảm nhận trước khi quyết định.<br>' +
+      '<span class="about-hi">Trải nghiệm hiện đại:</span> Tìm kiếm thông minh, đọc thành tiếng, trợ lý giải đáp, cùng nhiều dịch vụ mở rộng như lập lá số Tử Vi và trò chơi kiến thức.</p>' +
+      '<h4>Lời cảm ơn</h4>' +
+      '<p>Cảm ơn bạn đã ghé thăm và đồng hành. Mỗi trang sách bạn mở ra là một sự trân trọng dành cho tri thức và cho tâm huyết của người viết. Chúc bạn có những giờ phút đọc sách thật ý nghĩa.</p>' +
+      '<p style="text-align:right;color:var(--gold);font-style:italic;margin-top:18px">Tác giả : Nguyễn Duy Điển (KK-2026)</p>';
+  }
+
+  /* =============== DỊCH VỤ: chuyển giữa danh sách & Tử Vi =============== */
+  function showSvcHome(){
+    document.getElementById('svcGrid').style.display = 'grid';
+    document.getElementById('tuviWrap').style.display = 'none';
+  }
+  function showTuvi(){
+    document.getElementById('svcGrid').style.display = 'none';
+    document.getElementById('tuviWrap').style.display = 'block';
+    napGioSelect();
+  }
+  noi('svcTuvi', showTuvi);
+  noi('tuviBack', showSvcHome);
+
+  /* dropdown 12 canh giờ */
+  function napGioSelect(){
+    const sel = document.getElementById('tvHour');
+    if(!sel || sel.dataset.done) return;
+    sel.dataset.done = '1';
+    const gio = [
+      ['Tý','23g-1g'],['Sửu','1g-3g'],['Dần','3g-5g'],['Mão','5g-7g'],
+      ['Thìn','7g-9g'],['Tỵ','9g-11g'],['Ngọ','11g-13g'],['Mùi','13g-15g'],
+      ['Thân','15g-17g'],['Dậu','17g-19g'],['Tuất','19g-21g'],['Hợi','21g-23g']
+    ];
+    sel.innerHTML = gio.map((g,i)=>'<option value="'+i+'">Giờ '+g[0]+' ('+g[1]+')</option>').join('');
+  }
+
+  noi('tvLap', lapLaSo);
+  noi('tvPdf', xuatPdfLaSo);
+  noi('tvLuan', ()=>moPaywallLuan());
+
+  /* ======= giữ lá số hiện tại để xuất PDF / luận giải ======= */
+  window.__laso = null;
+
+  function lapLaSo(){
+    const ten = (document.getElementById('tvName').value||'').trim();
+    const gt  = document.getElementById('tvGender').value;
+    const dstr= document.getElementById('tvDate').value;
+    const gio = parseInt(document.getElementById('tvHour').value, 10) || 0;
+    if(!dstr){ toast('Hãy chọn ngày sinh (dương lịch).'); return; }
+    const [Y,M,D] = dstr.split('-').map(n=>parseInt(n,10));
+    const ls = anSaoLaSo(D, M, Y, gio, gt, ten);
+    window.__laso = ls;
+    veLaSo(ls);
+    document.getElementById('tvResult').style.display = 'block';
+    document.getElementById('tvLuanFree').innerHTML = luanGiaiFree(ls);
+    document.getElementById('tvResult').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  /* =============== GAMES QUIZ =============== */
+  const QUIZZES = [
+    {
+      id:'lichsu', ico:'🏛️', name:'Lịch sử Việt Nam', desc:'10 câu về lịch sử dân tộc',
+      cauhoi:[
+        {q:'Ai là người lãnh đạo cuộc khởi nghĩa Lam Sơn?', o:['Lê Lợi','Quang Trung','Trần Hưng Đạo','Lý Thường Kiệt'], d:0},
+        {q:'Chiến thắng Bạch Đằng năm 938 gắn với tên tuổi ai?', o:['Ngô Quyền','Đinh Bộ Lĩnh','Lê Hoàn','Lý Công Uẩn'], d:0},
+        {q:'Nhà Lý dời đô về Thăng Long vào năm nào?', o:['1010','938','1288','1400'], d:0},
+        {q:'Ai được xưng tụng là "Bình Tây Đại Nguyên Soái"?', o:['Trương Định','Nguyễn Trung Trực','Phan Đình Phùng','Hoàng Hoa Thám'], d:0},
+        {q:'Triều đại nào tồn tại lâu nhất trong lịch sử Việt Nam?', o:['Nhà Lê (Hậu Lê)','Nhà Lý','Nhà Trần','Nhà Nguyễn'], d:0},
+        {q:'Chiến thắng Điện Biên Phủ diễn ra năm nào?', o:['1954','1945','1975','1968'], d:0},
+        {q:'Ai là tác giả "Bình Ngô Đại Cáo"?', o:['Nguyễn Trãi','Nguyễn Du','Chu Văn An','Lê Quý Đôn'], d:0},
+        {q:'Vị vua nào có công thống nhất đất nước, lập nhà Đinh?', o:['Đinh Bộ Lĩnh','Ngô Quyền','Lê Hoàn','Lý Thái Tổ'], d:0},
+        {q:'Ba lần đánh thắng quân Nguyên Mông là công của triều đại nào?', o:['Nhà Trần','Nhà Lý','Nhà Lê','Nhà Hồ'], d:0},
+        {q:'Kinh đô của nhà Nguyễn đặt ở đâu?', o:['Huế','Thăng Long','Hoa Lư','Gia Định'], d:0}
+      ]
+    },
+    {
+      id:'khoahoc', ico:'🔬', name:'Khoa học thường thức', desc:'8 câu kiến thức khoa học',
+      cauhoi:[
+        {q:'Hành tinh nào gần Mặt Trời nhất?', o:['Sao Thuỷ','Sao Kim','Trái Đất','Sao Hoả'], d:0},
+        {q:'Nước sôi ở nhiệt độ bao nhiêu (ở mực nước biển)?', o:['100°C','90°C','120°C','80°C'], d:0},
+        {q:'Khí nào chiếm tỉ lệ lớn nhất trong không khí?', o:['Ni-tơ','Ô-xy','CO2','Hydro'], d:0},
+        {q:'Tốc độ ánh sáng xấp xỉ bao nhiêu?', o:['300.000 km/s','30.000 km/s','1.000 km/s','3 triệu km/s'], d:0},
+        {q:'Cơ quan nào bơm máu đi khắp cơ thể?', o:['Tim','Gan','Phổi','Thận'], d:0},
+        {q:'Nguyên tố hoá học có ký hiệu O là gì?', o:['Ô-xy','Vàng','Sắt','Bạc'], d:0},
+        {q:'Loài vật nào lớn nhất từng tồn tại trên Trái Đất?', o:['Cá voi xanh','Voi','Khủng long bạo chúa','Hươu cao cổ'], d:0},
+        {q:'Ánh sáng Mặt Trời đến Trái Đất mất khoảng bao lâu?', o:['8 phút','1 giây','1 giờ','1 ngày'], d:0}
+      ]
+    },
+    {
+      id:'diali', ico:'🌏', name:'Địa lý thế giới', desc:'8 câu về địa lý',
+      cauhoi:[
+        {q:'Sông nào dài nhất thế giới?', o:['Sông Nin','Sông Amazon','Sông Trường Giang','Sông Mê Kông'], d:0},
+        {q:'Thủ đô của Nhật Bản là?', o:['Tokyo','Osaka','Kyoto','Seoul'], d:0},
+        {q:'Ngọn núi cao nhất thế giới?', o:['Everest','Phú Sĩ','Fansipan','K2'], d:0},
+        {q:'Châu lục nào lớn nhất?', o:['Châu Á','Châu Phi','Châu Mỹ','Châu Âu'], d:0},
+        {q:'Đại dương nào lớn nhất?', o:['Thái Bình Dương','Đại Tây Dương','Ấn Độ Dương','Bắc Băng Dương'], d:0},
+        {q:'Sa mạc lớn nhất thế giới?', o:['Sahara','Gobi','Kalahari','Atacama'], d:0},
+        {q:'Việt Nam giáp biển nào?', o:['Biển Đông','Biển Đỏ','Địa Trung Hải','Biển Đen'], d:0},
+        {q:'Quốc gia nào đông dân nhất thế giới hiện nay?', o:['Ấn Độ','Trung Quốc','Hoa Kỳ','Indonesia'], d:0}
+      ]
+    }
+  ];
+
+  let quizCur=null, quizIdx=0, quizScore=0;
+
+  function renderQuizHome(){
+    const home = document.getElementById('quizHome');
+    document.getElementById('quizPlay').style.display='none';
+    home.style.display='block';
+    home.innerHTML =
+      '<p class="quiz-intro">Chọn một bộ câu hỏi để bắt đầu. Đây là các Game Quiz mẫu - sau này bạn có thể nạp thêm nội dung từ file để mở rộng kho câu hỏi.</p>' +
+      '<div class="quiz-list">' +
+      QUIZZES.map(q =>
+        '<button class="quiz-card" data-qid="'+q.id+'">' +
+        '<div class="qc-ico">'+q.ico+'</div>' +
+        '<div class="qc-name">'+q.name+'</div>' +
+        '<div class="qc-meta">'+q.desc+' · '+q.cauhoi.length+' câu</div>' +
+        '</button>'
+      ).join('') + '</div>';
+    home.querySelectorAll('.quiz-card').forEach(c=>{
+      c.addEventListener('click', ()=>batDauQuiz(c.dataset.qid));
+    });
+  }
+  function batDauQuiz(qid){
+    quizCur = QUIZZES.find(q=>q.id===qid);
+    quizIdx=0; quizScore=0;
+    document.getElementById('quizHome').style.display='none';
+    document.getElementById('quizPlay').style.display='block';
+    veCauHoi();
+  }
+  function veCauHoi(){
+    const play = document.getElementById('quizPlay');
+    if(quizIdx >= quizCur.cauhoi.length){
+      const pct = Math.round(quizScore/quizCur.cauhoi.length*100);
+      play.innerHTML =
+        '<div class="quiz-done">' +
+        '<div>Bạn đã hoàn thành <b style="color:var(--gold-bright)">'+quizCur.name+'</b></div>' +
+        '<div class="quiz-score">'+quizScore+'/'+quizCur.cauhoi.length+'</div>' +
+        '<div style="color:var(--cream-dim)">Đúng '+pct+'%. '+(pct>=80?'Xuất sắc!':pct>=50?'Khá tốt!':'Cố gắng thêm nhé!')+'</div>' +
+        '<div style="margin-top:20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' +
+        '<button class="btn btn-gold" id="quizAgain">Chơi lại</button>' +
+        '<button class="btn btn-ghost" id="quizBack">Chọn bộ khác</button></div></div>';
+      document.getElementById('quizAgain').addEventListener('click', ()=>batDauQuiz(quizCur.id));
+      document.getElementById('quizBack').addEventListener('click', renderQuizHome);
+      return;
+    }
+    const c = quizCur.cauhoi[quizIdx];
+    play.innerHTML =
+      '<div class="quiz-prog">Câu '+(quizIdx+1)+' / '+quizCur.cauhoi.length+' · Điểm: '+quizScore+'</div>' +
+      '<div class="quiz-qtext">'+c.q+'</div>' +
+      '<div class="quiz-opts">' +
+      c.o.map((op,i)=>'<button class="quiz-opt" data-i="'+i+'">'+op+'</button>').join('') +
+      '</div><div class="quiz-next" id="quizNextRow"></div>';
+    play.querySelectorAll('.quiz-opt').forEach(btn=>{
+      btn.addEventListener('click', ()=>chonDapAn(parseInt(btn.dataset.i,10)));
+    });
+  }
+  function chonDapAn(i){
+    const c = quizCur.cauhoi[quizIdx];
+    const opts = document.querySelectorAll('.quiz-opt');
+    opts.forEach((b,idx)=>{
+      b.disabled = true;
+      if(idx === c.d) b.classList.add('correct');
+      if(idx === i && i !== c.d) b.classList.add('wrong');
+    });
+    if(i === c.d) quizScore++;
+    const row = document.getElementById('quizNextRow');
+    row.innerHTML = '<span class="quiz-fb">'+(i===c.d?'✅ Chính xác!':'❌ Đáp án đúng: '+c.o[c.d])+'</span>' +
+      '<button class="btn btn-gold" id="quizNext">'+(quizIdx+1>=quizCur.cauhoi.length?'Xem kết quả':'Câu tiếp')+'</button>';
+    document.getElementById('quizNext').addEventListener('click', ()=>{ quizIdx++; veCauHoi(); });
+  }
+
+  /* init sau khi DOM sẵn sàng (HTML modal nằm sau script) */
+  function initSauDom(){
+    /* các nút đã nối ở trên qua noi(); chỉ cần chắc chắn gọi lại nếu phần tử chưa có */
+    ['navAbout','navServices','navQuiz'].forEach(id=>{
+      const e=document.getElementById(id);
+      if(e && !e.dataset.bound){
+        e.dataset.bound='1';
+        if(id==='navAbout')    e.addEventListener('click', ()=>{ renderAbout(); moModal('aboutModal'); });
+        if(id==='navServices') e.addEventListener('click', ()=>{ showSvcHome(); moModal('servicesModal'); });
+        if(id==='navQuiz')     e.addEventListener('click', ()=>{ renderQuizHome(); moModal('quizModal'); });
+      }
+    });
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initSauDom);
+  else setTimeout(initSauDom, 0);
+})();
+
 </script>
+
+<!-- ============ VỀ KK-BOOK ============ -->
+<div class="modal-backdrop" id="aboutModal">
+  <div class="modal modal-page">
+    <div class="page-head">
+      <h3>Về KK-BOOK</h3>
+      <button class="admin-close" id="aboutClose" title="Đóng">✕</button>
+    </div>
+    <div class="page-body" id="aboutBody"></div>
+  </div>
+</div>
+
+<!-- ============ DỊCH VỤ KHÁC ============ -->
+<div class="modal-backdrop" id="servicesModal">
+  <div class="modal modal-page">
+    <div class="page-head">
+      <h3>Dịch vụ khác</h3>
+      <button class="admin-close" id="servicesClose" title="Đóng">✕</button>
+    </div>
+    <div class="page-body">
+      <div class="svc-grid" id="svcGrid">
+        <button class="svc-card" id="svcTuvi">
+          <div class="svc-ico">☯</div>
+          <div class="svc-name">Lập lá số Tử Vi Online</div>
+          <div class="svc-desc">An sao tự động, xuất lá số ra PDF. Luận giải chi tiết theo yêu cầu.</div>
+        </button>
+        <div class="svc-card svc-soon">
+          <div class="svc-ico">🔮</div>
+          <div class="svc-name">Xem ngày tốt (sắp có)</div>
+          <div class="svc-desc">Chọn ngày giờ hoàng đạo cho việc trọng đại.</div>
+        </div>
+      </div>
+
+      <!-- KHUNG LẬP LÁ SỐ TỬ VI -->
+      <div class="tuvi-wrap" id="tuviWrap" style="display:none">
+        <button class="tuvi-back" id="tuviBack">← Về danh sách dịch vụ</button>
+        <h2 class="tuvi-title">Lập lá số Tử Vi Đẩu Số</h2>
+        <p class="tuvi-sub">Nhập thông tin ngày sinh (dương lịch) để an sao lập lá số. Bạn có thể xuất lá số ra PDF miễn phí. Phần luận giải chi tiết cần thanh toán.</p>
+        <div class="tuvi-form">
+          <label>Họ và tên<input type="text" id="tvName" placeholder="VD: Nguyễn Văn A" maxlength="50"></label>
+          <label>Giới tính
+            <select id="tvGender"><option value="nam">Nam</option><option value="nu">Nữ</option></select>
+          </label>
+          <label>Ngày sinh (dương lịch)<input type="date" id="tvDate"></label>
+          <label>Giờ sinh
+            <select id="tvHour"></select>
+          </label>
+        </div>
+        <button class="btn btn-gold" id="tvLap" style="margin-top:6px">An sao - Lập lá số</button>
+
+        <div class="tuvi-result" id="tvResult" style="display:none">
+          <div class="tv-info" id="tvInfo"></div>
+          <div class="tv-chart" id="tvChart"></div>
+          <div class="tv-actions">
+            <button class="btn btn-ghost" id="tvPdf">Xuất lá số ra PDF</button>
+            <button class="btn btn-gold" id="tvLuan">Xem luận giải chi tiết</button>
+          </div>
+          <div class="tv-luan-free" id="tvLuanFree"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ GAMES QUIZ ============ -->
+<div class="modal-backdrop" id="quizModal">
+  <div class="modal modal-page">
+    <div class="page-head">
+      <h3>Games Quiz</h3>
+      <button class="admin-close" id="quizClose" title="Đóng">✕</button>
+    </div>
+    <div class="page-body">
+      <div class="quiz-home" id="quizHome"></div>
+      <div class="quiz-play" id="quizPlay" style="display:none"></div>
+    </div>
+  </div>
+</div>
 
 <!-- ============ CHAT BOT TRỢ LÝ ============ -->
 <button class="chatbot-fab" id="chatbotFab" title="Trợ lý KK-2026">
