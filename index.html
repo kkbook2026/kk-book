@@ -1403,6 +1403,13 @@ footer{
 .tuvi-title{font-family:var(--font-display);color:var(--gold-bright);font-size:1.35rem;margin:0 0 6px}
 .tuvi-sub{font-size:.9rem;color:var(--cream-dim);line-height:1.6;margin-bottom:18px}
 .tuvi-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:14px}
+.tv-lunar-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tv-lunar-row select,.tv-lunar-row input{padding:9px 11px;border-radius:9px;background:var(--navy-800,#0f1830);border:1px solid rgba(201,162,39,.3);color:var(--cream)}
+.tv-lunar-row #tvLYear{width:110px}
+.tv-leap{display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--cream-dim);cursor:pointer}
+.tv-leap input{width:auto}
+.quiz-admin-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 12px;border:1px solid rgba(201,162,39,.18);border-radius:9px;margin-bottom:7px;font-size:.9rem;background:rgba(201,162,39,.04)}
+.quiz-admin-item b{color:var(--cream)}
 .tuvi-form label{display:flex;flex-direction:column;gap:6px;font-size:.84rem;color:var(--cream-dim)}
 .tuvi-form input, .tuvi-form select{
   padding:11px 13px;border-radius:10px;font-size:.95rem;
@@ -2257,6 +2264,25 @@ footer{
       <h2 style="font-size:1.05rem" data-i18n="manageBooks">Quản lý sách</h2>
     </div>
     <div class="admin-list" id="adminList"></div>
+
+    <div class="section-head" style="margin-top:26px;margin-bottom:4px">
+      <h2 style="font-size:1.05rem">Quản lý Games Quiz</h2>
+    </div>
+    <p class="modal-sub" style="margin-bottom:10px">Thêm, bớt hoặc nhập bộ câu hỏi Quiz theo mẫu JSON. Sau khi lưu, các bộ quiz sẽ hiển thị trong menu "Games Quiz" cho mọi người chơi.</p>
+    <div class="field">
+      <label>Dán nội dung Quiz (JSON theo mẫu) hoặc chọn file .json</label>
+      <textarea id="quizImportText" rows="6" placeholder='[{"id":"toan","ico":"🔢","name":"Toán vui","desc":"Bộ câu hỏi mẫu","cauhoi":[{"q":"2 + 2 = ?","o":["3","4","5","6"],"d":1}]}]' style="width:100%;padding:11px 13px;border-radius:10px;background:var(--navy-800,#0f1830);border:1px solid rgba(201,162,39,.3);color:var(--cream);font-family:monospace;font-size:.82rem;resize:vertical"></textarea>
+    </div>
+    <div class="modal-actions" style="justify-content:flex-start;flex-wrap:wrap;gap:8px">
+      <button class="btn btn-gold btn-sm" id="quizImportBtn">Nhập / Thêm vào kho</button>
+      <button class="btn btn-ghost btn-sm" id="quizImportReplace">Thay thế toàn bộ</button>
+      <button class="btn btn-ghost btn-sm" id="quizFilePick">Chọn file .json</button>
+      <input type="file" id="quizFileInput" accept=".json,application/json" hidden>
+      <button class="btn btn-ghost btn-sm" id="quizTemplateBtn">Tải mẫu định dạng</button>
+      <button class="btn btn-ghost btn-sm" id="quizResetBtn">Khôi phục mẫu gốc</button>
+    </div>
+    <div id="quizAdminNote" style="font-size:.85rem;margin-top:8px"></div>
+    <div class="admin-list" id="quizAdminList" style="margin-top:12px"></div>
 
     </div><!-- /.admin-body -->
 
@@ -5471,6 +5497,30 @@ function tvSolar2Lunar(dd,mm,yy,tz){
   if(lm>=11 && diff<4) ly-=1;
   return {ngay:ld, thang:lm, nam:ly, nhuan:leap};
 }
+function tvJdToDate(jd){
+  var a,b,c,d,e,m,day,month,year;
+  if(jd>2299160){ a=jd+32044; b=Math.floor((4*a+3)/146097); c=a-Math.floor((b*146097)/4); }
+  else { b=0; c=jd+32082; }
+  d=Math.floor((4*c+3)/1461); e=c-Math.floor((1461*d)/4); m=Math.floor((5*e+2)/153);
+  day=e-Math.floor((153*m+2)/5)+1;
+  month=m+3-12*Math.floor(m/10);
+  year=b*100+d-4800+Math.floor(m/10);
+  return {ngay:day, thang:month, nam:year};
+}
+function tvLunar2Solar(lD,lM,lY,nhuan,tz){
+  var a11,b11;
+  if(lM<11){ a11=tvMonth11(lY-1,tz); b11=tvMonth11(lY,tz); }
+  else { a11=tvMonth11(lY,tz); b11=tvMonth11(lY+1,tz); }
+  var off=lM-11; if(off<0) off+=12;
+  if(b11-a11>365){
+    var leapOff=tvLeapOffset(a11,tz), leapMonth=leapOff-2; if(leapMonth<0) leapMonth+=12;
+    if(nhuan!=0 && lM!=leapMonth){ return {ngay:0,thang:0,nam:0}; }
+    else if(nhuan!=0 || off>=leapOff){ off+=1; }
+  }
+  var k=Math.floor(0.5+(a11-2415021.076998695)/29.530588853);
+  var monthStart=tvGetNewMoon(k+off,tz);
+  return tvJdToDate(monthStart+lD-1);
+}
 
 /* nạp âm 30 cặp (ngũ hành) từ Giáp Tý */
 var TV_NAPAM = ['Kim','Hỏa','Mộc','Thổ','Kim','Hỏa','Thủy','Thổ','Kim','Mộc','Thủy','Thổ','Hỏa','Mộc','Thủy','Kim','Hỏa','Thổ','Mộc','Kim','Hỏa','Thủy','Thổ','Kim','Mộc','Thủy','Thổ','Hỏa','Mộc','Thủy'];
@@ -5481,8 +5531,15 @@ var TV_CUC_TEN = {2:'Thủy Nhị Cục',3:'Mộc Tam Cục',4:'Kim Tứ Cục',
 function tvCanChi60(can,chi){ for(var n=0;n<60;n++){ if(n%10===can && n%12===chi) return n; } return 0; }
 
 /* an sao: trả về đối tượng lá số */
-function anSaoLaSo(D,M,Y,gioIdx,gioiTinh,ten){
-  var al = tvSolar2Lunar(D,M,Y,7);
+function anSaoLaSo(D,M,Y,gioIdx,gioiTinh,ten,laAm,nhuan){
+  var al, duong;
+  if(laAm){
+    al = {ngay:D, thang:M, nam:Y, nhuan: nhuan?1:0};
+    duong = tvLunar2Solar(D,M,Y, nhuan?1:0, 7);
+  } else {
+    al = tvSolar2Lunar(D,M,Y,7);
+    duong = {ngay:D, thang:M, nam:Y};
+  }
   var namCan = ((al.nam+6)%10+10)%10;
   var namChi = ((al.nam+8)%12+12)%12;
   var thang = al.thang, ngay = al.ngay, gio = gioIdx;
@@ -5650,7 +5707,7 @@ function anSaoLaSo(D,M,Y,gioIdx,gioiTinh,ten){
 
   return {
     ten: ten||'', gioiTinh: gioiTinh,
-    duong:{ngay:D,thang:M,nam:Y}, gioIdx:gio,
+    duong: duong, gioIdx:gio,
     am: al,
     namCan:namCan, namChi:namChi,
     menh:menh, than:than, menhCan:menhCan,
@@ -5864,59 +5921,95 @@ function moPaywallLuan(){
   var ls = window.__laso;
   if(!ls){ toast('Chưa có lá số.'); return; }
   var box = document.getElementById('tvLuanFree');
-  /* đã mở khoá luận giải tử vi rồi -> hiện luôn */
-  if(typeof duocDocTiep==='function' && duocDocTiep('tuvi-luan')){
+  /* đã mở khoá luận giải tử vi (chủ web / đã mua) -> hiện luôn */
+  var daMoLuan = (typeof toiLaChuTrang==='function' && toiLaChuTrang())
+    || (typeof myAccess!=='undefined' && myAccess && (myAccess.all || (myAccess.books && myAccess.books['tuvi-luan'])))
+    || (function(){ try{ return localStorage.getItem('kkUnlock_tuvi-luan')==='1'; }catch(e){ return false; } })();
+  if(daMoLuan){
     box.innerHTML = luanGiaiFull(ls);
     box.scrollIntoView({behavior:'smooth'});
     return;
   }
   var ma = 'TV' + (ls.namCan) + (ls.namChi) + Math.random().toString(36).slice(2,6).toUpperCase();
-  var qr = '';
-  if(typeof payCfg!=='undefined' && payCfg.bank && payCfg.acc){
-    var url='https://img.vietqr.io/image/'+encodeURIComponent(payCfg.bank)+'-'+encodeURIComponent(payCfg.acc)+
-      '-compact2.png?amount='+TV_GIA_LUAN+'&addInfo='+encodeURIComponent(ma)+'&accountName='+encodeURIComponent(payCfg.name||'');
-    qr = '<img src="'+url+'" alt="QR" style="width:180px;height:180px;border-radius:10px;background:#fff;padding:6px">';
-  }
-  box.innerHTML =
-    '<div class="tv-luan-locked">' +
-    '<h4 style="margin-top:0">Luận giải chi tiết 12 cung</h4>' +
-    '<p style="color:var(--cream-dim);font-size:.9rem">Phần luận giải chi tiết đầy đủ có phí <b style="color:var(--gold-bright)">'+TV_GIA_LUAN.toLocaleString('vi-VN')+' đ</b>. Quét mã QR để chuyển khoản, nhập Email/SĐT để nhận mã mở luận giải.</p>' +
-    '<div style="margin:12px 0">'+qr+'</div>' +
-    (typeof payCfg!=='undefined' && payCfg.acc ? '<div style="font-size:.85rem;line-height:1.7">Ngân hàng: <b>'+escapeHtml(payCfg.bank||'')+'</b> · STK: <b>'+escapeHtml(payCfg.acc||'')+'</b><br>Số tiền: <b>'+TV_GIA_LUAN.toLocaleString('vi-VN')+' đ</b> · Nội dung: <b>'+ma+'</b></div>' : '') +
-    '<div style="max-width:340px;margin:14px auto 0;text-align:left">' +
-    '<label style="font-size:.82rem;color:var(--gold-bright);display:block;margin-bottom:5px">Email hoặc SĐT của bạn <span style="color:#E86A5C">* bắt buộc</span></label>' +
-    '<input type="text" id="tvContact" placeholder="email@gmail.com hoặc 0912345678" maxlength="60" style="width:100%;padding:11px 13px;border-radius:10px;background:var(--navy-800);border:1px solid rgba(201,162,39,.3);color:var(--cream);margin-bottom:8px">' +
-    '<button class="btn btn-gold" id="tvPaid" style="width:100%">Tôi đã chuyển khoản</button>' +
-    '<div style="margin-top:14px;border-top:1px solid rgba(201,162,39,.2);padding-top:12px">' +
-    '<label style="font-size:.82rem;color:var(--cream-dim);display:block;margin-bottom:5px">Đã có mã mở luận giải?</label>' +
-    '<input type="text" id="tvCode" placeholder="Nhập mã mở khoá" maxlength="20" style="width:100%;padding:11px 13px;border-radius:10px;background:var(--navy-800);border:1px solid rgba(201,162,39,.3);color:var(--cream);margin-bottom:8px;text-transform:uppercase">' +
-    '<button class="btn btn-ghost" id="tvUnlock" style="width:100%">Mở luận giải</button>' +
-    '</div>' +
-    '<div id="tvPayNote" style="font-size:.84rem;margin-top:10px;text-align:center"></div>' +
-    '</div></div>';
+  var gia = TV_GIA_LUAN.toLocaleString('vi-VN');
+  var inpCss = 'width:100%;padding:11px 13px;border-radius:10px;background:var(--navy-800);border:1px solid rgba(201,162,39,.3);color:var(--cream);margin-bottom:8px';
 
-  document.getElementById('tvPaid').addEventListener('click', function(){ guiYeuCauLuanTuVi(ma); });
-  document.getElementById('tvUnlock').addEventListener('click', function(){ moKhoaLuanTuVi(); });
+  /* BƯỚC 1: bắt buộc nhập Email trước khi hiện QR */
+  function buoc1(){
+    box.innerHTML =
+      '<div class="tv-luan-locked">' +
+      '<h4 style="margin-top:0">Luận giải chi tiết 12 cung</h4>' +
+      '<p style="color:var(--cream-dim);font-size:.9rem">Phần luận giải chi tiết đầy đủ có phí <b style="color:var(--gold-bright)">'+gia+' đ</b>. Vui lòng nhập <b>Email</b> để hệ thống gửi kết quả luận giải và mã mở khoá về đúng email của bạn.</p>' +
+      '<div style="max-width:360px;margin:14px auto 0;text-align:left">' +
+      '<label style="font-size:.82rem;color:var(--gold-bright);display:block;margin-bottom:5px">Email của bạn <span style="color:#E86A5C">* bắt buộc</span></label>' +
+      '<input type="email" id="tvEmail" placeholder="email@gmail.com" maxlength="60" style="'+inpCss+'">' +
+      '<button class="btn btn-gold" id="tvGoQR" style="width:100%">Tiếp tục - Lấy mã QR thanh toán</button>' +
+      '<div style="margin-top:14px;border-top:1px solid rgba(201,162,39,.2);padding-top:12px">' +
+      '<label style="font-size:.82rem;color:var(--cream-dim);display:block;margin-bottom:5px">Đã có mã mở luận giải?</label>' +
+      '<input type="text" id="tvCode" placeholder="Nhập mã mở khoá" maxlength="20" style="'+inpCss+';text-transform:uppercase">' +
+      '<button class="btn btn-ghost" id="tvUnlock" style="width:100%">Mở luận giải</button>' +
+      '</div>' +
+      '<div id="tvPayNote" style="font-size:.84rem;margin-top:10px;text-align:center"></div>' +
+      '</div></div>';
+    document.getElementById('tvGoQR').addEventListener('click', function(){
+      var email=(document.getElementById('tvEmail').value||'').trim();
+      var note=document.getElementById('tvPayNote');
+      if(!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(email)){ note.style.color='#E86A5C'; note.textContent='Vui lòng nhập đúng địa chỉ Email để nhận kết quả.'; var inp=document.getElementById('tvEmail'); if(inp) inp.focus(); return; }
+      buoc2(email);
+    });
+    document.getElementById('tvUnlock').addEventListener('click', function(){ moKhoaLuanTuVi(); });
+  }
+
+  /* BƯỚC 2: hiện QR như thanh toán đọc sách */
+  function buoc2(email){
+    var qr='';
+    if(typeof payCfg!=='undefined' && payCfg.bank && payCfg.acc){
+      var url='https://img.vietqr.io/image/'+encodeURIComponent(payCfg.bank)+'-'+encodeURIComponent(payCfg.acc)+
+        '-compact2.png?amount='+TV_GIA_LUAN+'&addInfo='+encodeURIComponent(ma)+'&accountName='+encodeURIComponent(payCfg.name||'');
+      qr='<img src="'+url+'" alt="QR" style="width:190px;height:190px;border-radius:10px;background:#fff;padding:6px" onerror="this.style.display=\'none\'">';
+    }
+    box.innerHTML=
+      '<div class="tv-luan-locked">'+
+      '<h4 style="margin-top:0">Quét mã QR để thanh toán</h4>'+
+      '<p style="color:var(--cream-dim);font-size:.9rem">Chuyển khoản <b style="color:var(--gold-bright)">'+gia+' đ</b> theo mã QR bên dưới. Kết quả luận giải sẽ được gửi về: <b style="color:var(--cream)">'+escapeHtml(email)+'</b></p>'+
+      '<div style="margin:12px 0">'+qr+'</div>'+
+      (typeof payCfg!=='undefined' && payCfg.acc ? '<div style="font-size:.85rem;line-height:1.7">Ngân hàng: <b>'+escapeHtml(payCfg.bank||'')+'</b> · STK: <b>'+escapeHtml(payCfg.acc||'')+'</b><br>Chủ TK: <b>'+escapeHtml(payCfg.name||'')+'</b><br>Số tiền: <b>'+gia+' đ</b> · Nội dung CK: <b style="color:var(--gold-bright)">'+ma+'</b></div>' : '<div style="color:#E86A5C">Chủ web chưa cấu hình tài khoản nhận tiền.</div>')+
+      '<div style="max-width:360px;margin:14px auto 0">'+
+      '<button class="btn btn-gold" id="tvPaid" style="width:100%">Tôi đã chuyển khoản</button>'+
+      '<button class="btn btn-ghost" id="tvBackEmail" style="width:100%;margin-top:8px">Sửa Email</button>'+
+      '<div style="margin-top:14px;border-top:1px solid rgba(201,162,39,.2);padding-top:12px">'+
+      '<label style="font-size:.82rem;color:var(--cream-dim);display:block;margin-bottom:5px">Đã có mã mở luận giải?</label>'+
+      '<input type="text" id="tvCode" placeholder="Nhập mã mở khoá" maxlength="20" style="'+inpCss+';text-transform:uppercase">'+
+      '<button class="btn btn-ghost" id="tvUnlock" style="width:100%">Mở luận giải</button>'+
+      '</div>'+
+      '<div id="tvPayNote" style="font-size:.84rem;margin-top:10px;text-align:center"></div>'+
+      '</div></div>';
+    document.getElementById('tvPaid').addEventListener('click', function(){ guiYeuCauLuanTuVi(ma, email); });
+    document.getElementById('tvBackEmail').addEventListener('click', buoc1);
+    document.getElementById('tvUnlock').addEventListener('click', function(){ moKhoaLuanTuVi(); });
+    box.scrollIntoView({behavior:'smooth'});
+  }
+
+  buoc1();
   box.scrollIntoView({behavior:'smooth'});
 }
 
-async function guiYeuCauLuanTuVi(ma){
+async function guiYeuCauLuanTuVi(ma, email){
   var note = document.getElementById('tvPayNote');
-  var lienHe = (document.getElementById('tvContact').value||'').trim();
-  var hopLe = /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(lienHe) || (lienHe.replace(/\D/g,'').length>=9);
-  if(!hopLe){ note.style.color='#E86A5C'; note.textContent='Vui lòng nhập đúng Email hoặc số điện thoại để nhận mã.'; return; }
+  email = (email || (document.getElementById('tvEmail') && document.getElementById('tvEmail').value) || '').trim();
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(email)){ note.style.color='#E86A5C'; note.textContent='Email không hợp lệ. Vui lòng nhập lại Email để nhận kết quả.'; return; }
   if(typeof fbReady==='undefined' || !fbReady){ note.style.color='#E86A5C'; note.textContent='Hệ thống chưa sẵn sàng, hãy tải lại trang.'; return; }
   try{
     var ip = (typeof layIP==='function') ? await layIP() : '';
     await fbDb.collection('payments').add({
-      loai:'tuvi', contact: lienHe, ip: ip||'không rõ',
+      loai:'tuvi', email: email, contact: email, ip: ip||'không rõ',
       bookId:'tuvi-luan', bookTitle:'Luận giải Tử Vi'+(window.__laso&&window.__laso.ten?' - '+window.__laso.ten:''),
       code: ma, amount: TV_GIA_LUAN, status:'pending',
       thoiGian: new Date().toLocaleString('vi-VN'),
       ts: firebase.firestore.FieldValue.serverTimestamp()
     });
     note.style.color='#5FC98A';
-    note.innerHTML='Đã gửi yêu cầu! Tác giả sẽ gửi <b>mã mở luận giải</b> đến '+escapeHtml(lienHe)+' trong thời gian sớm nhất. Khi có mã, nhập vào ô "Đã có mã" phía trên.';
+    note.innerHTML='Đã ghi nhận yêu cầu! Sau khi đối chiếu giao dịch theo nội dung <b>'+ma+'</b>, kết quả luận giải và mã mở khoá sẽ được gửi tới <b>'+escapeHtml(email)+'</b>. Khi có mã, nhập vào ô "Đã có mã" phía trên để mở ngay.';
   }catch(e){ note.style.color='#E86A5C'; note.textContent='Lỗi gửi yêu cầu: '+(e&&e.code?e.code:'không kết nối được'); }
 }
 
@@ -5987,7 +6080,19 @@ async function moKhoaLuanTuVi(){
           <label>Giới tính
             <select id="tvGender"><option value="nam">Nam</option><option value="nu">Nữ</option></select>
           </label>
-          <label>Ngày sinh (dương lịch)<input type="date" id="tvDate"></label>
+          <label>Loại lịch
+            <select id="tvCalType"><option value="duong">Dương lịch (DL)</option><option value="am">Âm lịch (ÂL)</option></select>
+          </label>
+          <label id="tvDateWrap">Ngày sinh (dương lịch)<input type="date" id="tvDate"></label>
+          <div id="tvLunarWrap" style="display:none;grid-column:1/-1">
+            <label style="display:block;margin-bottom:6px">Ngày sinh (âm lịch)</label>
+            <div class="tv-lunar-row">
+              <select id="tvLDay" title="Ngày âm"></select>
+              <select id="tvLMonth" title="Tháng âm"></select>
+              <input type="number" id="tvLYear" placeholder="Năm ÂL" min="1900" max="2100">
+              <label class="tv-leap"><input type="checkbox" id="tvLLeap"> Tháng nhuận</label>
+            </div>
+          </div>
           <label>Giờ sinh
             <select id="tvHour"></select>
           </label>
@@ -6071,7 +6176,12 @@ async function moKhoaLuanTuVi(){
 
   /* ---------- DỊCH VỤ: danh sách <-> Tử Vi ---------- */
   function showSvcHome(){ var g=el('svcGrid'), w=el('tuviWrap'); if(g) g.style.display='grid'; if(w) w.style.display='none'; }
-  function showTuvi(){ var g=el('svcGrid'), w=el('tuviWrap'); if(g) g.style.display='none'; if(w) w.style.display='block'; napGioSelect(); }
+  function showTuvi(){ var g=el('svcGrid'), w=el('tuviWrap'); if(g) g.style.display='none'; if(w) w.style.display='block'; napGioSelect(); napLunarSelects(); }
+  function napLunarSelects(){
+    var sd=el('tvLDay'), sm=el('tvLMonth');
+    if(sd && !sd.dataset.done){ sd.dataset.done='1'; var o=''; for(var i=1;i<=30;i++) o+='<option value="'+i+'">Ngày '+i+'</option>'; sd.innerHTML=o; }
+    if(sm && !sm.dataset.done){ sm.dataset.done='1'; var m=''; for(var j=1;j<=12;j++) m+='<option value="'+j+'">Tháng '+j+'</option>'; sm.innerHTML=m; }
+  }
 
   function napGioSelect(){
     var sel = el('tvHour');
@@ -6086,12 +6196,20 @@ async function moKhoaLuanTuVi(){
     if(typeof anSaoLaSo !== 'function' || typeof veLaSo !== 'function'){ (window.toast||alert)('Đang tải, vui lòng thử lại sau giây lát.'); return; }
     var ten = (el('tvName') && el('tvName').value || '').trim();
     var gt  = el('tvGender') ? el('tvGender').value : 'nam';
-    var dstr= el('tvDate') ? el('tvDate').value : '';
     var gio = el('tvHour') ? (parseInt(el('tvHour').value,10)||0) : 0;
-    if(!dstr){ (window.toast||alert)('Hãy chọn ngày sinh (dương lịch).'); return; }
-    var p = dstr.split('-').map(function(n){ return parseInt(n,10); });
-    var Y=p[0], M=p[1], D=p[2];
-    var ls = anSaoLaSo(D, M, Y, gio, gt, ten);
+    var calType = el('tvCalType') ? el('tvCalType').value : 'duong';
+    var ls;
+    if(calType==='am'){
+      var lD=parseInt(el('tvLDay')&&el('tvLDay').value,10), lM=parseInt(el('tvLMonth')&&el('tvLMonth').value,10), lY=parseInt(el('tvLYear')&&el('tvLYear').value,10);
+      var leap = el('tvLLeap') && el('tvLLeap').checked ? 1 : 0;
+      if(!lD||!lM||!lY){ (window.toast||alert)('Nhập đủ ngày, tháng, năm âm lịch.'); return; }
+      ls = anSaoLaSo(lD, lM, lY, gio, gt, ten, true, leap);
+    } else {
+      var dstr = el('tvDate') ? el('tvDate').value : '';
+      if(!dstr){ (window.toast||alert)('Hãy chọn ngày sinh (dương lịch).'); return; }
+      var p = dstr.split('-').map(function(n){ return parseInt(n,10); });
+      ls = anSaoLaSo(p[2], p[1], p[0], gio, gt, ten, false, 0);
+    }
     window.__laso = ls;
     veLaSo(ls);
     if(el('tvResult')) el('tvResult').style.display = 'block';
@@ -6101,7 +6219,7 @@ async function moKhoaLuanTuVi(){
   }
 
   /* ---------- GAMES QUIZ ---------- */
-  var QUIZZES = [
+  var DEFAULT_QUIZZES = [
     { id:'lichsu', ico:'🏛️', name:'Lịch sử Việt Nam', desc:'10 câu về lịch sử dân tộc',
       cauhoi:[
         {q:'Ai là người lãnh đạo cuộc khởi nghĩa Lam Sơn?', o:['Lê Lợi','Quang Trung','Trần Hưng Đạo','Lý Thường Kiệt'], d:0},
@@ -6139,6 +6257,71 @@ async function moKhoaLuanTuVi(){
       ] }
   ];
   var quizCur=null, quizIdx=0, quizScore=0;
+  /* QUIZZES = tùy biến (localStorage) nếu có, không thì mặc định */
+  var QUIZZES = DEFAULT_QUIZZES.slice();
+  try{ var _qc=localStorage.getItem('kkQuizzes'); if(_qc){ var _qa=JSON.parse(_qc); if(Array.isArray(_qa)&&_qa.length) QUIZZES=_qa; } }catch(e){}
+  window.KKQuiz = {
+    get: function(){ return QUIZZES; },
+    defaults: function(){ return DEFAULT_QUIZZES; },
+    set: function(list){ if(Array.isArray(list)&&list.length){ QUIZZES=list; try{localStorage.setItem('kkQuizzes',JSON.stringify(list));}catch(e){} } },
+    reset: function(){ QUIZZES=DEFAULT_QUIZZES.slice(); try{localStorage.removeItem('kkQuizzes');}catch(e){} }
+  };
+  /* nạp quiz tùy biến từ đám mây (Firestore) nếu có */
+  (function loadQuizCloud(n){
+    try{
+      if(typeof fbDb==='undefined' || !fbDb){ if(n<20) setTimeout(function(){loadQuizCloud(n+1);},1500); return; }
+      fbDb.collection('settings').doc('quizzes').get().then(function(doc){
+        if(doc && doc.exists){ var d=doc.data(); if(d && Array.isArray(d.list) && d.list.length){ QUIZZES=d.list; try{localStorage.setItem('kkQuizzes',JSON.stringify(d.list));}catch(e){} try{renderQuizAdmin();}catch(e){} } }
+      }).catch(function(){});
+    }catch(e){}
+  })(0);
+
+  /* ===== QUẢN LÝ QUIZ (ADMIN): chuẩn hoá, nhập, lưu, render ===== */
+  function normQuiz(q){
+    if(!q || typeof q!=='object') return null;
+    var name=(q.name||'').toString().trim(); if(!name) return null;
+    var ch=Array.isArray(q.cauhoi)?q.cauhoi:[]; var cauhoi=[];
+    ch.forEach(function(c){
+      if(!c||typeof c!=='object') return;
+      var qq=(c.q||'').toString().trim();
+      var o=Array.isArray(c.o)?c.o.map(function(x){return x==null?'':(''+x);}).filter(function(x){return x!=='';}):[];
+      var dd=parseInt(c.d,10); if(isNaN(dd)) dd=0;
+      if(qq && o.length>=2){ if(dd<0||dd>=o.length) dd=0; cauhoi.push({q:qq,o:o,d:dd}); }
+    });
+    if(!cauhoi.length) return null;
+    var id=(q.id||'').toString().trim() || ('q'+Date.now().toString(36)+Math.random().toString(36).slice(2,5));
+    return { id:id, ico:(q.ico||'📝').toString().slice(0,4), name:name.slice(0,60), desc:(q.desc||'').toString().slice(0,120), cauhoi:cauhoi };
+  }
+  function parseQuizInput(text){
+    var data; try{ data=JSON.parse(text); }catch(e){ return {err:'JSON không hợp lệ: '+e.message}; }
+    var arr=Array.isArray(data)?data:[data], out=[];
+    for(var i=0;i<arr.length;i++){ var n=normQuiz(arr[i]); if(n) out.push(n); }
+    if(!out.length) return {err:'Không tìm thấy bộ quiz hợp lệ. Mỗi bộ cần "name" và "cauhoi" (mỗi câu có q, o≥2 đáp án, d là số thứ tự đáp án đúng bắt đầu từ 0).'};
+    return {list:out};
+  }
+  function luuQuizzes(list, note){
+    window.KKQuiz.set(list); renderQuizAdmin();
+    if(typeof fbDb!=='undefined' && fbDb && typeof fbReady!=='undefined' && fbReady){
+      fbDb.collection('settings').doc('quizzes').set({ list:list, capNhat:new Date().toLocaleString('vi-VN') }).then(function(){
+        if(note){ note.style.color='#5FC98A'; note.textContent='Đã lưu '+list.length+' bộ quiz và đồng bộ lên đám mây.'; }
+      }).catch(function(e){ if(note){ note.style.color='#E8A45C'; note.textContent='Đã lưu trên máy này. Đồng bộ đám mây lỗi ('+(e&&e.code?e.code:'?')+') - cần đăng nhập quản trị.'; } });
+    } else if(note){ note.style.color='#E8A45C'; note.textContent='Đã lưu trên máy này ('+list.length+' bộ). Đăng nhập quản trị để đồng bộ đám mây cho mọi người.'; }
+  }
+  function renderQuizAdmin(){
+    var box=el('quizAdminList'); if(!box) return;
+    var list=window.KKQuiz.get();
+    box.innerHTML='<div style="font-size:.85rem;color:var(--cream-dim);margin-bottom:6px">Đang có <b>'+list.length+'</b> bộ quiz:</div>'+
+      list.map(function(q){ return '<div class="quiz-admin-item"><span>'+(q.ico||'')+' <b>'+escHtml(q.name||'')+'</b> <span style="color:var(--cream-dim)">('+(q.cauhoi?q.cauhoi.length:0)+' câu)</span></span><button class="btn btn-ghost btn-sm quiz-del" data-qid="'+escHtml(q.id)+'">Xoá</button></div>'; }).join('');
+  }
+  function escHtml(s){ return (''+s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  function taiMauQuiz(){
+    var mau=[{id:"toan-vui",ico:"🔢",name:"Toán vui",desc:"Bộ câu hỏi mẫu - thay bằng nội dung của bạn",cauhoi:[{q:"2 + 2 = ?",o:["3","4","5","6"],d:1},{q:"5 x 3 = ?",o:["15","10","20","8"],d:0},{q:"Số nào lớn nhất?",o:["9","15","7","12"],d:1}]}];
+    var blob=new Blob([JSON.stringify(mau,null,2)],{type:'application/json'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='mau-quiz-kk.json'; document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },500);
+    var note=el('quizAdminNote'); if(note){ note.style.color='#8FD69F'; note.textContent='Đã tải file mẫu "mau-quiz-kk.json". Mở, sửa nội dung rồi nhập lại.'; }
+  }
+  setTimeout(renderQuizAdmin, 300);
 
   function renderQuizHome(){
     var home = el('quizHome'); if(!home) return;
@@ -6206,7 +6389,13 @@ async function moKhoaLuanTuVi(){
     ['#quizBack',     function(){ renderQuizHome(); }],
     ['#quizNext',     function(){ quizIdx++; veCauHoi(); }],
     ['.quiz-card',    function(e,elm){ batDauQuiz(elm.getAttribute('data-qid')); }],
-    ['.quiz-opt',     function(e,elm){ if(!elm.disabled) chonDapAn(parseInt(elm.getAttribute('data-i'),10)); }]
+    ['.quiz-opt',     function(e,elm){ if(!elm.disabled) chonDapAn(parseInt(elm.getAttribute('data-i'),10)); }],
+    ['#quizImportBtn', function(){ var t=el('quizImportText'), note=el('quizAdminNote'); if(!t) return; var r=parseQuizInput(t.value); if(r.err){ if(note){note.style.color='#E86A5C';note.textContent=r.err;} return; } var cur=window.KKQuiz.get().slice(); var ids=cur.map(function(x){return x.id;}); r.list.forEach(function(nq){ var i=ids.indexOf(nq.id); if(i>=0) cur[i]=nq; else { cur.push(nq); ids.push(nq.id); } }); luuQuizzes(cur, note); t.value=''; }],
+    ['#quizImportReplace', function(){ var t=el('quizImportText'), note=el('quizAdminNote'); if(!t) return; var r=parseQuizInput(t.value); if(r.err){ if(note){note.style.color='#E86A5C';note.textContent=r.err;} return; } luuQuizzes(r.list, note); t.value=''; }],
+    ['#quizFilePick',  function(){ if(el('quizFileInput')) el('quizFileInput').click(); }],
+    ['#quizTemplateBtn', function(){ taiMauQuiz(); }],
+    ['#quizResetBtn',  function(){ window.KKQuiz.reset(); if(typeof fbDb!=='undefined'&&fbDb){ fbDb.collection('settings').doc('quizzes').delete().catch(function(){}); } renderQuizAdmin(); var note=el('quizAdminNote'); if(note){ note.style.color='#8FD69F'; note.textContent='Đã khôi phục bộ quiz mẫu gốc.'; } }],
+    ['.quiz-del',      function(e,elm){ var id=elm.getAttribute('data-qid'); var cur=window.KKQuiz.get().filter(function(x){return x.id!==id;}); if(!cur.length){ (window.toast||alert)('Phải còn ít nhất 1 bộ quiz.'); return; } luuQuizzes(cur, el('quizAdminNote')); }]
   ];
   document.addEventListener('click', function(e){
     var tgt = e.target;
@@ -6220,6 +6409,18 @@ async function moKhoaLuanTuVi(){
   }, false);
   /* phím Esc đóng modal menu */
   document.addEventListener('keydown', function(e){ if(e.key==='Escape'||e.keyCode===27){ closeModal('aboutModal'); closeModal('servicesModal'); closeModal('quizModal'); } });
+  /* đổi Dương/Âm lịch -> ẩn hiện ô nhập tương ứng */
+  document.addEventListener('change', function(e){
+    if(e.target && e.target.id==='tvCalType'){
+      var am = e.target.value==='am';
+      if(el('tvDateWrap')) el('tvDateWrap').style.display = am?'none':'';
+      if(el('tvLunarWrap')) el('tvLunarWrap').style.display = am?'block':'none';
+    }
+    if(e.target && e.target.id==='quizFileInput'){
+      var f=e.target.files && e.target.files[0];
+      if(f){ var rd=new FileReader(); rd.onload=function(){ if(el('quizImportText')) el('quizImportText').value=rd.result; var note=el('quizAdminNote'); if(note){ note.style.color='#8FD69F'; note.textContent='Đã đọc file. Bấm "Nhập / Thêm" hoặc "Thay thế toàn bộ" để lưu.'; } }; rd.readAsText(f); }
+    }
+  });
 })();
 </script>
 
