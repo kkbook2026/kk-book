@@ -5942,213 +5942,6 @@ async function moKhoaLuanTuVi(){
 }
 
 
-/* ==================================================================
-   MENU 3 CHỨC NĂNG: Về KK-BOOK · Dịch vụ (Tử Vi) · Games Quiz
-   ================================================================== */
-(function initMenuChucNang(){
-  function moModal(id){ const m=document.getElementById(id); if(m) m.classList.add('open'); }
-  function dongModal(id){ const m=document.getElementById(id); if(m) m.classList.remove('open'); }
-  var __binds = [];
-  function noi(id, fn){ __binds.push([id, fn]); bindMot(id, fn); }
-  function bindMot(id, fn){ var e=document.getElementById(id); if(e && !e.dataset.kkb){ e.dataset.kkb='1'; e.addEventListener('click', fn); return true; } return false; }
-  function bindAll(){ __binds.forEach(function(p){ bindMot(p[0], p[1]); }); }
-
-  /* ---- điều hướng menu ---- */
-  noi('navAbout',    ()=>{ renderAbout(); moModal('aboutModal'); });
-  noi('navServices', ()=>{ showSvcHome(); moModal('servicesModal'); });
-  noi('navQuiz',     ()=>{ renderQuizHome(); moModal('quizModal'); });
-  noi('aboutClose',    ()=>dongModal('aboutModal'));
-  noi('servicesClose', ()=>dongModal('servicesModal'));
-  noi('quizClose',     ()=>dongModal('quizModal'));
-
-  /* =============== VỀ KK-BOOK =============== */
-  function renderAbout(){
-    const b = document.getElementById('aboutBody');
-    if(!b || b.dataset.done) return;
-    b.dataset.done = '1';
-    b.innerHTML =
-      '<p class="about-lead">Chào mừng bạn đến với <span class="about-hi">THƯ VIỆN SÁCH CÁ NHÂN - KK-2026</span>, không gian đọc sách trực tuyến do tác giả <span class="about-hi">Nguyễn Duy Điển</span> xây dựng và biên soạn.</p>' +
-      '<h4>KK-BOOK là gì?</h4>' +
-      '<p>KK-BOOK (kk-book.com) là thư viện sách điện tử cá nhân, nơi tập hợp những đầu sách chuyên khảo do chính tác giả Nguyễn Duy Điển sáng tác và biên soạn trong nhiều năm. Từ lịch sử, văn hoá, khoa học, công nghệ, quản trị cho tới nghệ thuật sống, mỗi cuốn sách là một công trình được đầu tư nghiêm túc về nội dung và hình thức.</p>' +
-      '<h4>Sứ mệnh</h4>' +
-      '<p>Chúng tôi tin rằng tri thức cần được lan toả một cách đẹp đẽ và dễ tiếp cận. KK-BOOK mang đến trải nghiệm đọc mượt mà trên mọi thiết bị - máy tính, máy tính bảng hay điện thoại - với chất lượng hình ảnh sắc nét, khả năng đọc thành tiếng và giao diện được chăm chút tới từng chi tiết.</p>' +
-      '<h4>Điều làm nên KK-BOOK</h4>' +
-      '<p><span class="about-hi">Nội dung nguyên bản:</span> Toàn bộ sách là tác phẩm gốc, sole-author, thuộc bản quyền của tác giả Nguyễn Duy Điển (KK-2026).<br>' +
-      '<span class="about-hi">Đọc thử miễn phí:</span> Mỗi cuốn đều cho đọc miễn phí những trang đầu để bạn cảm nhận trước khi quyết định.<br>' +
-      '<span class="about-hi">Trải nghiệm hiện đại:</span> Tìm kiếm thông minh, đọc thành tiếng, trợ lý giải đáp, cùng nhiều dịch vụ mở rộng như lập lá số Tử Vi và trò chơi kiến thức.</p>' +
-      '<h4>Lời cảm ơn</h4>' +
-      '<p>Cảm ơn bạn đã ghé thăm và đồng hành. Mỗi trang sách bạn mở ra là một sự trân trọng dành cho tri thức và cho tâm huyết của người viết. Chúc bạn có những giờ phút đọc sách thật ý nghĩa.</p>' +
-      '<p style="text-align:right;color:var(--gold);font-style:italic;margin-top:18px">Tác giả : Nguyễn Duy Điển (KK-2026)</p>';
-  }
-
-  /* =============== DỊCH VỤ: chuyển giữa danh sách & Tử Vi =============== */
-  function showSvcHome(){
-    document.getElementById('svcGrid').style.display = 'grid';
-    document.getElementById('tuviWrap').style.display = 'none';
-  }
-  function showTuvi(){
-    document.getElementById('svcGrid').style.display = 'none';
-    document.getElementById('tuviWrap').style.display = 'block';
-    napGioSelect();
-  }
-  noi('svcTuvi', showTuvi);
-  noi('tuviBack', showSvcHome);
-
-  /* dropdown 12 canh giờ */
-  function napGioSelect(){
-    const sel = document.getElementById('tvHour');
-    if(!sel || sel.dataset.done) return;
-    sel.dataset.done = '1';
-    const gio = [
-      ['Tý','23g-1g'],['Sửu','1g-3g'],['Dần','3g-5g'],['Mão','5g-7g'],
-      ['Thìn','7g-9g'],['Tỵ','9g-11g'],['Ngọ','11g-13g'],['Mùi','13g-15g'],
-      ['Thân','15g-17g'],['Dậu','17g-19g'],['Tuất','19g-21g'],['Hợi','21g-23g']
-    ];
-    sel.innerHTML = gio.map((g,i)=>'<option value="'+i+'">Giờ '+g[0]+' ('+g[1]+')</option>').join('');
-  }
-
-  noi('tvLap', lapLaSo);
-  noi('tvPdf', xuatPdfLaSo);
-  noi('tvLuan', ()=>moPaywallLuan());
-
-  /* ======= giữ lá số hiện tại để xuất PDF / luận giải ======= */
-  window.__laso = null;
-
-  function lapLaSo(){
-    const ten = (document.getElementById('tvName').value||'').trim();
-    const gt  = document.getElementById('tvGender').value;
-    const dstr= document.getElementById('tvDate').value;
-    const gio = parseInt(document.getElementById('tvHour').value, 10) || 0;
-    if(!dstr){ toast('Hãy chọn ngày sinh (dương lịch).'); return; }
-    const [Y,M,D] = dstr.split('-').map(n=>parseInt(n,10));
-    const ls = anSaoLaSo(D, M, Y, gio, gt, ten);
-    window.__laso = ls;
-    veLaSo(ls);
-    document.getElementById('tvResult').style.display = 'block';
-    document.getElementById('tvLuanFree').innerHTML = luanGiaiFree(ls);
-    var _rs = document.getElementById('tvResult');
-    if(_rs && _rs.scrollIntoView) _rs.scrollIntoView({behavior:'smooth', block:'start'});
-  }
-
-  /* =============== GAMES QUIZ =============== */
-  const QUIZZES = [
-    {
-      id:'lichsu', ico:'🏛️', name:'Lịch sử Việt Nam', desc:'10 câu về lịch sử dân tộc',
-      cauhoi:[
-        {q:'Ai là người lãnh đạo cuộc khởi nghĩa Lam Sơn?', o:['Lê Lợi','Quang Trung','Trần Hưng Đạo','Lý Thường Kiệt'], d:0},
-        {q:'Chiến thắng Bạch Đằng năm 938 gắn với tên tuổi ai?', o:['Ngô Quyền','Đinh Bộ Lĩnh','Lê Hoàn','Lý Công Uẩn'], d:0},
-        {q:'Nhà Lý dời đô về Thăng Long vào năm nào?', o:['1010','938','1288','1400'], d:0},
-        {q:'Ai được xưng tụng là "Bình Tây Đại Nguyên Soái"?', o:['Trương Định','Nguyễn Trung Trực','Phan Đình Phùng','Hoàng Hoa Thám'], d:0},
-        {q:'Triều đại nào tồn tại lâu nhất trong lịch sử Việt Nam?', o:['Nhà Lê (Hậu Lê)','Nhà Lý','Nhà Trần','Nhà Nguyễn'], d:0},
-        {q:'Chiến thắng Điện Biên Phủ diễn ra năm nào?', o:['1954','1945','1975','1968'], d:0},
-        {q:'Ai là tác giả "Bình Ngô Đại Cáo"?', o:['Nguyễn Trãi','Nguyễn Du','Chu Văn An','Lê Quý Đôn'], d:0},
-        {q:'Vị vua nào có công thống nhất đất nước, lập nhà Đinh?', o:['Đinh Bộ Lĩnh','Ngô Quyền','Lê Hoàn','Lý Thái Tổ'], d:0},
-        {q:'Ba lần đánh thắng quân Nguyên Mông là công của triều đại nào?', o:['Nhà Trần','Nhà Lý','Nhà Lê','Nhà Hồ'], d:0},
-        {q:'Kinh đô của nhà Nguyễn đặt ở đâu?', o:['Huế','Thăng Long','Hoa Lư','Gia Định'], d:0}
-      ]
-    },
-    {
-      id:'khoahoc', ico:'🔬', name:'Khoa học thường thức', desc:'8 câu kiến thức khoa học',
-      cauhoi:[
-        {q:'Hành tinh nào gần Mặt Trời nhất?', o:['Sao Thuỷ','Sao Kim','Trái Đất','Sao Hoả'], d:0},
-        {q:'Nước sôi ở nhiệt độ bao nhiêu (ở mực nước biển)?', o:['100°C','90°C','120°C','80°C'], d:0},
-        {q:'Khí nào chiếm tỉ lệ lớn nhất trong không khí?', o:['Ni-tơ','Ô-xy','CO2','Hydro'], d:0},
-        {q:'Tốc độ ánh sáng xấp xỉ bao nhiêu?', o:['300.000 km/s','30.000 km/s','1.000 km/s','3 triệu km/s'], d:0},
-        {q:'Cơ quan nào bơm máu đi khắp cơ thể?', o:['Tim','Gan','Phổi','Thận'], d:0},
-        {q:'Nguyên tố hoá học có ký hiệu O là gì?', o:['Ô-xy','Vàng','Sắt','Bạc'], d:0},
-        {q:'Loài vật nào lớn nhất từng tồn tại trên Trái Đất?', o:['Cá voi xanh','Voi','Khủng long bạo chúa','Hươu cao cổ'], d:0},
-        {q:'Ánh sáng Mặt Trời đến Trái Đất mất khoảng bao lâu?', o:['8 phút','1 giây','1 giờ','1 ngày'], d:0}
-      ]
-    },
-    {
-      id:'diali', ico:'🌏', name:'Địa lý thế giới', desc:'8 câu về địa lý',
-      cauhoi:[
-        {q:'Sông nào dài nhất thế giới?', o:['Sông Nin','Sông Amazon','Sông Trường Giang','Sông Mê Kông'], d:0},
-        {q:'Thủ đô của Nhật Bản là?', o:['Tokyo','Osaka','Kyoto','Seoul'], d:0},
-        {q:'Ngọn núi cao nhất thế giới?', o:['Everest','Phú Sĩ','Fansipan','K2'], d:0},
-        {q:'Châu lục nào lớn nhất?', o:['Châu Á','Châu Phi','Châu Mỹ','Châu Âu'], d:0},
-        {q:'Đại dương nào lớn nhất?', o:['Thái Bình Dương','Đại Tây Dương','Ấn Độ Dương','Bắc Băng Dương'], d:0},
-        {q:'Sa mạc lớn nhất thế giới?', o:['Sahara','Gobi','Kalahari','Atacama'], d:0},
-        {q:'Việt Nam giáp biển nào?', o:['Biển Đông','Biển Đỏ','Địa Trung Hải','Biển Đen'], d:0},
-        {q:'Quốc gia nào đông dân nhất thế giới hiện nay?', o:['Ấn Độ','Trung Quốc','Hoa Kỳ','Indonesia'], d:0}
-      ]
-    }
-  ];
-
-  let quizCur=null, quizIdx=0, quizScore=0;
-
-  function renderQuizHome(){
-    const home = document.getElementById('quizHome');
-    document.getElementById('quizPlay').style.display='none';
-    home.style.display='block';
-    home.innerHTML =
-      '<p class="quiz-intro">Chọn một bộ câu hỏi để bắt đầu. Đây là các Game Quiz mẫu - sau này bạn có thể nạp thêm nội dung từ file để mở rộng kho câu hỏi.</p>' +
-      '<div class="quiz-list">' +
-      QUIZZES.map(q =>
-        '<button class="quiz-card" data-qid="'+q.id+'">' +
-        '<div class="qc-ico">'+q.ico+'</div>' +
-        '<div class="qc-name">'+q.name+'</div>' +
-        '<div class="qc-meta">'+q.desc+' · '+q.cauhoi.length+' câu</div>' +
-        '</button>'
-      ).join('') + '</div>';
-    home.querySelectorAll('.quiz-card').forEach(c=>{
-      c.addEventListener('click', ()=>batDauQuiz(c.dataset.qid));
-    });
-  }
-  function batDauQuiz(qid){
-    quizCur = QUIZZES.find(q=>q.id===qid);
-    quizIdx=0; quizScore=0;
-    document.getElementById('quizHome').style.display='none';
-    document.getElementById('quizPlay').style.display='block';
-    veCauHoi();
-  }
-  function veCauHoi(){
-    const play = document.getElementById('quizPlay');
-    if(quizIdx >= quizCur.cauhoi.length){
-      const pct = Math.round(quizScore/quizCur.cauhoi.length*100);
-      play.innerHTML =
-        '<div class="quiz-done">' +
-        '<div>Bạn đã hoàn thành <b style="color:var(--gold-bright)">'+quizCur.name+'</b></div>' +
-        '<div class="quiz-score">'+quizScore+'/'+quizCur.cauhoi.length+'</div>' +
-        '<div style="color:var(--cream-dim)">Đúng '+pct+'%. '+(pct>=80?'Xuất sắc!':pct>=50?'Khá tốt!':'Cố gắng thêm nhé!')+'</div>' +
-        '<div style="margin-top:20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' +
-        '<button class="btn btn-gold" id="quizAgain">Chơi lại</button>' +
-        '<button class="btn btn-ghost" id="quizBack">Chọn bộ khác</button></div></div>';
-      document.getElementById('quizAgain').addEventListener('click', ()=>batDauQuiz(quizCur.id));
-      document.getElementById('quizBack').addEventListener('click', renderQuizHome);
-      return;
-    }
-    const c = quizCur.cauhoi[quizIdx];
-    play.innerHTML =
-      '<div class="quiz-prog">Câu '+(quizIdx+1)+' / '+quizCur.cauhoi.length+' · Điểm: '+quizScore+'</div>' +
-      '<div class="quiz-qtext">'+c.q+'</div>' +
-      '<div class="quiz-opts">' +
-      c.o.map((op,i)=>'<button class="quiz-opt" data-i="'+i+'">'+op+'</button>').join('') +
-      '</div><div class="quiz-next" id="quizNextRow"></div>';
-    play.querySelectorAll('.quiz-opt').forEach(btn=>{
-      btn.addEventListener('click', ()=>chonDapAn(parseInt(btn.dataset.i,10)));
-    });
-  }
-  function chonDapAn(i){
-    const c = quizCur.cauhoi[quizIdx];
-    const opts = document.querySelectorAll('.quiz-opt');
-    opts.forEach((b,idx)=>{
-      b.disabled = true;
-      if(idx === c.d) b.classList.add('correct');
-      if(idx === i && i !== c.d) b.classList.add('wrong');
-    });
-    if(i === c.d) quizScore++;
-    const row = document.getElementById('quizNextRow');
-    row.innerHTML = '<span class="quiz-fb">'+(i===c.d?'✅ Chính xác!':'❌ Đáp án đúng: '+c.o[c.d])+'</span>' +
-      '<button class="btn btn-gold" id="quizNext">'+(quizIdx+1>=quizCur.cauhoi.length?'Xem kết quả':'Câu tiếp')+'</button>';
-    document.getElementById('quizNext').addEventListener('click', ()=>{ quizIdx++; veCauHoi(); });
-  }
-
-  /* init sau khi DOM sẵn sàng (HTML modal nằm sau script) */
-  function initSauDom(){ bindAll(); }
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initSauDom);
-  else setTimeout(initSauDom, 0);
-})();
 
 </script>
 
@@ -6247,6 +6040,188 @@ async function moKhoaLuanTuVi(){
   <div class="chatbot-body" id="chatbotBody"></div>
   <div class="chatbot-quick" id="chatbotQuick"></div>
 </div>
+
+<!-- ============ MENU 3 CHỨC NĂNG (module độc lập, event delegation) ============ -->
+<script>
+(function initMenuKK(){
+  "use strict";
+  function el(id){ return document.getElementById(id); }
+  function openModal(id){ var m=el(id); if(m) m.classList.add('open'); }
+  function closeModal(id){ var m=el(id); if(m) m.classList.remove('open'); }
+
+  /* ---------- VỀ KK-BOOK ---------- */
+  function renderAbout(){
+    var b = el('aboutBody');
+    if(!b || b.dataset.done) return;
+    b.dataset.done = '1';
+    b.innerHTML =
+      '<p class="about-lead">Chào mừng bạn đến với <span class="about-hi">THƯ VIỆN SÁCH CÁ NHÂN - KK-2026</span>, không gian đọc sách trực tuyến do tác giả <span class="about-hi">Nguyễn Duy Điển</span> xây dựng và biên soạn.</p>' +
+      '<h4>KK-BOOK là gì?</h4>' +
+      '<p>KK-BOOK (kk-book.com) là thư viện sách điện tử cá nhân, nơi tập hợp những đầu sách chuyên khảo do chính tác giả Nguyễn Duy Điển sáng tác và biên soạn trong nhiều năm. Từ lịch sử, văn hoá, khoa học, công nghệ, quản trị cho tới nghệ thuật sống, mỗi cuốn sách là một công trình được đầu tư nghiêm túc về nội dung và hình thức.</p>' +
+      '<h4>Sứ mệnh</h4>' +
+      '<p>Chúng tôi tin rằng tri thức cần được lan toả một cách đẹp đẽ và dễ tiếp cận. KK-BOOK mang đến trải nghiệm đọc mượt mà trên mọi thiết bị - máy tính, máy tính bảng hay điện thoại - với chất lượng hình ảnh sắc nét, khả năng đọc thành tiếng và giao diện được chăm chút tới từng chi tiết.</p>' +
+      '<h4>Điều làm nên KK-BOOK</h4>' +
+      '<p><span class="about-hi">Nội dung nguyên bản:</span> Toàn bộ sách là tác phẩm gốc, sole-author, thuộc bản quyền của tác giả Nguyễn Duy Điển (KK-2026).<br>' +
+      '<span class="about-hi">Đọc thử miễn phí:</span> Mỗi cuốn đều cho đọc miễn phí những trang đầu để bạn cảm nhận trước khi quyết định.<br>' +
+      '<span class="about-hi">Trải nghiệm hiện đại:</span> Tìm kiếm thông minh, đọc thành tiếng, trợ lý giải đáp, cùng nhiều dịch vụ mở rộng như lập lá số Tử Vi và trò chơi kiến thức.</p>' +
+      '<h4>Lời cảm ơn</h4>' +
+      '<p>Cảm ơn bạn đã ghé thăm và đồng hành. Mỗi trang sách bạn mở ra là một sự trân trọng dành cho tri thức và cho tâm huyết của người viết. Chúc bạn có những giờ phút đọc sách thật ý nghĩa.</p>' +
+      '<p style="text-align:right;color:var(--gold);font-style:italic;margin-top:18px">Tác giả : Nguyễn Duy Điển (KK-2026)</p>';
+  }
+
+  /* ---------- DỊCH VỤ: danh sách <-> Tử Vi ---------- */
+  function showSvcHome(){ var g=el('svcGrid'), w=el('tuviWrap'); if(g) g.style.display='grid'; if(w) w.style.display='none'; }
+  function showTuvi(){ var g=el('svcGrid'), w=el('tuviWrap'); if(g) g.style.display='none'; if(w) w.style.display='block'; napGioSelect(); }
+
+  function napGioSelect(){
+    var sel = el('tvHour');
+    if(!sel || sel.dataset.done) return;
+    sel.dataset.done = '1';
+    var gio = [['Tý','23g-1g'],['Sửu','1g-3g'],['Dần','3g-5g'],['Mão','5g-7g'],['Thìn','7g-9g'],['Tỵ','9g-11g'],['Ngọ','11g-13g'],['Mùi','13g-15g'],['Thân','15g-17g'],['Dậu','17g-19g'],['Tuất','19g-21g'],['Hợi','21g-23g']];
+    sel.innerHTML = gio.map(function(g,i){ return '<option value="'+i+'">Giờ '+g[0]+' ('+g[1]+')</option>'; }).join('');
+  }
+
+  window.__laso = null;
+  function lapLaSo(){
+    if(typeof anSaoLaSo !== 'function' || typeof veLaSo !== 'function'){ (window.toast||alert)('Đang tải, vui lòng thử lại sau giây lát.'); return; }
+    var ten = (el('tvName') && el('tvName').value || '').trim();
+    var gt  = el('tvGender') ? el('tvGender').value : 'nam';
+    var dstr= el('tvDate') ? el('tvDate').value : '';
+    var gio = el('tvHour') ? (parseInt(el('tvHour').value,10)||0) : 0;
+    if(!dstr){ (window.toast||alert)('Hãy chọn ngày sinh (dương lịch).'); return; }
+    var p = dstr.split('-').map(function(n){ return parseInt(n,10); });
+    var Y=p[0], M=p[1], D=p[2];
+    var ls = anSaoLaSo(D, M, Y, gio, gt, ten);
+    window.__laso = ls;
+    veLaSo(ls);
+    if(el('tvResult')) el('tvResult').style.display = 'block';
+    if(el('tvLuanFree') && typeof luanGiaiFree==='function') el('tvLuanFree').innerHTML = luanGiaiFree(ls);
+    var rs = el('tvResult');
+    if(rs && rs.scrollIntoView) rs.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  /* ---------- GAMES QUIZ ---------- */
+  var QUIZZES = [
+    { id:'lichsu', ico:'🏛️', name:'Lịch sử Việt Nam', desc:'10 câu về lịch sử dân tộc',
+      cauhoi:[
+        {q:'Ai là người lãnh đạo cuộc khởi nghĩa Lam Sơn?', o:['Lê Lợi','Quang Trung','Trần Hưng Đạo','Lý Thường Kiệt'], d:0},
+        {q:'Chiến thắng Bạch Đằng năm 938 gắn với tên tuổi ai?', o:['Ngô Quyền','Đinh Bộ Lĩnh','Lê Hoàn','Lý Công Uẩn'], d:0},
+        {q:'Nhà Lý dời đô về Thăng Long vào năm nào?', o:['1010','938','1288','1400'], d:0},
+        {q:'Ai được xưng tụng là "Bình Tây Đại Nguyên Soái"?', o:['Trương Định','Nguyễn Trung Trực','Phan Đình Phùng','Hoàng Hoa Thám'], d:0},
+        {q:'Triều đại nào tồn tại lâu nhất trong lịch sử Việt Nam?', o:['Nhà Lê (Hậu Lê)','Nhà Lý','Nhà Trần','Nhà Nguyễn'], d:0},
+        {q:'Chiến thắng Điện Biên Phủ diễn ra năm nào?', o:['1954','1945','1975','1968'], d:0},
+        {q:'Ai là tác giả "Bình Ngô Đại Cáo"?', o:['Nguyễn Trãi','Nguyễn Du','Chu Văn An','Lê Quý Đôn'], d:0},
+        {q:'Vị vua nào có công thống nhất đất nước, lập nhà Đinh?', o:['Đinh Bộ Lĩnh','Ngô Quyền','Lê Hoàn','Lý Thái Tổ'], d:0},
+        {q:'Ba lần đánh thắng quân Nguyên Mông là công của triều đại nào?', o:['Nhà Trần','Nhà Lý','Nhà Lê','Nhà Hồ'], d:0},
+        {q:'Kinh đô của nhà Nguyễn đặt ở đâu?', o:['Huế','Thăng Long','Hoa Lư','Gia Định'], d:0}
+      ] },
+    { id:'khoahoc', ico:'🔬', name:'Khoa học thường thức', desc:'8 câu kiến thức khoa học',
+      cauhoi:[
+        {q:'Hành tinh nào gần Mặt Trời nhất?', o:['Sao Thuỷ','Sao Kim','Trái Đất','Sao Hoả'], d:0},
+        {q:'Nước sôi ở nhiệt độ bao nhiêu (ở mực nước biển)?', o:['100°C','90°C','120°C','80°C'], d:0},
+        {q:'Khí nào chiếm tỉ lệ lớn nhất trong không khí?', o:['Ni-tơ','Ô-xy','CO2','Hydro'], d:0},
+        {q:'Tốc độ ánh sáng xấp xỉ bao nhiêu?', o:['300.000 km/s','30.000 km/s','1.000 km/s','3 triệu km/s'], d:0},
+        {q:'Cơ quan nào bơm máu đi khắp cơ thể?', o:['Tim','Gan','Phổi','Thận'], d:0},
+        {q:'Nguyên tố hoá học có ký hiệu O là gì?', o:['Ô-xy','Vàng','Sắt','Bạc'], d:0},
+        {q:'Loài vật nào lớn nhất từng tồn tại trên Trái Đất?', o:['Cá voi xanh','Voi','Khủng long bạo chúa','Hươu cao cổ'], d:0},
+        {q:'Ánh sáng Mặt Trời đến Trái Đất mất khoảng bao lâu?', o:['8 phút','1 giây','1 giờ','1 ngày'], d:0}
+      ] },
+    { id:'diali', ico:'🌏', name:'Địa lý thế giới', desc:'8 câu về địa lý',
+      cauhoi:[
+        {q:'Sông nào dài nhất thế giới?', o:['Sông Nin','Sông Amazon','Sông Trường Giang','Sông Mê Kông'], d:0},
+        {q:'Thủ đô của Nhật Bản là?', o:['Tokyo','Osaka','Kyoto','Seoul'], d:0},
+        {q:'Ngọn núi cao nhất thế giới?', o:['Everest','Phú Sĩ','Fansipan','K2'], d:0},
+        {q:'Châu lục nào lớn nhất?', o:['Châu Á','Châu Phi','Châu Mỹ','Châu Âu'], d:0},
+        {q:'Đại dương nào lớn nhất?', o:['Thái Bình Dương','Đại Tây Dương','Ấn Độ Dương','Bắc Băng Dương'], d:0},
+        {q:'Sa mạc lớn nhất thế giới?', o:['Sahara','Gobi','Kalahari','Atacama'], d:0},
+        {q:'Việt Nam giáp biển nào?', o:['Biển Đông','Biển Đỏ','Địa Trung Hải','Biển Đen'], d:0},
+        {q:'Quốc gia nào đông dân nhất thế giới hiện nay?', o:['Ấn Độ','Trung Quốc','Hoa Kỳ','Indonesia'], d:0}
+      ] }
+  ];
+  var quizCur=null, quizIdx=0, quizScore=0;
+
+  function renderQuizHome(){
+    var home = el('quizHome'); if(!home) return;
+    if(el('quizPlay')) el('quizPlay').style.display='none';
+    home.style.display='block';
+    home.innerHTML =
+      '<p class="quiz-intro">Chọn một bộ câu hỏi để bắt đầu. Đây là các Game Quiz mẫu - sau này bạn có thể nạp thêm nội dung từ file để mở rộng kho câu hỏi.</p>' +
+      '<div class="quiz-list">' +
+      QUIZZES.map(function(q){ return '<button class="quiz-card" data-qid="'+q.id+'"><div class="qc-ico">'+q.ico+'</div><div class="qc-name">'+q.name+'</div><div class="qc-meta">'+q.desc+' · '+q.cauhoi.length+' câu</div></button>'; }).join('') +
+      '</div>';
+  }
+  function batDauQuiz(qid){
+    quizCur = QUIZZES.filter(function(q){ return q.id===qid; })[0];
+    if(!quizCur) return;
+    quizIdx=0; quizScore=0;
+    if(el('quizHome')) el('quizHome').style.display='none';
+    if(el('quizPlay')) el('quizPlay').style.display='block';
+    veCauHoi();
+  }
+  function veCauHoi(){
+    var play = el('quizPlay'); if(!play || !quizCur) return;
+    if(quizIdx >= quizCur.cauhoi.length){
+      var pct = Math.round(quizScore/quizCur.cauhoi.length*100);
+      play.innerHTML =
+        '<div class="quiz-done"><div>Bạn đã hoàn thành <b style="color:var(--gold-bright)">'+quizCur.name+'</b></div>' +
+        '<div class="quiz-score">'+quizScore+'/'+quizCur.cauhoi.length+'</div>' +
+        '<div style="color:var(--cream-dim)">Đúng '+pct+'%. '+(pct>=80?'Xuất sắc!':pct>=50?'Khá tốt!':'Cố gắng thêm nhé!')+'</div>' +
+        '<div style="margin-top:20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn btn-gold" id="quizAgain">Chơi lại</button><button class="btn btn-ghost" id="quizBack">Chọn bộ khác</button></div></div>';
+      return;
+    }
+    var c = quizCur.cauhoi[quizIdx];
+    play.innerHTML =
+      '<div class="quiz-prog">Câu '+(quizIdx+1)+' / '+quizCur.cauhoi.length+' · Điểm: '+quizScore+'</div>' +
+      '<div class="quiz-qtext">'+c.q+'</div>' +
+      '<div class="quiz-opts">' + c.o.map(function(op,i){ return '<button class="quiz-opt" data-i="'+i+'">'+op+'</button>'; }).join('') +
+      '</div><div class="quiz-next" id="quizNextRow"></div>';
+  }
+  function chonDapAn(i){
+    var c = quizCur.cauhoi[quizIdx];
+    var opts = document.querySelectorAll('#quizPlay .quiz-opt');
+    Array.prototype.forEach.call(opts, function(b,idx){
+      b.disabled = true;
+      if(idx === c.d) b.classList.add('correct');
+      if(idx === i && i !== c.d) b.classList.add('wrong');
+    });
+    if(i === c.d) quizScore++;
+    var row = el('quizNextRow');
+    if(row) row.innerHTML = '<span class="quiz-fb">'+(i===c.d?'✅ Chính xác!':'❌ Đáp án đúng: '+c.o[c.d])+'</span><button class="btn btn-gold" id="quizNext">'+(quizIdx+1>=quizCur.cauhoi.length?'Xem kết quả':'Câu tiếp')+'</button>';
+  }
+
+  /* ---------- ROUTER: một handler click duy nhất ở document ---------- */
+  var ROUTES = [
+    ['#navAbout',     function(){ renderAbout(); openModal('aboutModal'); }],
+    ['#navServices',  function(){ showSvcHome(); openModal('servicesModal'); }],
+    ['#navQuiz',      function(){ renderQuizHome(); openModal('quizModal'); }],
+    ['#aboutClose',   function(){ closeModal('aboutModal'); }],
+    ['#servicesClose',function(){ closeModal('servicesModal'); }],
+    ['#quizClose',    function(){ closeModal('quizModal'); }],
+    ['#svcTuvi',      function(){ showTuvi(); }],
+    ['#tuviBack',     function(){ showSvcHome(); }],
+    ['#tvLap',        function(){ lapLaSo(); }],
+    ['#tvPdf',        function(){ if(typeof xuatPdfLaSo==='function') xuatPdfLaSo(); else (window.toast||alert)('Chưa sẵn sàng, thử lại sau.'); }],
+    ['#tvLuan',       function(){ if(typeof moPaywallLuan==='function') moPaywallLuan(); }],
+    ['#quizAgain',    function(){ if(quizCur) batDauQuiz(quizCur.id); }],
+    ['#quizBack',     function(){ renderQuizHome(); }],
+    ['#quizNext',     function(){ quizIdx++; veCauHoi(); }],
+    ['.quiz-card',    function(e,elm){ batDauQuiz(elm.getAttribute('data-qid')); }],
+    ['.quiz-opt',     function(e,elm){ if(!elm.disabled) chonDapAn(parseInt(elm.getAttribute('data-i'),10)); }]
+  ];
+  document.addEventListener('click', function(e){
+    var tgt = e.target;
+    /* nhấp nền tối để đóng modal của menu */
+    if(tgt && tgt.classList && tgt.classList.contains('modal-backdrop') && /^(aboutModal|servicesModal|quizModal)$/.test(tgt.id)){ tgt.classList.remove('open'); return; }
+    if(!tgt || !tgt.closest) return;
+    for(var i=0;i<ROUTES.length;i++){
+      var found = tgt.closest(ROUTES[i][0]);
+      if(found){ try{ ROUTES[i][1](e, found); }catch(err){ if(window.console) console.warn('menu:', err); } return; }
+    }
+  }, false);
+  /* phím Esc đóng modal menu */
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape'||e.keyCode===27){ closeModal('aboutModal'); closeModal('servicesModal'); closeModal('quizModal'); } });
+})();
+</script>
 
 </body>
 </html>
