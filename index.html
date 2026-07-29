@@ -5948,7 +5948,10 @@ async function moKhoaLuanTuVi(){
 (function initMenuChucNang(){
   function moModal(id){ const m=document.getElementById(id); if(m) m.classList.add('open'); }
   function dongModal(id){ const m=document.getElementById(id); if(m) m.classList.remove('open'); }
-  function noi(id, fn){ const e=document.getElementById(id); if(e) e.addEventListener('click', fn); }
+  var __binds = [];
+  function noi(id, fn){ __binds.push([id, fn]); bindMot(id, fn); }
+  function bindMot(id, fn){ var e=document.getElementById(id); if(e && !e.dataset.kkb){ e.dataset.kkb='1'; e.addEventListener('click', fn); return true; } return false; }
+  function bindAll(){ __binds.forEach(function(p){ bindMot(p[0], p[1]); }); }
 
   /* ---- điều hướng menu ---- */
   noi('navAbout',    ()=>{ renderAbout(); moModal('aboutModal'); });
@@ -6023,7 +6026,8 @@ async function moKhoaLuanTuVi(){
     veLaSo(ls);
     document.getElementById('tvResult').style.display = 'block';
     document.getElementById('tvLuanFree').innerHTML = luanGiaiFree(ls);
-    document.getElementById('tvResult').scrollIntoView({behavior:'smooth', block:'start'});
+    var _rs = document.getElementById('tvResult');
+    if(_rs && _rs.scrollIntoView) _rs.scrollIntoView({behavior:'smooth', block:'start'});
   }
 
   /* =============== GAMES QUIZ =============== */
@@ -6141,18 +6145,7 @@ async function moKhoaLuanTuVi(){
   }
 
   /* init sau khi DOM sẵn sàng (HTML modal nằm sau script) */
-  function initSauDom(){
-    /* các nút đã nối ở trên qua noi(); chỉ cần chắc chắn gọi lại nếu phần tử chưa có */
-    ['navAbout','navServices','navQuiz'].forEach(id=>{
-      const e=document.getElementById(id);
-      if(e && !e.dataset.bound){
-        e.dataset.bound='1';
-        if(id==='navAbout')    e.addEventListener('click', ()=>{ renderAbout(); moModal('aboutModal'); });
-        if(id==='navServices') e.addEventListener('click', ()=>{ showSvcHome(); moModal('servicesModal'); });
-        if(id==='navQuiz')     e.addEventListener('click', ()=>{ renderQuizHome(); moModal('quizModal'); });
-      }
-    });
-  }
+  function initSauDom(){ bindAll(); }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initSauDom);
   else setTimeout(initSauDom, 0);
 })();
