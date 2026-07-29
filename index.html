@@ -1433,13 +1433,21 @@ footer{
 .tv-center .tvc-row{font-size:.78rem;color:var(--cream);line-height:1.7}
 .tv-cell .tvc-stars{flex:1;display:flex;flex-wrap:wrap;gap:2px 7px;align-content:flex-start;font-size:.74rem;line-height:1.35}
 .tv-cell .st-chinh{color:var(--gold-bright);font-weight:700}
-.tv-cell .st-phu{color:var(--cream)}
+.tv-cell .st-phu{color:#8FD69F}
+.tv-cell .st-sat{color:#E8A45C}
+.tv-cell .st-vong{color:var(--cream-dim);font-size:.66rem}
 .tv-cell .st-hoa{color:#E86A5C;font-weight:700}
+.tv-cell .tvc-top{display:flex;justify-content:space-between;align-items:center;gap:4px;font-size:.62rem;color:var(--gold);margin-bottom:3px;min-height:13px}
+.tv-cell .tvc-dh{font-weight:700;color:var(--gold-bright)}
+.tv-cell .tvc-th{color:var(--cream-dim);white-space:nowrap}
+.tv-cell .tvc-kv{border-radius:3px;padding:0 4px;font-size:.6rem;font-weight:700;color:#fff;line-height:1.5}
+.tv-cell .tvc-tuan{background:#8a1f1f}
+.tv-cell .tvc-triet{background:#1c4f8a}
 .tv-cell .tvc-foot{margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end;gap:6px;padding-top:4px}
 .tv-cell .tvc-cung{font-size:.72rem;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:.02em}
 .tv-cell .tvc-chi{font-size:.7rem;color:var(--cream-dim)}
 .tv-cell.tv-menh{background:rgba(201,162,39,.12);border:1px solid var(--gold)}
-.tv-cell.tv-than::after{content:'Thân';position:absolute;top:5px;right:6px;font-size:.62rem;color:#5FC98A;font-weight:700}
+.tv-cell.tv-than{box-shadow:inset 0 0 0 1px rgba(95,201,138,.5)}
 .tv-actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
 .tv-luan-free{font-size:.92rem;line-height:1.8;color:var(--cream)}
 .tv-luan-free h4{color:var(--gold-bright);font-family:var(--font-display);margin:16px 0 6px;font-size:1rem}
@@ -5487,11 +5495,13 @@ function anSaoLaSo(D,M,Y,gioIdx,gioiTinh,ten){
   /* Can của cung Dần theo Ngũ Dần */
   var canDan = [2,4,6,8,0,2,4,6,8,0][namCan]; /* Giáp/Kỷ->Bính... */
   var menhCan = (canDan + ((menh - 2 + 12) % 12)) % 10;
-  /* Cục theo nạp âm của (menhCan, menh) */
+  /* Cục theo nạp âm của cung Mệnh (menhCan, menh) */
   var idx60 = tvCanChi60(menhCan, menh);
   var hanh = TV_NAPAM[Math.floor(idx60/2)];
-  var napAmTen = TV_NAPAM_TEN[Math.floor(idx60/2)];
   var cuc = TV_CUC_SO[hanh];
+  /* Bản mệnh = nạp âm của NĂM sinh (can chi năm) */
+  var idxNam = tvCanChi60(namCan, namChi);
+  var napAmTen = TV_NAPAM_TEN[Math.floor(idxNam/2)];
 
   /* an Tử Vi */
   var Q = Math.ceil(ngay/cuc);
@@ -5530,9 +5540,90 @@ function anSaoLaSo(D,M,Y,gioIdx,gioiTinh,ten){
   dat(N(4+gio),'Văn Khúc','phu');
   dat(N(4+thang-1),'Tả Phù','phu');
   dat(N(10-(thang-1)),'Hữu Bật','phu');
-  var khoiViet = [[1,7],[0,8],[11,9],[11,9],[1,7],[0,8],[1,7],[6,2],[3,5],[3,5]][namCan];
+  /* Thiên Khôi/Việt: Giáp Mậu -> Sửu Mùi; Ất Kỷ -> Tý Thân; Bính Đinh -> Hợi Dậu;
+     Canh Tân -> Ngọ Dần (Mã Hổ); Nhâm Quý -> Mão Tỵ */
+  var khoiViet = [[1,7],[0,8],[11,9],[11,9],[1,7],[0,8],[6,2],[6,2],[3,5],[3,5]][namCan];
   dat(khoiViet[0],'Thiên Khôi','phu');
   dat(khoiViet[1],'Thiên Việt','phu');
+
+  /* ================= PHỤ TINH & SÁT TINH MỞ RỘNG ================= */
+  var duongNam = (namCan % 2 === 0);            /* can năm dương */
+  var laNam    = (gioiTinh === 'nam');
+  var nhomAD   = (duongNam === laNam);          /* true: Dương nam / Âm nữ (thuận lý) */
+
+  /* nhóm tam hợp năm chi: 0 Dần-Ngọ-Tuất · 1 Thân-Tý-Thìn · 2 Tỵ-Dậu-Sửu · 3 Hợi-Mão-Mùi */
+  var thg = ([2,6,10].indexOf(namChi)>=0)?0:([8,0,4].indexOf(namChi)>=0)?1:([5,9,1].indexOf(namChi)>=0)?2:3;
+  /* nhóm phương (3 chi liền): 0 Bắc(Hợi-Tý-Sửu) · 1 Đông(Dần-Mão-Thìn) · 2 Nam(Tỵ-Ngọ-Mùi) · 3 Tây(Thân-Dậu-Tuất) */
+  var ph  = ([11,0,1].indexOf(namChi)>=0)?0:([2,3,4].indexOf(namChi)>=0)?1:([5,6,7].indexOf(namChi)>=0)?2:3;
+
+  /* --- theo năm chi --- */
+  dat([8,2,11,5][thg],'Thiên Mã','phu');
+  dat([3,9,6,0][thg],'Đào Hoa','phu');
+  dat([11,5,2,8][thg],'Kiếp Sát','sat');
+  dat([10,4,1,7][thg],'Hoa Cái','phu');
+  dat(N(3-namChi),'Hồng Loan','phu');
+  dat(N(9-namChi),'Thiên Hỷ','phu');
+  dat(N(4+namChi),'Long Trì','phu');
+  dat(N(10-namChi),'Phượng Các','phu');
+  dat(N(6-namChi),'Thiên Khốc','sat');
+  dat(N(6+namChi),'Thiên Hư','sat');
+  dat([2,5,8,11][ph],'Cô Thần','sat');
+  dat([10,1,4,7][ph],'Quả Tú','sat');
+  dat(([0,6,3,9].indexOf(namChi)>=0)?5:([2,8,5,11].indexOf(namChi)>=0)?9:1,'Phá Toái','sat');
+
+  /* --- theo giờ --- */
+  dat(N(11-gio),'Địa Không','sat');
+  dat(N(11+gio),'Địa Kiếp','sat');
+  dat(N(6+gio),'Thai Phụ','phu');
+  dat(N(2+gio),'Phong Cáo','phu');
+  /* Hỏa - Linh: khởi theo tam hợp, đi theo giờ; chiều đảo giữa 2 nhóm âm dương */
+  var hoaKhoi = [1,2,3,9][thg], linhKhoi = (thg===0)?3:10;
+  dat(nhomAD ? N(hoaKhoi+gio) : N(hoaKhoi-gio),'Hỏa Tinh','sat');
+  dat(nhomAD ? N(linhKhoi-gio) : N(linhKhoi+gio),'Linh Tinh','sat');
+
+  /* --- theo tháng --- */
+  dat(N(9+(thang-1)),'Thiên Hình','sat');
+  dat(N(1+(thang-1)),'Thiên Riêu','sat');
+
+  /* --- theo ngày (từ Tả/Hữu/Xương) --- */
+  var taPhu = N(4+(thang-1)), huuBat = N(10-(thang-1)), vXuong = N(10-gio);
+  dat(N(taPhu+(ngay-1)),'Tam Thai','phu');
+  dat(N(huuBat-(ngay-1)),'Bát Tọa','phu');
+  dat(N(vXuong+(ngay-1)-1),'Ân Quang','phu');
+  dat(N(vXuong-(ngay-1)+1),'Thiên Quý','phu');
+
+  /* --- theo Lộc Tồn --- */
+  dat(N(locTon+8),'Quốc Ấn','phu');
+  dat(N(locTon+5),'Đường Phù','phu');
+
+  /* ================= 3 VÒNG SAO (mỗi vòng 12 sao) ================= */
+  var thuanVong = nhomAD;   /* Dương nam / Âm nữ -> an thuận; ngược lại nghịch */
+  /* Vòng Tràng Sinh: khởi theo Cục */
+  var TRANGSINH = ['Trường Sinh','Mộc Dục','Quan Đới','Lâm Quan','Đế Vượng','Suy','Bệnh','Tử','Mộ','Tuyệt','Thai','Dưỡng'];
+  var tsKhoi = ({2:8,5:8,3:11,4:5,6:2})[cuc];
+  for(var t=0;t<12;t++){ dat(thuanVong?N(tsKhoi+t):N(tsKhoi-t), TRANGSINH[t], 'vong'); }
+  /* Vòng Thái Tuế: khởi tại năm chi, luôn thuận */
+  var THAITUE = ['Thái Tuế','Thiếu Dương','Tang Môn','Thiếu Âm','Quan Phù','Tử Phù','Tuế Phá','Long Đức','Bạch Hổ','Phúc Đức','Điếu Khách','Trực Phù'];
+  for(var u=0;u<12;u++){ dat(N(namChi+u), THAITUE[u], 'vong'); }
+  /* Vòng Bác Sĩ: khởi tại Lộc Tồn, chiều theo âm dương nam nữ */
+  var BACSI = ['Bác Sĩ','Lực Sĩ','Thanh Long','Tiểu Hao','Tướng Quân','Tấu Thư','Phi Liêm','Hỷ Thần','Bệnh Phù','Đại Hao','Phục Binh','Quan Phủ'];
+  for(var v=0;v<12;v++){ dat(thuanVong?N(locTon+v):N(locTon-v), BACSI[v], 'vong'); }
+
+  /* ================= TUẦN - TRIỆT (không vong) ================= */
+  var giapChi = N(namChi - namCan);
+  var tuanArr = [N(giapChi-2), N(giapChi-1)];
+  var trietArr = [[8,9],[6,7],[4,5],[2,3],[0,1]][namCan % 5];
+
+  /* ================= ĐẠI HẠN & TIỂU HẠN ================= */
+  var daiHan = {}, tieuHan = {};
+  for(var c=0;c<12;c++){
+    var stepDH = thuanVong ? N(c-menh) : N(menh-c);
+    daiHan[c] = cuc + 10*stepDH;
+  }
+  var thKhoi = [4,10,7,1][thg];
+  for(var c2=0;c2<12;c2++){
+    tieuHan[c2] = laNam ? TV_CHI[N(namChi + c2 - thKhoi)] : TV_CHI[N(namChi + thKhoi - c2)];
+  }
 
   /* Tứ Hóa theo Can năm */
   var HOA = [
@@ -5564,7 +5655,9 @@ function anSaoLaSo(D,M,Y,gioIdx,gioiTinh,ten){
     namCan:namCan, namChi:namChi,
     menh:menh, than:than, menhCan:menhCan,
     hanh:hanh, napAm:napAmTen, cuc:cuc, cucTen:TV_CUC_TEN[cuc],
-    tuvi:tuvi, sao:sao, cungTen:cungTen
+    amDuong: (duongNam?'Dương':'Âm')+' '+(laNam?'Nam':'Nữ')+' ('+(nhomAD?'thuận lý':'nghịch lý')+')',
+    tuvi:tuvi, sao:sao, cungTen:cungTen,
+    daiHan:daiHan, tieuHan:tieuHan, tuan:tuanArr, triet:trietArr
   };
 }
 
@@ -5575,38 +5668,55 @@ function veLaSo(ls){
   /* tâm */
   html += '<div class="tv-cell tv-center" style="grid-column:2/4;grid-row:2/4">' +
     '<div class="tvc-name">'+ (ls.ten? escapeHtml(ls.ten) : 'LÁ SỐ TỬ VI') +'</div>' +
-    '<div class="tvc-row">'+(ls.gioiTinh==='nam'?'Nam mệnh':'Nữ mệnh')+'</div>' +
+    '<div class="tvc-row">'+ls.amDuong+'</div>' +
     '<div class="tvc-row">DL: '+ls.duong.ngay+'/'+ls.duong.thang+'/'+ls.duong.nam+' · Giờ '+TV_CHI[ls.gioIdx]+'</div>' +
     '<div class="tvc-row">ÂL: '+ls.am.ngay+'/'+ls.am.thang+'/'+ls.am.nam+(ls.am.nhuan?' (nhuận)':'')+'</div>' +
     '<div class="tvc-row">Tuổi: <b>'+TV_CAN[ls.namCan]+' '+TV_CHI[ls.namChi]+'</b></div>' +
     '<div class="tvc-row">Bản mệnh: <b>'+ls.napAm+'</b></div>' +
     '<div class="tvc-row">Cục: <b>'+ls.cucTen+'</b></div>' +
     '</div>';
+  /* thứ tự loại sao khi sắp xếp trong cung: chính -> phụ (cát) -> sát -> vòng */
+  var rank = {chinh:0, phu:1, sat:2, vong:3};
   /* 12 cung */
   for(var chi=0; chi<12; chi++){
     var p = chiPos[chi];
-    var stars = (ls.sao[chi]||[]).slice().sort(function(a,b){ return (a.loai==='chinh'?0:1)-(b.loai==='chinh'?0:1); });
+    var stars = (ls.sao[chi]||[]).slice().sort(function(a,b){ return (rank[a.loai]||9)-(rank[b.loai]||9); });
     var starHtml = stars.map(function(s){
-      var cls = s.loai==='chinh' ? 'st-chinh' : 'st-phu';
+      var cls = s.loai==='chinh' ? 'st-chinh' : (s.loai==='sat' ? 'st-sat' : (s.loai==='vong' ? 'st-vong' : 'st-phu'));
       var t = s.ten;
-      if(s.hoa) t += ' <span class="st-hoa">('+s.hoa+')</span>';
+      if(s.hoa) t += '<span class="st-hoa"> ('+s.hoa+')</span>';
       return '<span class="'+cls+'">'+t+'</span>';
     }).join('');
     var cls = 'tv-cell';
     if(chi===ls.menh) cls += ' tv-menh';
     if(chi===ls.than) cls += ' tv-than';
+    /* nhãn Tuần / Triệt của cung */
+    var kv = '';
+    if(ls.tuan && ls.tuan.indexOf(chi)>=0)  kv += '<span class="tvc-kv tvc-tuan">Tuần</span>';
+    if(ls.triet && ls.triet.indexOf(chi)>=0) kv += '<span class="tvc-kv tvc-triet">Triệt</span>';
+    /* đại hạn (tuổi bắt đầu vận 10 năm) + tiểu hạn (năm chi) */
+    var dh = (ls.daiHan && ls.daiHan[chi]!=null) ? ls.daiHan[chi] : '';
+    var th = (ls.tieuHan && ls.tieuHan[chi]) ? ls.tieuHan[chi] : '';
     html += '<div class="'+cls+'" style="grid-row:'+p.r+';grid-column:'+p.c+'">' +
+      '<div class="tvc-top">' +
+        '<span class="tvc-dh" title="Đại hạn từ tuổi">'+dh+'</span>' + kv +
+        '<span class="tvc-th" title="Tiểu hạn năm">'+(th?('năm '+th):'')+'</span>' +
+      '</div>' +
       '<div class="tvc-stars">'+starHtml+'</div>' +
-      '<div class="tvc-foot"><span class="tvc-cung">'+(ls.cungTen[chi]||'')+'</span><span class="tvc-chi">'+TV_CHI[chi]+'</span></div>' +
+      '<div class="tvc-foot"><span class="tvc-cung">'+(ls.cungTen[chi]||'')+
+        (chi===ls.than?' · Thân':'')+'</span><span class="tvc-chi">'+TV_CAN[(ls.menhCan!=null? ((ls.menhCan + ((chi-ls.menh+12)%12))%10) : 0)]+' '+TV_CHI[chi]+'</span></div>' +
       '</div>';
   }
   document.getElementById('tvChart').innerHTML = html;
 
+  var tuanTen = (ls.tuan||[]).map(function(c){return TV_CHI[c];}).join('-');
+  var trietTen = (ls.triet||[]).map(function(c){return TV_CHI[c];}).join('-');
   document.getElementById('tvInfo').innerHTML =
-    '<b>'+(ls.ten?escapeHtml(ls.ten)+' · ':'')+'</b>'+(ls.gioiTinh==='nam'?'Nam':'Nữ')+' · '+
-    'Sinh ngày '+ls.duong.ngay+'/'+ls.duong.thang+'/'+ls.duong.nam+' (DL), giờ '+TV_CHI[ls.gioIdx]+'. ' +
-    'Âm lịch: '+ls.am.ngay+'/'+ls.am.thang+'/'+ls.am.nam+'. ' +
-    'Tuổi <b>'+TV_CAN[ls.namCan]+' '+TV_CHI[ls.namChi]+'</b>, bản mệnh <b>'+ls.napAm+'</b>, <b>'+ls.cucTen+'</b>.';
+    '<b>'+(ls.ten?escapeHtml(ls.ten)+' · ':'')+'</b>'+ls.amDuong+' · '+
+    'Sinh '+ls.duong.ngay+'/'+ls.duong.thang+'/'+ls.duong.nam+' DL (ÂL '+ls.am.ngay+'/'+ls.am.thang+'/'+ls.am.nam+
+    (ls.am.nhuan?' nhuận':'')+'), giờ '+TV_CHI[ls.gioIdx]+'. ' +
+    'Tuổi <b>'+TV_CAN[ls.namCan]+' '+TV_CHI[ls.namChi]+'</b>, bản mệnh <b>'+ls.napAm+'</b>, <b>'+ls.cucTen+'</b>. ' +
+    'Tuần tại <b>'+tuanTen+'</b>, Triệt tại <b>'+trietTen+'</b>.';
 }
 
 /* diễn giải ngắn 14 chính tinh */
@@ -5616,7 +5726,7 @@ var TV_LUAN = {
   'Thái Dương':'quý tinh, quang minh chính đại, nhiệt thành, thích giúp người, chủ về danh tiếng.',
   'Vũ Khúc':'tài tinh, cương nghị quyết đoán, giỏi về tài chính, hành động thực tế.',
   'Thiên Đồng':'phúc tinh, hiền hòa lạc quan, hưởng phúc, tính tình ôn nhu dễ gần.',
-  'Liêm Trinh':'囚 tinh, cá tính mạnh, nguyên tắc, khi tốt thì liêm khiết, chủ về chuyển biến.',
+  'Liêm Trinh':'tù tinh (chủ hình pháp), cá tính mạnh, nguyên tắc, khi tốt thì liêm khiết, chủ về chuyển biến.',
   'Thiên Phủ':'khố tinh, ổn trọng bao dung, biết tích lũy, quản lý tốt, cuộc sống sung túc.',
   'Thái Âm':'phú tinh, dịu dàng tinh tế, giàu tình cảm, chủ về tài sản và điền trạch.',
   'Tham Lang':'đào hoa tinh, đa tài đa nghệ, giao thiệp rộng, ham học hỏi, nhiều ham muốn.',
@@ -5666,15 +5776,19 @@ function luanGiaiFull(ls){
     var chi = chiCuaCung[ten];
     var stars = (ls.sao[chi]||[]);
     var chinh = stars.filter(function(s){return s.loai==='chinh';});
-    html += '<p><b style="color:var(--gold-bright)">Cung '+ten+'</b> (tại '+TV_CHI[chi]+' - '+CUNG_MOTA[ten]+'): ';
+    var cat   = stars.filter(function(s){return s.loai==='phu';});
+    var sat   = stars.filter(function(s){return s.loai==='sat';});
+    var dh    = (ls.daiHan && ls.daiHan[chi]!=null) ? ls.daiHan[chi] : null;
+    html += '<p><b style="color:var(--gold-bright)">Cung '+ten+'</b> (tại '+TV_CHI[chi]+
+      (dh!=null?', đại hạn '+dh+'-'+(dh+9)+' tuổi':'')+' - '+CUNG_MOTA[ten]+'): ';
     if(chinh.length){
-      html += 'có ' + chinh.map(function(s){return s.ten + (s.hoa?' Hóa '+s.hoa:'');}).join(', ') + '. ';
+      html += 'có chính tinh <b>' + chinh.map(function(s){return s.ten + (s.hoa?' Hóa '+s.hoa:'');}).join(', ') + '</b>. ';
       chinh.forEach(function(s){ if(TV_LUAN[s.ten]) html += TV_LUAN[s.ten].charAt(0).toUpperCase()+TV_LUAN[s.ten].slice(1)+' '; });
     } else {
-      html += 'vô chính diệu, tính chất linh hoạt, chịu ảnh hưởng của cung xung chiếu. ';
+      html += 'vô chính diệu, tính chất linh hoạt, chịu ảnh hưởng của cung xung chiếu (mượn sao đối cung để luận). ';
     }
-    var phu = stars.filter(function(s){return s.loai==='phu';});
-    if(phu.length) html += '<span style="color:var(--cream-dim)">Phụ tinh: '+phu.map(function(s){return s.ten+(s.hoa?' Hóa '+s.hoa:'');}).join(', ')+'.</span>';
+    if(cat.length) html += '<span style="color:#7fbf7f">Cát tinh: '+cat.map(function(s){return s.ten+(s.hoa?' Hóa '+s.hoa:'');}).join(', ')+'. </span>';
+    if(sat.length) html += '<span style="color:#e08a8a">Sát tinh: '+sat.map(function(s){return s.ten;}).join(', ')+'. </span>';
     html += '</p>';
   });
   html += '<p style="color:var(--cream-dim);font-size:.85rem;margin-top:14px">Lưu ý: Luận giải tự động mang tính tham khảo, cung cấp cái nhìn tổng quan dựa trên vị trí các sao. Để có luận đoán sâu sắc theo cách cục, tam hợp, đại vận và lưu niên, nên tham vấn thêm chuyên gia.</p>';
@@ -5689,16 +5803,21 @@ function xuatPdfLaSo(){
   var cells='';
   cells += '<div class="c center" style="grid-column:2/4;grid-row:2/4">' +
     '<div class="nm">'+(ls.ten?escapeHtml(ls.ten):'LÁ SỐ TỬ VI')+'</div>' +
-    '<div>'+(ls.gioiTinh==='nam'?'Nam mệnh':'Nữ mệnh')+'</div>' +
+    '<div>'+ls.amDuong+'</div>' +
     '<div>DL: '+ls.duong.ngay+'/'+ls.duong.thang+'/'+ls.duong.nam+' - Giờ '+TV_CHI[ls.gioIdx]+'</div>' +
     '<div>ÂL: '+ls.am.ngay+'/'+ls.am.thang+'/'+ls.am.nam+'</div>' +
     '<div>Tuổi: '+TV_CAN[ls.namCan]+' '+TV_CHI[ls.namChi]+'</div>' +
-    '<div>Bản mệnh: '+ls.napAm+'</div><div>Cục: '+ls.cucTen+'</div></div>';
+    '<div>Bản mệnh: '+ls.napAm+'</div><div>Cục: '+ls.cucTen+'</div>' +
+    '<div>Tuần: '+(ls.tuan||[]).map(function(c){return TV_CHI[c];}).join('-')+' · Triệt: '+(ls.triet||[]).map(function(c){return TV_CHI[c];}).join('-')+'</div></div>';
+  var rank={chinh:0,phu:1,sat:2,vong:3};
   for(var chi=0;chi<12;chi++){
     var p=chiPos[chi];
-    var stars=(ls.sao[chi]||[]).slice().sort(function(a,b){return (a.loai==='chinh'?0:1)-(b.loai==='chinh'?0:1);});
-    var sh=stars.map(function(s){ var t=s.ten+(s.hoa?' ('+s.hoa+')':''); return '<span class="'+(s.loai==='chinh'?'chinh':'phu')+'">'+t+'</span>'; }).join(' ');
+    var stars=(ls.sao[chi]||[]).slice().sort(function(a,b){return (rank[a.loai]||9)-(rank[b.loai]||9);});
+    var sh=stars.map(function(s){ var t=s.ten+(s.hoa?' ('+s.hoa+')':''); var cl=s.loai==='chinh'?'chinh':(s.loai==='sat'?'sat':(s.loai==='vong'?'vong':'phu')); return '<span class="'+cl+'">'+t+'</span>'; }).join(' ');
+    var kv=''; if((ls.tuan||[]).indexOf(chi)>=0) kv+='<span class="kv">Tuần</span>'; if((ls.triet||[]).indexOf(chi)>=0) kv+='<span class="kv kvt">Triệt</span>';
+    var dh=(ls.daiHan&&ls.daiHan[chi]!=null)?ls.daiHan[chi]:''; var th=(ls.tieuHan&&ls.tieuHan[chi])?ls.tieuHan[chi]:'';
     cells += '<div class="c'+(chi===ls.menh?' menh':'')+'" style="grid-row:'+p.r+';grid-column:'+p.c+'">' +
+      '<div class="top"><span class="dh">'+dh+'</span>'+kv+'<span class="th">'+(th?'năm '+th:'')+'</span></div>' +
       '<div class="stars">'+sh+'</div>' +
       '<div class="foot"><b>'+(ls.cungTen[chi]||'')+'</b> · '+TV_CHI[chi]+(chi===ls.than?' · Thân':'')+'</div></div>';
   }
@@ -5718,7 +5837,13 @@ function xuatPdfLaSo(){
     '.c.menh{background:#fdf3d6}' +
     '.stars{flex:1;line-height:1.5}' +
     '.stars .chinh{color:#8a1f1f;font-weight:700;margin-right:5px;white-space:nowrap}' +
-    '.stars .phu{color:#333;margin-right:5px;white-space:nowrap}' +
+    '.stars .phu{color:#1c6b1c;margin-right:5px;white-space:nowrap}' +
+    '.stars .sat{color:#b06a00;margin-right:5px;white-space:nowrap}' +
+    '.stars .vong{color:#888;font-size:9px;margin-right:4px;white-space:nowrap}' +
+    '.top{display:flex;justify-content:space-between;align-items:center;font-size:9px;color:#7a5c00;margin-bottom:2px}' +
+    '.top .dh{font-weight:700}' +
+    '.top .kv{background:#8a1f1f;color:#fff;border-radius:3px;padding:0 3px;font-size:8px;margin:0 2px}' +
+    '.top .kv.kvt{background:#1c4f8a}' +
     '.foot{margin-top:auto;font-size:10px;color:#7a5c00;border-top:1px solid #eee;padding-top:3px}' +
     '.sign{text-align:right;font-size:11px;color:#999;font-style:italic;margin-top:10px}' +
     '@media print{body{padding:0}}' +
