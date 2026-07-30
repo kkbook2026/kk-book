@@ -1263,6 +1263,8 @@ body.desktop-view .hdr-inner{flex-wrap:nowrap}
 .w-p-tx b{display:block;color:var(--gold-bright);font-size:.95rem;font-weight:700;margin-bottom:2px}
 .w-p-tx small{display:block;color:var(--cream-dim);font-size:.82rem;line-height:1.55}
 .w-p-tx small b{color:#FFE08A;display:inline}
+.welcome-note{position:relative;z-index:1;margin:0 0 16px;padding:12px 15px;border-radius:12px;background:linear-gradient(135deg,rgba(0,194,168,.09),rgba(201,162,39,.07));border:1px solid rgba(0,194,168,.22);font-size:.86rem;line-height:1.65;color:var(--cream-dim);text-align:center}
+.welcome-note b{color:var(--gold-bright)}
 .welcome-cta{display:flex;gap:10px;flex-wrap:wrap;position:relative;z-index:1}
 .welcome-cta .btn{flex:1;min-width:150px;justify-content:center;padding:13px 16px;font-size:.95rem}
 .welcome-off{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:14px;font-size:.8rem;color:var(--cream-dim);cursor:pointer}
@@ -2219,8 +2221,8 @@ footer{
       <p class="welcome-lead">Không gian đọc sách mở cửa chào đón <b>tất cả mọi người</b> - nơi hội tụ một kho tri thức đồ sộ trải khắp các lĩnh vực: khoa học, lịch sử, công nghệ, kinh tế, văn hoá, đời sống và hơn thế nữa.</p>
     </div>
     <div class="welcome-stats">
-      <div class="w-stat"><b id="wStatBooks">—</b><span>Đầu sách</span></div>
-      <div class="w-stat"><b id="wStatCats">12</b><span>Lĩnh vực</span></div>
+      <div class="w-stat"><b>100+</b><span>Đầu sách</span></div>
+      <div class="w-stat"><b>20+</b><span>Lĩnh vực</span></div>
       <div class="w-stat"><b>1000+</b><span>Câu hỏi Quiz</span></div>
     </div>
     <div class="welcome-perks">
@@ -2228,6 +2230,7 @@ footer{
       <div class="w-perk"><div class="w-p-ic">🎯</div><div class="w-p-tx"><b>KK-QUIZ - Chơi thả ga, không giới hạn</b><small>Thử tài với hàng loạt bộ câu hỏi khoa học vui. <b>Ghi danh để được vinh danh</b> trên Bảng Vàng Top 20!</small></div></div>
       <div class="w-perk"><div class="w-p-ic">🧭</div><div class="w-p-tx"><b>Khoa học Á Đông</b><small>Lập lá số Tử Vi, Xem ngày tốt, Rút quẻ Kinh Dịch - khám phá đầy thú vị.</small></div></div>
     </div>
+    <div class="welcome-note">Chúng tôi rất mong nhận được <b>sự góp ý và ủng hộ của quý độc giả</b> để không ngừng nâng cao chất lượng sách và hoàn thiện website ngày một tốt hơn. Mỗi phản hồi của bạn là nguồn động viên quý giá trên hành trình lan tỏa tri thức. <b>Trân trọng cảm ơn!</b></div>
     <div class="welcome-cta">
       <button class="btn btn-gold" id="wGoBooks">📚 Khám phá tủ sách ngay</button>
       <button class="btn btn-ghost" id="wGoQuiz">🎯 Chơi KK-QUIZ</button>
@@ -5877,8 +5880,6 @@ function showWelcomePopup(){
   try{ if(sessionStorage.getItem('kkWelcome_seen')==='1') return; }catch(e){}
   var m=document.getElementById('welcomeModal'); if(!m) return;
   if(typeof siteCfg!=='undefined' && siteCfg.locked && (typeof toiLaChuTrang!=='function' || !toiLaChuTrang())) return; /* đang bảo trì thì không hiện */
-  var wb=document.getElementById('wStatBooks'); if(wb && typeof books!=='undefined' && books.length) wb.textContent=books.length;
-  var wc=document.getElementById('wStatCats'); if(wc && typeof CATS!=='undefined') wc.textContent=CATS.length;
   m.classList.add('open');
 }
 function dongWelcome(){
