@@ -23,6 +23,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,600&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -2300,6 +2301,9 @@ footer{
       <button class="btn btn-ghost btn-sm" id="quizFilePick">Chọn file .json</button>
       <input type="file" id="quizFileInput" accept=".json,application/json" hidden>
       <button class="btn btn-ghost btn-sm" id="quizTemplateBtn">Tải thư viện mẫu (6 bộ)</button>
+      <button class="btn btn-ghost btn-sm" id="quizExcelTemplate">Tải mẫu Excel (.xlsx)</button>
+      <button class="btn btn-ghost btn-sm" id="quizExcelPick">Import Excel</button>
+      <input type="file" id="quizExcelInput" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
       <button class="btn btn-ghost btn-sm" id="quizResetBtn">Khôi phục mẫu gốc</button>
     </div>
     <div id="quizAdminNote" style="font-size:.85rem;margin-top:8px"></div>
@@ -6003,12 +6007,12 @@ function pdfLaSoHTML(ls){
     + '.s-vong{color:#9a8f7a;white-space:nowrap;display:block;font-size:9px}'
     + '.cell-foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;font-size:9px;color:#6b5a38;border-top:1px dotted #d3c191;padding-top:2px}'
     + '.cell-foot .ts{color:#7a1f1f;font-weight:700}'
-    + '.lstb td.center{background:#faf5e6;border:2px solid #8a6a1f;vertical-align:top}'
-    + '.center-in{padding:8px 12px;text-align:center;height:100%}'
+    + '.lstb td.center{background:#faf5e6;border:2px solid #8a6a1f;vertical-align:middle}'
+    + '.center-in{padding:10px 14px;text-align:center;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center}'
     + '.ct-title{font-size:20px;font-weight:800;color:#7a1f1f;letter-spacing:2px}'
     + '.ct-sub{font-size:10px;color:#8a6a1f;letter-spacing:1px;margin-top:1px}'
     + '.ct-web{font-size:10px;color:#1c4f8a;margin-bottom:6px}'
-    + '.ct-info{width:100%;font-size:11px;border-collapse:collapse}'
+    + '.ct-info{width:100%;max-width:340px;margin:0 auto;font-size:11px;border-collapse:collapse}'
     + '.ct-info td{padding:2px 6px;text-align:left;vertical-align:top;border-bottom:1px dotted #e0d3af}'
     + '.ct-info .k{color:#6b5a38;width:40%;white-space:nowrap}'
     + '.ct-info .v{color:#2a2118;font-weight:600}'
@@ -6017,7 +6021,7 @@ function pdfLaSoHTML(ls){
     + '.legend b{padding:1px 6px;border-radius:3px;color:#fff}'
     + '.lg-chinh{background:#a11}.lg-phu{background:#1c7a2f}.lg-sat{background:#c8951a}.lg-vong{background:#9a8f7a}'
     + '.foot-sign{text-align:right;font-size:10px;color:#b3a98a;font-style:italic;margin-top:6px}'
-    + '@media print{body{padding:0;background:#fff}}'
+    + '@media print{body{padding:0;background:#fff}.lstb{height:172mm}.lstb td.cell{height:auto}}'
     + '</style></head><body>'
     + '<div class="head"><h1>LÁ SỐ TỬ VI ĐẨU SỐ</h1>'
     + '<div class="m">'+e(ls.ten||'')+(ls.ten?' · ':'')+(ls.gioiTinh==='nam'?'Nam mệnh':'Nữ mệnh')+' · Sinh ÂL '+ls.am.ngay+'/'+ls.am.thang+'/'+ls.am.nam+' (DL '+ls.duong.ngay+'/'+ls.duong.thang+'/'+ls.duong.nam+') · giờ '+CHI[ls.gioIdx]+'</div></div>'
@@ -6442,7 +6446,10 @@ async function moKhoaLuanTuVi(){
        '<button class="btn btn-gold btn-sm qm-new">+ Tạo bộ quiz mới</button>'+
        '<button class="btn btn-ghost btn-sm qm-export">⬇ Export (.json)</button>'+
        '<button class="btn btn-ghost btn-sm qm-import">⬆ Import (.json)</button>'+
+       '<button class="btn btn-ghost btn-sm qm-xltmpl">⬇ Mẫu Excel</button>'+
+       '<button class="btn btn-ghost btn-sm qm-xlimport">⬆ Import Excel</button>'+
        '<input type="file" class="qm-file" accept=".json,application/json" hidden>'+
+       '<input type="file" class="qm-xlfile" accept=".xlsx,.xls" hidden>'+
        '</div>';
     h+='<div style="font-size:.85rem;color:var(--cream-dim);margin:4px 0 6px">Đang có <b>'+list.length+'</b> bộ quiz:</div>';
     h+='<div class="qm-list">'+ list.map(function(q){
@@ -6530,8 +6537,8 @@ async function moKhoaLuanTuVi(){
   }
   function escAttr(s){ return escHtml(s).replace(/'/g,'&#39;'); }
   function escHtml(s){ return (''+(s==null?'':s)).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
-  function taiMauQuiz(){
-    var mau=[
+  function mauQuizLib(){
+    return [
       {id:"ls-vietnam",ico:"🏛️",name:"Lịch sử Việt Nam",desc:"Kiến thức lịch sử cơ bản",cauhoi:[
         {loai:"chon",q:"Chiến thắng Điện Biên Phủ diễn ra năm nào?",o:["1954","1945","1975","1930"],d:0},
         {loai:"chon",q:"Vị vua đầu tiên của nhà Lý là ai?",o:["Lý Thái Tổ","Lý Thái Tông","Lý Thường Kiệt","Lý Nhân Tông"],d:0},
@@ -6574,10 +6581,67 @@ async function moKhoaLuanTuVi(){
         {loai:"dungsai",q:"Nhện là côn trùng.",d:1}
       ]}
     ];
+  }
+  function taiMauQuiz(){
+    var mau=mauQuizLib();
     var blob=new Blob([JSON.stringify(mau,null,2)],{type:'application/json'});
     var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='thu-vien-quiz-mau-kk.json'; document.body.appendChild(a); a.click();
     setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },500);
     var note=el('quizAdminNote'); if(note){ note.style.color='#8FD69F'; note.textContent='Đã tải "thu-vien-quiz-mau-kk.json" gồm 6 bộ (29 câu). Sửa nội dung rồi Import để tạo kho quiz phong phú.'; }
+  }
+  /* ===== EXCEL: tải mẫu + import ===== */
+  function quizToRows(list){
+    var rows=[];
+    (list||[]).forEach(function(q){ (q.cauhoi||[]).forEach(function(c){
+      var isDS=(c.loai==='dungsai'); var o=c.o||[];
+      rows.push({'Bộ':q.name,'Icon':q.ico||'','Mô tả':q.desc||'','Loại':isDS?'Đúng/Sai':'Trắc nghiệm','Câu hỏi':c.q,'A':isDS?'':(o[0]||''),'B':isDS?'':(o[1]||''),'C':isDS?'':(o[2]||''),'D':isDS?'':(o[3]||''),'Đáp án đúng':isDS?(c.d===0?'Đúng':'Sai'):(['A','B','C','D','E','F'][c.d]||'A')});
+    }); });
+    return rows;
+  }
+  function taiMauExcel(){
+    var note=el('quizAdminNote');
+    if(typeof XLSX==='undefined'){ if(note){note.style.color='#E8A45C';note.textContent='Thư viện Excel đang tải, thử lại sau vài giây.';} return; }
+    var rows=quizToRows(mauQuizLib());
+    var ws=XLSX.utils.json_to_sheet(rows,{header:['Bộ','Icon','Mô tả','Loại','Câu hỏi','A','B','C','D','Đáp án đúng']});
+    ws['!cols']=[{wch:22},{wch:6},{wch:24},{wch:12},{wch:44},{wch:16},{wch:16},{wch:16},{wch:16},{wch:12}];
+    var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Quiz');
+    XLSX.writeFile(wb,'mau-quiz-excel-kk.xlsx');
+    if(note){ note.style.color='#8FD69F'; note.textContent='Đã tải "mau-quiz-excel-kk.xlsx". Mỗi dòng = 1 câu; các dòng cùng tên "Bộ" gộp thành 1 quiz. Cột "Đáp án đúng": ghi A/B/C/D (trắc nghiệm) hoặc Đúng/Sai.'; }
+  }
+  function pickCol(row,keys){ for(var i=0;i<keys.length;i++){ for(var k in row){ if((''+k).toLowerCase().trim()===keys[i]) return row[k]; } } return ''; }
+  function excelRowsToQuizzes(rows){
+    var map={}, order=[];
+    (rows||[]).forEach(function(r){
+      var ten=(''+pickCol(r,['bộ','bo','bộ quiz','tên','ten','quiz'])).trim();
+      var q=(''+pickCol(r,['câu hỏi','cau hoi','câu','cauhoi','question','q'])).trim();
+      if(!ten||!q) return;
+      if(!map[ten]){ map[ten]={id:'',ico:(''+pickCol(r,['icon','biểu tượng'])).trim()||'📝',name:ten,desc:(''+pickCol(r,['mô tả','mo ta','desc','mô tả ngắn'])).trim(),cauhoi:[]}; order.push(ten); }
+      var loai=(''+pickCol(r,['loại','loai','type','kiểu'])).toLowerCase();
+      var isDS=/sai|dungsai|đúng\/sai|đúng-sai|true|false|d\/s/.test(loai);
+      var dungRaw=(''+pickCol(r,['đáp án đúng','dap an dung','đáp án','dapan','đúng','correct','answer','key'])).trim();
+      if(isDS){ var dd=/^(sai|s|false|1|b)$/i.test(dungRaw)?1:0; map[ten].cauhoi.push({loai:'dungsai',q:q,o:['Đúng','Sai'],d:dd}); return; }
+      var o=[pickCol(r,['a','đáp án a']),pickCol(r,['b','đáp án b']),pickCol(r,['c','đáp án c']),pickCol(r,['d','đáp án d']),pickCol(r,['e']),pickCol(r,['f'])].map(function(x){return (''+x).trim();}).filter(function(x){return x!=='';});
+      if(o.length<2) return;
+      var L={a:0,b:1,c:2,d:3,e:4,f:5}, lr=dungRaw.toLowerCase(), d=0;
+      if(L[lr]!=null) d=L[lr];
+      else if(/^\d+$/.test(dungRaw)){ var n=parseInt(dungRaw,10); d=(n>=1&&n<=o.length)?n-1:0; }
+      else { var ix=o.map(function(x){return x.toLowerCase();}).indexOf(lr); if(ix>=0) d=ix; }
+      if(d>=o.length) d=0;
+      map[ten].cauhoi.push({loai:'chon',q:q,o:o,d:d});
+    });
+    var out=[]; order.forEach(function(t){ var nq=normQuiz(map[t]); if(nq) out.push(nq); }); return out;
+  }
+  function docExcelQuiz(buf, note){
+    if(typeof XLSX==='undefined'){ if(note){note.style.color='#E86A5C';note.textContent='Thư viện Excel chưa sẵn sàng, thử lại sau.';} return; }
+    var wb; try{ wb=XLSX.read(buf,{type:'array'}); }catch(err){ if(note){note.style.color='#E86A5C';note.textContent='Không đọc được file Excel.';} return; }
+    var ws=wb.Sheets[wb.SheetNames[0]]; if(!ws){ if(note){note.style.color='#E86A5C';note.textContent='File Excel rỗng.';} return; }
+    var rows=XLSX.utils.sheet_to_json(ws,{defval:''});
+    var qs=excelRowsToQuizzes(rows);
+    if(!qs.length){ if(note){note.style.color='#E86A5C';note.textContent='Không thấy câu hỏi hợp lệ. Cần có cột "Bộ" và "Câu hỏi".';} return; }
+    var cur=window.KKQuiz.get().slice(), ids=cur.map(function(x){return x.id;});
+    qs.forEach(function(nq){ var i=ids.indexOf(nq.id); if(i>=0)cur[i]=nq; else {cur.push(nq);ids.push(nq.id);} });
+    luuQuizzes(cur, note);
+    if(window.toast) window.toast('Đã nhập '+qs.length+' bộ quiz từ Excel.');
   }
   setTimeout(renderQuizAdmin, 300);
 
@@ -6656,6 +6720,8 @@ async function moKhoaLuanTuVi(){
     ['#quizImportReplace', function(){ var t=el('quizImportText'), note=el('quizAdminNote'); if(!t) return; var r=parseQuizInput(t.value); if(r.err){ if(note){note.style.color='#E86A5C';note.textContent=r.err;} return; } luuQuizzes(r.list, note); t.value=''; }],
     ['#quizFilePick',  function(){ if(el('quizFileInput')) el('quizFileInput').click(); }],
     ['#quizTemplateBtn', function(){ taiMauQuiz(); }],
+    ['#quizExcelTemplate', function(){ taiMauExcel(); }],
+    ['#quizExcelPick', function(){ var f=el('quizExcelInput'); if(f) f.click(); }],
     ['#quizResetBtn',  function(){ window.KKQuiz.reset(); if(typeof fbDb!=='undefined'&&fbDb){ fbDb.collection('settings').doc('quizzes').delete().catch(function(){}); } renderQuizAdmin(); var note=el('quizAdminNote'); if(note){ note.style.color='#8FD69F'; note.textContent='Đã khôi phục bộ quiz mẫu gốc.'; } }],
     ['.quiz-del',      function(e,elm){ var id=elm.getAttribute('data-qid'); var cur=window.KKQuiz.get().filter(function(x){return x.id!==id;}); if(!cur.length){ (window.toast||alert)('Phải còn ít nhất 1 bộ quiz.'); return; } luuQuizzes(cur, el('quizAdminNote')); }],
     /* ---- trình quản lý (panel) ---- */
@@ -6664,6 +6730,8 @@ async function moKhoaLuanTuVi(){
     ['.qm-del',        function(e,elm){ setQm(elm); var id=elm.getAttribute('data-qid'); var cur=window.KKQuiz.get().filter(function(x){return x.id!==id;}); if(!cur.length){ (window.toast||alert)('Phải còn ít nhất 1 bộ quiz.'); return; } if(!confirm('Xoá bộ quiz này?')) return; luuQuizzes(cur, qmNote()); renderQuizManager(qmTarget); }],
     ['.qm-export',     function(e,elm){ setQm(elm); exportQuiz(); }],
     ['.qm-import',     function(e,elm){ setQm(elm); var f=el(qmTarget)?el(qmTarget).querySelector('.qm-file'):null; if(f) f.click(); }],
+    ['.qm-xltmpl',     function(e,elm){ setQm(elm); taiMauExcel(); var n=qmNote(); if(n){ n.style.color='#8FD69F'; n.textContent='Đã tải "mau-quiz-excel-kk.xlsx". Sửa nội dung rồi bấm Import Excel.'; } }],
+    ['.qm-xlimport',   function(e,elm){ setQm(elm); var xf=el(qmTarget)?el(qmTarget).querySelector('.qm-xlfile'):null; if(xf) xf.click(); }],
     /* ---- trình soạn (editor) ---- */
     ['#qeAddQ',        function(e,elm){ setQm(elm); dongBoEditor(); editQuiz.cauhoi.push({loai:'chon',q:'',o:['',''],d:0}); renderEditor(); }],
     ['.qe-qdel',       function(e,elm){ setQm(elm); dongBoEditor(); var qi=parseInt(elm.getAttribute('data-qi'),10); editQuiz.cauhoi.splice(qi,1); if(!editQuiz.cauhoi.length) editQuiz.cauhoi.push({loai:'chon',q:'',o:['',''],d:0}); renderEditor(); }],
@@ -6697,6 +6765,14 @@ async function moKhoaLuanTuVi(){
     if(e.target && e.target.id==='quizFileInput'){
       var f=e.target.files && e.target.files[0];
       if(f){ var rd=new FileReader(); rd.onload=function(){ if(el('quizImportText')) el('quizImportText').value=rd.result; var note=el('quizAdminNote'); if(note){ note.style.color='#8FD69F'; note.textContent='Đã đọc file. Bấm "Nhập / Thêm" hoặc "Thay thế toàn bộ" để lưu.'; } }; rd.readAsText(f); }
+    }
+    if(e.target && e.target.id==='quizExcelInput'){
+      var xf=e.target.files && e.target.files[0];
+      if(xf){ var xr=new FileReader(); xr.onload=function(){ docExcelQuiz(new Uint8Array(xr.result), el('quizAdminNote')); renderQuizAdmin(); }; xr.readAsArrayBuffer(xf); }
+    }
+    if(e.target && e.target.classList && e.target.classList.contains('qm-xlfile')){
+      setQm(e.target); var xf2=e.target.files && e.target.files[0];
+      if(xf2){ var xr2=new FileReader(); xr2.onload=function(){ docExcelQuiz(new Uint8Array(xr2.result), qmNote()); renderQuizManager(qmTarget); }; xr2.readAsArrayBuffer(xf2); }
     }
     /* đổi loại câu hỏi trong trình soạn -> vẽ lại phần đáp án */
     if(e.target && e.target.classList && e.target.classList.contains('qe-type')){
