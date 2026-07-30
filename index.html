@@ -1219,6 +1219,11 @@ body.desktop-view .hdr-inner{flex-wrap:nowrap}
 .sec-state.on{color:var(--ok)}
 .sec-state.off{color:var(--danger)}
 .sec-desc{font-size:.74rem;color:var(--cream-dim);line-height:1.6;max-width:340px}
+.assist-box{border:1px solid rgba(196,107,240,.35);background:linear-gradient(180deg,rgba(196,107,240,.08),rgba(196,107,240,.02));border-radius:12px;padding:14px 15px;margin-top:6px}
+.assist-box .sec-desc{max-width:none}
+.assist-box .sec-desc b{color:#D7A6F5}
+.assist-lock{display:flex;align-items:center;gap:7px;font-size:.82rem;color:var(--cream);white-space:nowrap;padding-bottom:8px;cursor:pointer}
+.assist-lock input{width:16px;height:16px;accent-color:#C46BF0}
 
 /* ============ MODALS ============ */
 .modal-backdrop{
@@ -2417,6 +2422,35 @@ footer{
       <button class="btn btn-ghost btn-sm" id="testQr">Xem thử mã QR</button>
     </div>
     <div id="qrTest" style="display:none;text-align:center;margin-top:12px"></div>
+
+    <!-- ===== SIÊU TRỢ LÝ (cấu hình riêng, bảo mật) ===== -->
+    <div class="section-head" style="margin-top:26px;margin-bottom:4px">
+      <h2 style="font-size:1.05rem">🤖 Siêu Trợ Lý - cấu hình riêng</h2>
+    </div>
+    <div class="assist-box">
+      <div class="sec-row">
+        <div>
+          <div class="sec-state" id="assistState">-</div>
+          <div class="sec-desc">Áp dụng riêng cho các sách thuộc lĩnh vực <b>Siêu Trợ Lý</b> (hoặc tên có "Siêu Trợ Lý"), độc lập hoàn toàn với thu phí sách thường phía trên.</div>
+        </div>
+        <button class="btn btn-gold btn-sm" id="assistToggle">Bật</button>
+      </div>
+      <div class="dock-row" style="gap:12px;margin-top:10px;flex-wrap:wrap;align-items:flex-end">
+        <div class="field" style="flex:1;min-width:120px">
+          <label>Số trang đọc thử (Free)</label>
+          <input type="number" id="asFree" min="0" max="50" value="2">
+        </div>
+        <div class="field" style="flex:1;min-width:130px">
+          <label>Số tiền thanh toán (VND)</label>
+          <input type="number" id="asAmount" min="1000" step="1000" value="99000">
+        </div>
+        <label class="assist-lock"><input type="checkbox" id="asLocked"> Khoá hoàn toàn (không cho mua)</label>
+      </div>
+      <div class="modal-actions" style="justify-content:flex-start;margin-top:10px">
+        <button class="btn btn-gold btn-sm" id="saveAssist">Lưu cấu hình Siêu Trợ Lý</button>
+      </div>
+      <div id="assistNote" style="font-size:.84rem;margin-top:8px"></div>
+    </div>
 
     <!-- ===== YÊU CẦU THANH TOÁN ===== -->
     <div class="section-head" style="margin-top:26px;margin-bottom:4px">
@@ -4846,6 +4880,8 @@ function openSharedBook(){
 let siteCfg   = { locked:false, msg:'' };
 let adminCfg  = { emails:[], phone:'' };
 let payCfg    = { enabled:false, freePages:5, amount:10000, bank:'', acc:'', name:'' };
+/* Cấu hình RIÊNG cho bộ Siêu Trợ Lý - độc lập với sách thường (bật/tắt, trang đọc thử, giá, khoá) */
+let assistCfg = { enabled:false, freePages:2, amount:99000, locked:false };
 let myAccess  = { all:false, books:{} };
 
 /* danh sách email có quyền quản trị = chủ chính + admin phụ */
@@ -4874,14 +4910,16 @@ async function loadSiteConfig(soLanThu){
     return;
   }
   try{
-    const [s1, s2, s3] = await Promise.all([
+    const [s1, s2, s3, s4] = await Promise.all([
       fbDb.collection('settings').doc('site').get(),
       fbDb.collection('settings').doc('admins').get(),
-      fbDb.collection('settings').doc('pay').get()
+      fbDb.collection('settings').doc('pay').get(),
+      fbDb.collection('settings').doc('assist').get()
     ]);
     if(s1.exists) siteCfg  = Object.assign(siteCfg,  s1.data());
     if(s2.exists) adminCfg = Object.assign(adminCfg, s2.data());
     if(s3.exists){ payCfg = Object.assign(payCfg, s3.data()); __payCfgDaLoad = true; }
+    if(s4.exists) assistCfg = Object.assign(assistCfg, s4.data());
   }catch(e){
     console.warn('cfg', e && e.code);
     /* đọc lỗi (mạng chập) -> thử lại vài lần, KHÔNG để mất trạng thái thu phí */
@@ -4924,7 +4962,8 @@ async function loadMyAccess(){
   }catch(e){ console.warn('access', e && e.code); }
 }
 function duocDocTiep(bookId){
-  if(!payCfg.enabled) return true;
+  var cfg = cauHinhThuPhi(bookId);
+  if(!cfg.enabled) return true;
   if(toiLaChuTrang()) return true;
   if(myAccess.all) return true;
   return !!myAccess.books[bookId];
@@ -4961,13 +5000,30 @@ async function layIP(){
 }
 
 /* ---- GIÁ RIÊNG THEO TỪNG CUỐN SÁCH ----
-   Ưu tiên: giá đặt tay trên cuốn sách (book.price) > giá theo nhóm sách > giá chung.
-   Bộ sách "Siêu trợ lý" để giá riêng theo yêu cầu tác giả. */
+   Ưu tiên: giá đặt tay trên cuốn sách (book.price) > cấu hình Siêu Trợ Lý > giá chung. */
 const GIA_SIEU_TRO_LY = 9999999;
+/* Nhận diện sách thuộc bộ Siêu Trợ Lý (theo lĩnh vực 'assist' hoặc tên có "sieu tro ly") */
+function laSieuTroLy(b){
+  if(!b) return false;
+  var cat = (typeof fixCat==='function') ? fixCat(b.cat) : b.cat;
+  if(cat === 'assist') return true;
+  try{ return /sieutroly/.test(khongDau((b.title||'')).replace(/\s+/g,'')); }catch(e){ return false; }
+}
+/* Cấu hình thu phí HIỆU LỰC cho 1 cuốn: sách Siêu Trợ Lý dùng assistCfg, còn lại dùng payCfg */
+function cauHinhThuPhi(bookId){
+  var b = (typeof books !== 'undefined') ? books.find(function(x){ return x.id === (bookId || rBookId); }) : null;
+  if(b && laSieuTroLy(b)){
+    return { isAssist:true, enabled: !!assistCfg.enabled, freePages: (assistCfg.freePages!=null?assistCfg.freePages:2) };
+  }
+  return { isAssist:false, enabled: !!payCfg.enabled, freePages: (payCfg.freePages||5) };
+}
 function giaSach(bookId){
   const b = (typeof books !== 'undefined') ? books.find(x => x.id === (bookId || rBookId)) : null;
   if(b && typeof b.price === 'number' && b.price > 0) return b.price;
-  if(b && /sieutroly/.test(khongDau(b.title || '').replace(/\s+/g,''))) return GIA_SIEU_TRO_LY;
+  if(b && laSieuTroLy(b)){
+    if(assistCfg.locked) return GIA_SIEU_TRO_LY;      /* khoá hoàn toàn - không bán */
+    return assistCfg.amount || 99000;                  /* giá riêng của Siêu Trợ Lý */
+  }
   return payCfg.amount || 10000;
 }
 
@@ -4993,7 +5049,7 @@ function moTuongThuPhi(){
   const wall = $('#payWall');
   const ma = veQR();
   const soTien = giaSach(rBookId);
-  $('#pwTitle').textContent = 'Bạn đã đọc hết ' + (payCfg.freePages || 5) + ' trang miễn phí';
+  $('#pwTitle').textContent = 'Bạn đã đọc hết ' + cauHinhThuPhi(rBookId).freePages + ' trang miễn phí';
   $('#pwSub').textContent   = 'Chuyển khoản ' + tienVN(soTien) + ' để đọc trọn cuốn sách này.';
   $('#pwInfo').innerHTML =
     (payCfg.bank ? '<div>Ngân hàng: <b>' + escapeHtml(payCfg.bank) + '</b></div>' : '') +
@@ -5016,14 +5072,14 @@ function dongTuongThuPhi(){
 
 /* CHỐT CHẶN: gọi trước mỗi lần đổi trang */
 function chanTrang(trang){
-  /* payCfg chưa load xong -> nếu đang vượt trang miễn phí mặc định thì load lại rồi mới quyết định,
-     tránh trường hợp thu phí bị "tắt" oan do cấu hình chưa kịp về */
+  var cfg = cauHinhThuPhi(rBookId);
+  /* payCfg chưa load xong -> nếu đang vượt trang miễn phí mặc định thì load lại rồi mới quyết định */
   if(!__payCfgDaLoad && trang > 5){
     loadSiteConfig();
   }
-  if(!payCfg.enabled) return true;
+  if(!cfg.enabled) return true;
   if(duocDocTiep(rBookId)) return true;
-  const free = payCfg.freePages || 5;
+  const free = cfg.freePages;
   if(trang <= free) return true;
   rPage = free;                       /* giữ ở trang cuối miễn phí */
   renderPage();
@@ -5197,6 +5253,18 @@ function veTrangThaiQuanTri(){
   $('#payBank').value   = payCfg.bank || '';
   $('#payAcc').value    = payCfg.acc  || '';
   $('#payName').value   = payCfg.name || '';
+  /* Siêu Trợ Lý */
+  if($('#assistState')){
+    $('#assistState').textContent = assistCfg.locked
+      ? '🔒 ĐANG KHOÁ - Siêu Trợ Lý không cho mua/đọc tiếp'
+      : (assistCfg.enabled
+          ? '🟢 ĐANG THU PHÍ - miễn phí ' + (assistCfg.freePages!=null?assistCfg.freePages:2) + ' trang, sau đó ' + tienVN(assistCfg.amount||99000)
+          : '⚪ Đang TẮT - Siêu Trợ Lý đọc miễn phí toàn bộ');
+    $('#assistToggle').textContent = assistCfg.enabled ? 'Tắt thu phí' : 'Bật thu phí';
+    $('#asFree').value    = (assistCfg.freePages!=null?assistCfg.freePages:2);
+    $('#asAmount').value  = assistCfg.amount || 99000;
+    $('#asLocked').checked = !!assistCfg.locked;
+  }
 }
 
 async function luuSite(patch){
@@ -5271,6 +5339,39 @@ function initAdminExtras(){
       return true;
     }catch(e){ toast('Lỗi khi lưu, thử lại: ' + (e.code||e.message)); return false; }
   }
+
+  /* ===== SIÊU TRỢ LÝ (cấu hình riêng) ===== */
+  async function luuAssist(){
+    if(!chiChuTrang()) return false;
+    const note = $('#assistNote');
+    const data = {
+      enabled:   !!assistCfg.enabled,
+      locked:    !!$('#asLocked').checked,
+      freePages: Math.max(0, parseInt($('#asFree').value) || 0),
+      amount:    Math.max(1000, parseInt($('#asAmount').value) || 99000),
+      updated:   firebase.firestore.FieldValue.serverTimestamp()
+    };
+    try{
+      await fbDb.collection('settings').doc('assist').set(data, {merge:true});
+      Object.assign(assistCfg, data);
+      veTrangThaiQuanTri();
+      if(note){ note.style.color='var(--ok)'; note.textContent='Đã lưu cấu hình Siêu Trợ Lý.'; }
+      toast('Đã lưu cấu hình Siêu Trợ Lý');
+      return true;
+    }catch(e){
+      if(note){ note.style.color='var(--danger)'; note.textContent='Lỗi khi lưu: ' + (e.code||e.message); }
+      toast('Lỗi khi lưu Siêu Trợ Lý: ' + (e.code||e.message)); return false;
+    }
+  }
+  if($('#assistToggle')) $('#assistToggle').addEventListener('click', async ()=>{
+    if(!chiChuTrang()) return;
+    const truoc = assistCfg.enabled;
+    assistCfg.enabled = !assistCfg.enabled;
+    const ok = await luuAssist();
+    if(!ok){ assistCfg.enabled = truoc; veTrangThaiQuanTri(); }
+  });
+  if($('#saveAssist')) $('#saveAssist').addEventListener('click', luuAssist);
+
   $('#testQr').addEventListener('click', ()=>{
     const box = $('#qrTest');
     const bank = ($('#payBank').value||'').trim().toUpperCase();
@@ -5652,7 +5753,7 @@ initAdminExtras();
 $('#pwPaid').addEventListener('click', guiYeuCauThanhToan);
 $('#pwCodeBtn').addEventListener('click', dungMaMoKhoa);
 $('#pwCode').addEventListener('keydown', e=>{ if(e.key==='Enter') dungMaMoKhoa(); });
-$('#pwBack').addEventListener('click', ()=>{ dongTuongThuPhi(); sangTrang(payCfg.freePages || 5); });
+$('#pwBack').addEventListener('click', ()=>{ dongTuongThuPhi(); sangTrang(cauHinhThuPhi(rBookId).freePages); });
 setTimeout(initVisitCounter, 1500);
 setTimeout(loadSiteConfig, 1200);
 fbInit();
