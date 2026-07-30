@@ -2465,6 +2465,25 @@ footer{
     </div>
     <div class="stat-detail" id="statDetail"></div>
 
+    <!-- ===== THỐNG KÊ THÀNH VIÊN ===== -->
+    <div class="section-head" style="margin-top:26px;margin-bottom:4px">
+      <h2 style="font-size:1.05rem">👥 Thống kê thành viên</h2>
+    </div>
+    <div class="sec-row">
+      <div>
+        <div class="sec-state" id="memState">Danh sách tài khoản đã đăng ký &amp; điểm KK-QUIZ</div>
+        <div class="sec-desc">Chỉ quản trị viên thấy email đầy đủ. Trên bảng xếp hạng công khai, email được ẩn bớt để bảo mật.</div>
+      </div>
+      <button class="btn btn-gold btn-sm" id="memRefresh">Tải danh sách thành viên</button>
+    </div>
+    <div class="stat-grid" id="memGrid" style="display:none">
+      <div class="stat-card"><div class="stat-num" id="mvTong">0</div><div class="stat-lb">Tổng thành viên</div></div>
+      <div class="stat-card"><div class="stat-num" id="mvXacThuc">0</div><div class="stat-lb">Đã có điểm Quiz</div></div>
+      <div class="stat-card"><div class="stat-num" id="mvMoiTuan">0</div><div class="stat-lb">Mới trong 7 ngày</div></div>
+      <div class="stat-card"><div class="stat-num" id="mvTopDiem">0</div><div class="stat-lb">Điểm cao nhất</div></div>
+    </div>
+    <div class="stat-detail" id="memDetail"></div>
+
     <div class="section-head" style="margin-top:26px;margin-bottom:4px">
       <h2 style="font-size:1.05rem" data-i18n="manageBooks">Quản lý sách</h2>
     </div>
@@ -5477,6 +5496,87 @@ function initAdminExtras(){
   const stBtn = $('#statRefresh');
   if(stBtn) stBtn.addEventListener('click', taiThongKe);
   window.__taiThongKe = taiThongKe;
+
+  /* ===== THỐNG KÊ THÀNH VIÊN (chỉ quản trị) ===== */
+  async function taiThongKeThanhVien(){
+    if(!toiLaChuTrang()) return;
+    var st = $('#memState'), grid = $('#memGrid'), detail = $('#memDetail');
+    st.textContent = 'Đang tải danh sách thành viên...';
+    try{
+      if(fbUser) await fbUser.getIdToken(true);
+      var res = await Promise.all([
+        fbDb.collection('members').limit(1000).get(),
+        fbDb.collection('quizScores').limit(1000).get()
+      ]);
+      var memSnap = res[0], qsSnap = res[1];
+      var diemMap = {}, tenMap = {};
+      qsSnap.forEach(function(d){ var v=d.data()||{}; diemMap[d.id]=v.total||0; if(v.name) tenMap[d.id]=v.name; });
+      var ds = [], nay = Date.now(), tuan = 0, coDiem = 0, topDiem = 0;
+      memSnap.forEach(function(d){
+        var m = d.data()||{};
+        var joined = '';
+        var jts = 0;
+        if(m.joined && m.joined.toDate){ try{ var dt=m.joined.toDate(); jts=dt.getTime(); joined=dt.toLocaleString('vi-VN'); }catch(e){} }
+        if(jts && (nay - jts) <= 7*864e5) tuan++;
+        var diem = diemMap[d.id]||0;
+        if(diem>0) coDiem++;
+        if(diem>topDiem) topDiem=diem;
+        ds.push({ email:m.email||'-', ten:m.name||tenMap[d.id]||'-', joined:joined, jts:jts, diem:diem });
+      });
+      ds.sort(function(a,b){ return (b.diem-a.diem) || (b.jts-a.jts); });
+      $('#mvTong').textContent = memSnap.size;
+      $('#mvXacThuc').textContent = coDiem;
+      $('#mvMoiTuan').textContent = tuan;
+      $('#mvTopDiem').textContent = topDiem;
+      grid.style.display = 'grid';
+      st.textContent = 'Đã cập nhật lúc ' + new Date().toLocaleString('vi-VN') + ' · ' + memSnap.size + ' thành viên';
+      if(ds.length){
+        var html = '<div class="stat-table-wrap"><table><thead><tr>' +
+          '<th>#</th><th>Email (đầy đủ)</th><th>Tên hiển thị</th><th>Ngày tham gia</th><th>Điểm KK-QUIZ</th>' +
+          '</tr></thead><tbody>';
+        ds.slice(0,500).forEach(function(m,i){
+          html += '<tr>' +
+            '<td>' + (i+1) + '</td>' +
+            '<td><b>' + escapeHtml(m.email) + '</b></td>' +
+            '<td>' + escapeHtml(m.ten) + '</td>' +
+            '<td style="font-size:.75rem;color:var(--cream-dim)">' + escapeHtml(m.joined||'-') + '</td>' +
+            '<td style="color:var(--gold-bright);font-weight:700">' + (m.diem||0) + '</td>' +
+          '</tr>';
+        });
+        html += '</tbody></table></div>';
+        detail.innerHTML = html;
+      } else {
+        detail.innerHTML = '<div class="sec-desc" style="margin-top:8px">Chưa có thành viên nào đăng ký.</div>';
+      }
+    }catch(e){
+      var code = e && e.code ? e.code : '';
+      st.textContent = (code.indexOf('permission')>=0)
+        ? 'Chưa đủ quyền đọc danh sách thành viên (cần cấu hình Firestore Rules cho members / quizScores).'
+        : 'Lỗi tải danh sách: ' + (code || (e && e.message) || 'không rõ');
+    }
+  }
+  var memBtn = $('#memRefresh');
+  if(memBtn) memBtn.addEventListener('click', taiThongKeThanhVien);
+  window.__taiThongKeThanhVien = taiThongKeThanhVien;
+}
+
+/* Ẩn bớt ký tự email/tên để bảo mật danh tính trên bảng công khai */
+function maskEmailCong(str){
+  str = String(str==null?'':str).trim();
+  if(!str) return 'Ẩn danh';
+  var at = str.indexOf('@');
+  if(at > 0){
+    var local = str.slice(0, at), dom = str.slice(at);
+    var shown;
+    if(local.length <= 2) shown = local.charAt(0) + '***';
+    else if(local.length <= 4) shown = local.slice(0,2) + '***';
+    else shown = local.slice(0,2) + '***' + local.slice(-1);
+    return shown + dom;
+  }
+  /* không phải email -> ẩn giữa tên */
+  if(str.length <= 2) return str.charAt(0) + '***';
+  if(str.length <= 5) return str.slice(0,2) + '***';
+  return str.slice(0,3) + '***' + str.slice(-1);
 }
 
 /* ---------------- BỘ ĐẾM LƯỢT TRUY CẬP ---------------- */
@@ -7205,7 +7305,7 @@ async function moKhoaLuanTuVi(){
         if(!(qid in best) || score > best[qid]) best[qid] = score;
         var total = 0; Object.keys(best).forEach(function(k){ total += (best[k]||0); });
         var nm = (typeof memberName==='function' ? memberName() : '') || (fbUser.email||'').split('@')[0] || 'Thành viên';
-        ref.set({ name: nm, bestByBo: best, total: total,
+        ref.set({ name: nm, email: (fbUser.email||''), bestByBo: best, total: total,
           updated: firebase.firestore.FieldValue.serverTimestamp() }, {merge:true})
           .then(function(){ napBangXepHang(); }).catch(function(){});
       }).catch(function(){});
@@ -7217,13 +7317,17 @@ async function moKhoaLuanTuVi(){
     fbDb.collection('quizScores').orderBy('total','desc').limit(20).get().then(function(snap){
       if(!snap || snap.empty){ box.innerHTML='<li class="qb-empty">Chưa có ai ghi danh.<br>Hãy là người đầu tiên!</li>'; return; }
       var myUid = (typeof fbUser!=='undefined' && fbUser) ? fbUser.uid : null;
+      var laAdmin = (typeof toiLaChuTrang==='function') && toiLaChuTrang();
       var rows=[], rank=0;
       snap.forEach(function(doc){
         rank++; var v=doc.data()||{};
         var medal = rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
         var me = (doc.id===myUid) ? ' qb-me' : '';
         var top = rank<=3 ? ' qb-top' : '';
-        rows.push('<li class="qb-item'+me+top+'"><span class="qb-rk">'+medal+'</span><span class="qb-nm">'+escHtml(v.name||'Ẩn danh')+(me?' <small>(bạn)</small>':'')+'</span><span class="qb-pt">'+(v.total||0)+'</span></li>');
+        /* hiển thị tên: quản trị thấy email đầy đủ; người thường thấy email/tên đã ẩn bớt */
+        var raw = v.email || v.name || 'Ẩn danh';
+        var hien = laAdmin ? raw : (typeof maskEmailCong==='function' ? maskEmailCong(raw) : raw);
+        rows.push('<li class="qb-item'+me+top+'"><span class="qb-rk">'+medal+'</span><span class="qb-nm">'+escHtml(hien)+(me?' <small>(bạn)</small>':'')+'</span><span class="qb-pt">'+(v.total||0)+'</span></li>');
       });
       box.innerHTML = rows.join('');
     }).catch(function(e){
