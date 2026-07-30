@@ -1410,6 +1410,27 @@ footer{
 .tv-leap input{width:auto}
 .quiz-admin-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 12px;border:1px solid rgba(201,162,39,.18);border-radius:9px;margin-bottom:7px;font-size:.9rem;background:rgba(201,162,39,.04)}
 .quiz-admin-item b{color:var(--cream)}
+.quiz-adminbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 14px;border:1px solid rgba(201,162,39,.28);border-radius:10px;background:rgba(201,162,39,.06);margin-bottom:14px;font-size:.9rem;color:var(--cream-dim)}
+.quiz-type{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:20px;font-size:.72rem;background:rgba(201,162,39,.18);color:var(--gold-bright)}
+.quiz-type.ds{background:rgba(143,214,159,.18);color:#8FD69F}
+.quiz-opts.quiz-ds{display:flex;gap:12px;flex-wrap:wrap}
+.quiz-opts.quiz-ds .quiz-opt{flex:1;min-width:120px}
+.qm-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.qe-form{border:1px solid rgba(201,162,39,.28);border-radius:12px;padding:14px;margin-top:10px;background:rgba(15,24,48,.5)}
+.qe-form input,.qe-form select{padding:9px 11px;border-radius:9px;background:var(--navy-800,#0f1830);border:1px solid rgba(201,162,39,.3);color:var(--cream);font-size:.88rem}
+.qe-row{display:flex;gap:8px;margin-bottom:8px}
+.qe-ico{width:70px;text-align:center} .qe-name{flex:1}
+.qe-desc{width:100%;margin-bottom:12px}
+.qe-q{border:1px solid rgba(201,162,39,.16);border-radius:10px;padding:11px;margin-bottom:10px;background:rgba(201,162,39,.03)}
+.qe-qtop{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.qe-qtop b{color:var(--gold-bright);font-size:.9rem}
+.qe-qtext{width:100%;margin-bottom:8px}
+.qe-optrow{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.qe-optrow input[type=radio]{width:auto;accent-color:var(--gold-bright)}
+.qe-opt{flex:1}
+.qe-fixed{padding:6px 10px;border-radius:8px;background:rgba(201,162,39,.1);color:var(--cream)}
+.qe-hint{font-size:.78rem;color:var(--cream-dim);margin-top:4px}
+.qe-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}
 .tuvi-form label{display:flex;flex-direction:column;gap:6px;font-size:.84rem;color:var(--cream-dim)}
 .tuvi-form input, .tuvi-form select{
   padding:11px 13px;border-radius:10px;font-size:.95rem;
@@ -2278,7 +2299,7 @@ footer{
       <button class="btn btn-ghost btn-sm" id="quizImportReplace">Thay thế toàn bộ</button>
       <button class="btn btn-ghost btn-sm" id="quizFilePick">Chọn file .json</button>
       <input type="file" id="quizFileInput" accept=".json,application/json" hidden>
-      <button class="btn btn-ghost btn-sm" id="quizTemplateBtn">Tải mẫu định dạng</button>
+      <button class="btn btn-ghost btn-sm" id="quizTemplateBtn">Tải thư viện mẫu (6 bộ)</button>
       <button class="btn btn-ghost btn-sm" id="quizResetBtn">Khôi phục mẫu gốc</button>
     </div>
     <div id="quizAdminNote" style="font-size:.85rem;margin-top:8px"></div>
@@ -5703,7 +5724,7 @@ function anSaoLaSo(D,M,Y,gioIdx,gioiTinh,ten,laAm,nhuan){
   /* 12 cung tên đặt nghịch từ Mệnh */
   var CUNG = ['Mệnh','Phụ Mẫu','Phúc Đức','Điền Trạch','Quan Lộc','Nô Bộc','Thiên Di','Tật Ách','Tài Bạch','Tử Tức','Phu Thê','Huynh Đệ'];
   var cungTen = {};
-  for(var i=0;i<12;i++){ cungTen[N(menh - i)] = CUNG[i]; }
+  for(var i=0;i<12;i++){ cungTen[N(menh + i)] = CUNG[i]; }
 
   return {
     ten: ten||'', gioiTinh: gioiTinh,
@@ -5856,63 +5877,160 @@ function luanGiaiFull(ls){
 function xuatPdfLaSo(){
   var ls = window.__laso;
   if(!ls){ toast('Chưa có lá số để xuất.'); return; }
-  var chiPos = {5:{r:1,c:1},6:{r:1,c:2},7:{r:1,c:3},8:{r:1,c:4},4:{r:2,c:1},9:{r:2,c:4},3:{r:3,c:1},10:{r:3,c:4},2:{r:4,c:1},1:{r:4,c:2},0:{r:4,c:3},11:{r:4,c:4}};
-  var cells='';
-  cells += '<div class="c center" style="grid-column:2/4;grid-row:2/4">' +
-    '<div class="nm">'+(ls.ten?escapeHtml(ls.ten):'LÁ SỐ TỬ VI')+'</div>' +
-    '<div>'+ls.amDuong+'</div>' +
-    '<div>DL: '+ls.duong.ngay+'/'+ls.duong.thang+'/'+ls.duong.nam+' - Giờ '+TV_CHI[ls.gioIdx]+'</div>' +
-    '<div>ÂL: '+ls.am.ngay+'/'+ls.am.thang+'/'+ls.am.nam+'</div>' +
-    '<div>Tuổi: '+TV_CAN[ls.namCan]+' '+TV_CHI[ls.namChi]+'</div>' +
-    '<div>Bản mệnh: '+ls.napAm+'</div><div>Cục: '+ls.cucTen+'</div>' +
-    '<div>Tuần: '+(ls.tuan||[]).map(function(c){return TV_CHI[c];}).join('-')+' · Triệt: '+(ls.triet||[]).map(function(c){return TV_CHI[c];}).join('-')+'</div></div>';
-  var rank={chinh:0,phu:1,sat:2,vong:3};
-  for(var chi=0;chi<12;chi++){
-    var p=chiPos[chi];
-    var stars=(ls.sao[chi]||[]).slice().sort(function(a,b){return (rank[a.loai]||9)-(rank[b.loai]||9);});
-    var sh=stars.map(function(s){ var t=s.ten+(s.hoa?' ('+s.hoa+')':''); var cl=s.loai==='chinh'?'chinh':(s.loai==='sat'?'sat':(s.loai==='vong'?'vong':'phu')); return '<span class="'+cl+'">'+t+'</span>'; }).join(' ');
-    var kv=''; if((ls.tuan||[]).indexOf(chi)>=0) kv+='<span class="kv">Tuần</span>'; if((ls.triet||[]).indexOf(chi)>=0) kv+='<span class="kv kvt">Triệt</span>';
-    var dh=(ls.daiHan&&ls.daiHan[chi]!=null)?ls.daiHan[chi]:''; var th=(ls.tieuHan&&ls.tieuHan[chi])?ls.tieuHan[chi]:'';
-    cells += '<div class="c'+(chi===ls.menh?' menh':'')+'" style="grid-row:'+p.r+';grid-column:'+p.c+'">' +
-      '<div class="top"><span class="dh">'+dh+'</span>'+kv+'<span class="th">'+(th?'năm '+th:'')+'</span></div>' +
-      '<div class="stars">'+sh+'</div>' +
-      '<div class="foot"><b>'+(ls.cungTen[chi]||'')+'</b> · '+TV_CHI[chi]+(chi===ls.than?' · Thân':'')+'</div></div>';
-  }
   var w = window.open('', '_blank');
   if(!w){ toast('Trình duyệt chặn cửa sổ in. Hãy cho phép popup rồi thử lại.'); return; }
-  w.document.write(
-    '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Lá số Tử Vi - '+(ls.ten||'')+'</title>' +
-    '<style>' +
-    '*{box-sizing:border-box;font-family:"Segoe UI",Arial,sans-serif}' +
-    'body{margin:0;padding:18px;background:#fff;color:#111}' +
-    'h1{text-align:center;font-size:18px;margin:0 0 4px;color:#7a5c00}' +
-    '.meta{text-align:center;font-size:12px;color:#555;margin-bottom:12px}' +
-    '.grid{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,150px);gap:3px;border:2px solid #b8912a;padding:3px}' +
-    '.c{border:1px solid #d8c58a;border-radius:4px;padding:5px 6px;font-size:11px;display:flex;flex-direction:column;min-height:0}' +
-    '.c.center{align-items:center;justify-content:center;text-align:center;gap:3px;background:#faf6ea}' +
-    '.c.center .nm{font-size:14px;font-weight:800;color:#7a5c00}' +
-    '.c.menh{background:#fdf3d6}' +
-    '.stars{flex:1;line-height:1.5}' +
-    '.stars .chinh{color:#8a1f1f;font-weight:700;margin-right:5px;white-space:nowrap}' +
-    '.stars .phu{color:#1c6b1c;margin-right:5px;white-space:nowrap}' +
-    '.stars .sat{color:#b06a00;margin-right:5px;white-space:nowrap}' +
-    '.stars .vong{color:#888;font-size:9px;margin-right:4px;white-space:nowrap}' +
-    '.top{display:flex;justify-content:space-between;align-items:center;font-size:9px;color:#7a5c00;margin-bottom:2px}' +
-    '.top .dh{font-weight:700}' +
-    '.top .kv{background:#8a1f1f;color:#fff;border-radius:3px;padding:0 3px;font-size:8px;margin:0 2px}' +
-    '.top .kv.kvt{background:#1c4f8a}' +
-    '.foot{margin-top:auto;font-size:10px;color:#7a5c00;border-top:1px solid #eee;padding-top:3px}' +
-    '.sign{text-align:right;font-size:11px;color:#999;font-style:italic;margin-top:10px}' +
-    '@media print{body{padding:0}}' +
-    '</style></head><body>' +
-    '<h1>LÁ SỐ TỬ VI ĐẨU SỐ</h1>' +
-    '<div class="meta">'+(ls.ten?escapeHtml(ls.ten)+' - ':'')+(ls.gioiTinh==='nam'?'Nam':'Nữ')+' - Sinh '+ls.duong.ngay+'/'+ls.duong.thang+'/'+ls.duong.nam+' (DL) giờ '+TV_CHI[ls.gioIdx]+'</div>' +
-    '<div class="grid">'+cells+'</div>' +
-    '<div class="sign">Lập bởi THƯ VIỆN SÁCH CÁ NHÂN - KK-2026 - Tác giả : Nguyễn Duy Điển</div>' +
-    '</body></html>'
-  );
+  w.document.write(pdfLaSoHTML(ls));
   w.document.close();
-  setTimeout(function(){ try{ w.focus(); w.print(); }catch(_){} }, 400);
+  setTimeout(function(){ try{ w.focus(); w.print(); }catch(_){} }, 500);
+}
+function pdfLaSoHTML(ls){
+  var CAN=TV_CAN, CHI=TV_CHI;
+  var CHU_MENH=['Tham Lang','Cự Môn','Lộc Tồn','Văn Khúc','Liêm Trinh','Vũ Khúc','Phá Quân','Vũ Khúc','Liêm Trinh','Văn Khúc','Lộc Tồn','Cự Môn'];
+  var CHU_THAN=['Hỏa Tinh','Thiên Tướng','Thiên Lương','Thiên Đồng','Văn Xương','Thiên Cơ','Hỏa Tinh','Thiên Tướng','Thiên Lương','Thiên Đồng','Văn Xương','Thiên Cơ'];
+  var HANH=['Thủy','Thổ','Mộc','Mộc','Thổ','Hỏa','Hỏa','Thổ','Kim','Kim','Thổ','Thủy'];
+  var HANH_CLASS={'Kim':'h-kim','Mộc':'h-moc','Thủy':'h-thuy','Hỏa':'h-hoa','Thổ':'h-tho'};
+  var TS12=['Trường Sinh','Tràng Sinh','Mộc Dục','Quan Đới','Lâm Quan','Đế Vượng','Suy','Bệnh','Tử','Mộ','Tuyệt','Thai','Dưỡng'];
+  var CUNG=['Mệnh','Phụ Mẫu','Phúc Đức','Điền Trạch','Quan Lộc','Nô Bộc','Thiên Di','Tật Ách','Tài Bạch','Tử Tức','Phu Thê','Huynh Đệ'];
+  var ABBR={'Mệnh':'MỆNH','Phụ Mẫu':'PHỤ','Phúc Đức':'PHÚC','Điền Trạch':'ĐIỀN','Quan Lộc':'QUAN','Nô Bộc':'NÔ','Thiên Di':'DI','Tật Ách':'TẬT','Tài Bạch':'TÀI','Tử Tức':'TỬ','Phu Thê':'PHỐI','Huynh Đệ':'HUYNH'};
+  function e(s){ return (''+(s==null?'':s)).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];}); }
+
+  var jd = tvJd(ls.duong.ngay, ls.duong.thang, ls.duong.nam);
+  var ngayCan=((jd+9)%10+10)%10, ngayChi=((jd+1)%12+12)%12;
+  var canDan=((ls.namCan*2+2)%10+10)%10;
+  var thangCan=((canDan+(ls.am.thang-1))%10+10)%10, thangChi=((ls.am.thang+1)%12+12)%12;
+  var gioCan=((ngayCan*2+ls.gioIdx)%10+10)%10, gioChi=ls.gioIdx;
+  function canCung(chi){ return (canDan + ((chi-2+12)%12)) % 10; }
+
+  var curY = new Date().getFullYear();
+  var tuoiTa = curY - ls.am.nam + 1;
+  var xemCan=((curY+6)%10+10)%10, xemChi=((curY+8)%12+12)%12;
+
+  var dm=ls.menh;
+  for(var c0=0;c0<12;c0++){ if(ls.daiHan && ls.daiHan[c0]!=null && ls.daiHan[c0]<=tuoiTa && tuoiTa<ls.daiHan[c0]+10) dm=c0; }
+
+  function cellHtml(chi){
+    var arr=(ls.sao[chi]||[]).slice();
+    var chinh=arr.filter(function(s){return s.loai==='chinh';});
+    var phu  =arr.filter(function(s){return s.loai==='phu';});
+    var sat  =arr.filter(function(s){return s.loai==='sat';});
+    var vong =arr.filter(function(s){return s.loai==='vong';});
+    var ts=''; vong=vong.filter(function(s){ if(TS12.indexOf(s.ten)>=0){ ts=(s.ten==='Trường Sinh'?'Tràng Sinh':s.ten); return false; } return true; });
+
+    var chinhHtml = chinh.map(function(s){ return '<div class="s-chinh">'+e(s.ten)+(s.hoa?' <span class="hoa">('+e(s.hoa)+')</span>':'')+'</div>'; }).join('');
+    var otherHtml = ''
+      + phu.map(function(s){ return '<span class="s-phu">'+e(s.ten)+(s.hoa?'('+e(s.hoa)+')':'')+'</span>'; }).join('')
+      + sat.map(function(s){ return '<span class="s-sat">'+e(s.ten)+'</span>'; }).join('')
+      + vong.map(function(s){ return '<span class="s-vong">'+e(s.ten)+'</span>'; }).join('');
+
+    var hanh=HANH[chi], dau=(chi%2===0)?'+':'-', ccan=CAN[canCung(chi)];
+    var tuoiDH=(ls.daiHan&&ls.daiHan[chi]!=null)?ls.daiHan[chi]:'';
+    var namTH=(ls.tieuHan&&ls.tieuHan[chi])?ls.tieuHan[chi]:'';
+    var vaiDV=CUNG[((chi-dm)%12+12)%12];
+    var isMenh=(chi===ls.menh), isThan=(chi===ls.than);
+    var kv=''; if((ls.tuan||[]).indexOf(chi)>=0) kv+='<span class="badge tuan">Tuần</span>'; if((ls.triet||[]).indexOf(chi)>=0) kv+='<span class="badge triet">Triệt</span>';
+
+    return '<div class="cwrap'+(isMenh?' menh':'')+'">'
+      + '<div class="cell-top">'
+        + '<span class="pos"><b>'+e(ccan)+' '+CHI[chi]+'</b> <span class="hanh '+HANH_CLASS[hanh]+'">'+dau+hanh+'</span></span>'
+        + '<span class="dh-age">'+tuoiDH+'</span>'
+      + '</div>'
+      + '<div class="cung-name'+(isMenh?' is-menh':'')+'">'+e((ls.cungTen[chi]||'').toUpperCase())+(isThan?' <span class="than">&lt;THÂN&gt;</span>':'')+' '+kv+'</div>'
+      + '<div class="cell-stars">'+chinhHtml+'<div class="others">'+otherHtml+'</div></div>'
+      + '<div class="cell-foot">'
+        + '<span class="dv">ĐV.'+ABBR[vaiDV]+'</span>'
+        + '<span class="ts">'+e(ts)+'</span>'
+        + '<span class="ln">'+ (namTH?'LN.'+namTH:'') +'</span>'
+      + '</div></div>';
+  }
+
+  function row(k,v){ return '<tr><td class="k">'+k+'</td><td class="v">'+v+'</td></tr>'; }
+  var center = '<div class="center-in">'
+    + '<div class="ct-title">LÁ SỐ TỬ VI</div>'
+    + '<div class="ct-sub">THƯ VIỆN SÁCH CÁ NHÂN · KK-2026</div>'
+    + '<div class="ct-web">https://kk-book.com</div>'
+    + '<table class="ct-info">'
+    + row('Họ tên', '<b>'+e(ls.ten||'(chưa nhập)')+'</b>')
+    + row('Giới tính', ls.gioiTinh==='nam'?'Nam':'Nữ')
+    + row('Năm sinh', CAN[ls.namCan]+' '+CHI[ls.namChi]+' ('+ls.am.nam+')')
+    + row('Tháng', ls.am.thang+' - '+CAN[thangCan]+' '+CHI[thangChi])
+    + row('Ngày', ls.am.ngay+' - '+CAN[ngayCan]+' '+CHI[ngayChi])
+    + row('Giờ', CAN[gioCan]+' '+CHI[gioChi])
+    + row('Dương lịch', ls.duong.ngay+'/'+ls.duong.thang+'/'+ls.duong.nam)
+    + row('Năm xem', CAN[xemCan]+' '+CHI[xemChi]+' ('+curY+'), '+tuoiTa+' tuổi')
+    + row('Âm dương', ls.amDuong)
+    + row('Bản mệnh', ls.napAm)
+    + row('Cục', ls.cucTen)
+    + row('Chủ Mệnh', CHU_MENH[ls.menh])
+    + row('Chủ Thân', CHU_THAN[ls.namChi])
+    + '</table>'
+    + '<div class="ct-tt">Tuần: '+(ls.tuan||[]).map(function(c){return CHI[c];}).join(' - ')+' &nbsp;·&nbsp; Triệt: '+(ls.triet||[]).map(function(c){return CHI[c];}).join(' - ')+'</div>'
+    + '</div>';
+
+  var table = '<table class="lstb"><tbody>'
+    + '<tr><td class="cell">'+cellHtml(5)+'</td><td class="cell">'+cellHtml(6)+'</td><td class="cell">'+cellHtml(7)+'</td><td class="cell">'+cellHtml(8)+'</td></tr>'
+    + '<tr><td class="cell">'+cellHtml(4)+'</td><td class="cell center" colspan="2" rowspan="2">'+center+'</td><td class="cell">'+cellHtml(9)+'</td></tr>'
+    + '<tr><td class="cell">'+cellHtml(3)+'</td><td class="cell">'+cellHtml(10)+'</td></tr>'
+    + '<tr><td class="cell">'+cellHtml(2)+'</td><td class="cell">'+cellHtml(1)+'</td><td class="cell">'+cellHtml(0)+'</td><td class="cell">'+cellHtml(11)+'</td></tr>'
+    + '</tbody></table>';
+
+  return '<!DOCTYPE html><html lang="vi"><head><meta charset="utf-8"><title>Lá số Tử Vi - '+e(ls.ten||'KK-2026')+'</title>'
+    + '<style>'
+    + '@page{size:A4 landscape;margin:8mm}'
+    + '*{box-sizing:border-box;font-family:"Times New Roman","Times",serif}'
+    + 'body{margin:0;padding:10px 14px;background:#f3ede0;color:#2a2118}'
+    + '.head{text-align:center;margin-bottom:8px}'
+    + '.head h1{margin:0;font-size:22px;letter-spacing:2px;color:#7a1f1f;font-weight:800}'
+    + '.head .m{font-size:12px;color:#6b5a38;margin-top:2px}'
+    + '.lstb{width:100%;border-collapse:collapse;table-layout:fixed;border:3px double #8a6a1f;background:#efe7d6}'
+    + '.lstb td.cell{width:25%;height:162px;border:1px solid #cdbb88;padding:0;vertical-align:top}'
+    + '.cwrap{height:100%;padding:4px 6px;display:flex;flex-direction:column}'
+    + '.cwrap.menh{background:#f6eccf}'
+    + '.cell-top{display:flex;justify-content:space-between;align-items:flex-start;gap:4px;font-size:10px;color:#6b5a38}'
+    + '.cell-top .pos b{color:#3a2f1a}'
+    + '.hanh{font-weight:700}'
+    + '.h-kim{color:#8a8a8a}.h-moc{color:#1c7a2f}.h-thuy{color:#222}.h-hoa{color:#c0392b}.h-tho{color:#c8951a}'
+    + '.cung-name{font-weight:800;font-size:12px;color:#7a1f1f;text-align:center;letter-spacing:.5px;border-bottom:1px dotted #d3c191;padding-bottom:2px;margin-bottom:2px}'
+    + '.cung-name.is-menh{color:#a11}.cung-name .than{color:#1c4f8a;font-size:9px;font-weight:700}'
+    + '.dh-age{color:#8a6a1f;font-weight:700;font-size:11px}'
+    + '.badge{display:inline-block;color:#fff;border-radius:3px;padding:0 4px;font-size:8px;margin-left:2px;vertical-align:middle}'
+    + '.badge.tuan{background:#8a1f1f}.badge.triet{background:#1c4f8a}'
+    + '.cell-stars{flex:1;line-height:1.35}'
+    + '.s-chinh{color:#a11;font-weight:800;font-size:12px;letter-spacing:.3px}'
+    + '.s-chinh .hoa{color:#c0392b;font-size:10px}'
+    + '.others{margin-top:2px;font-size:9.5px;line-height:1.45;column-count:2;column-gap:8px}'
+    + '.s-phu{color:#1c7a2f;white-space:nowrap;display:block}'
+    + '.s-sat{color:#c8951a;white-space:nowrap;display:block}'
+    + '.s-vong{color:#9a8f7a;white-space:nowrap;display:block;font-size:9px}'
+    + '.cell-foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;font-size:9px;color:#6b5a38;border-top:1px dotted #d3c191;padding-top:2px}'
+    + '.cell-foot .ts{color:#7a1f1f;font-weight:700}'
+    + '.lstb td.center{background:#faf5e6;border:2px solid #8a6a1f;vertical-align:top}'
+    + '.center-in{padding:8px 12px;text-align:center;height:100%}'
+    + '.ct-title{font-size:20px;font-weight:800;color:#7a1f1f;letter-spacing:2px}'
+    + '.ct-sub{font-size:10px;color:#8a6a1f;letter-spacing:1px;margin-top:1px}'
+    + '.ct-web{font-size:10px;color:#1c4f8a;margin-bottom:6px}'
+    + '.ct-info{width:100%;font-size:11px;border-collapse:collapse}'
+    + '.ct-info td{padding:2px 6px;text-align:left;vertical-align:top;border-bottom:1px dotted #e0d3af}'
+    + '.ct-info .k{color:#6b5a38;width:40%;white-space:nowrap}'
+    + '.ct-info .v{color:#2a2118;font-weight:600}'
+    + '.ct-tt{margin-top:6px;font-size:10px;color:#7a1f1f}'
+    + '.legend{display:flex;justify-content:center;flex-wrap:wrap;gap:14px;font-size:11px;margin-top:8px;color:#4a3f28}'
+    + '.legend b{padding:1px 6px;border-radius:3px;color:#fff}'
+    + '.lg-chinh{background:#a11}.lg-phu{background:#1c7a2f}.lg-sat{background:#c8951a}.lg-vong{background:#9a8f7a}'
+    + '.foot-sign{text-align:right;font-size:10px;color:#b3a98a;font-style:italic;margin-top:6px}'
+    + '@media print{body{padding:0;background:#fff}}'
+    + '</style></head><body>'
+    + '<div class="head"><h1>LÁ SỐ TỬ VI ĐẨU SỐ</h1>'
+    + '<div class="m">'+e(ls.ten||'')+(ls.ten?' · ':'')+(ls.gioiTinh==='nam'?'Nam mệnh':'Nữ mệnh')+' · Sinh ÂL '+ls.am.ngay+'/'+ls.am.thang+'/'+ls.am.nam+' (DL '+ls.duong.ngay+'/'+ls.duong.thang+'/'+ls.duong.nam+') · giờ '+CHI[ls.gioIdx]+'</div></div>'
+    + table
+    + '<div class="legend">'
+      + '<span><b class="lg-chinh">Chính tinh</b></span>'
+      + '<span><b class="lg-phu">Phụ - Cát tinh</b></span>'
+      + '<span><b class="lg-sat">Sát tinh</b></span>'
+      + '<span><b class="lg-vong">Vòng sao / phụ trợ</b></span>'
+      + '<span>ĐV = Đại vận &nbsp;·&nbsp; LN = Lưu niên (tiểu hạn)</span>'
+    + '</div>'
+    + '<div class="foot-sign">Tác giả : Nguyễn Duy Điển (KK-2026)</div>'
+    + '</body></html>';
 }
 
 /* ======= PAYWALL LUẬN GIẢI 99.000đ ======= */
@@ -6123,6 +6241,7 @@ async function moKhoaLuanTuVi(){
     <div class="page-body">
       <div class="quiz-home" id="quizHome"></div>
       <div class="quiz-play" id="quizPlay" style="display:none"></div>
+      <div id="quizMenuPanel" style="display:none"></div>
     </div>
   </div>
 </div>
@@ -6284,9 +6403,12 @@ async function moKhoaLuanTuVi(){
     ch.forEach(function(c){
       if(!c||typeof c!=='object') return;
       var qq=(c.q||'').toString().trim();
-      var o=Array.isArray(c.o)?c.o.map(function(x){return x==null?'':(''+x);}).filter(function(x){return x!=='';}):[];
+      var loai=(c.loai==='dungsai')?'dungsai':'chon';
+      var o;
+      if(loai==='dungsai'){ o=['Đúng','Sai']; }
+      else { o=Array.isArray(c.o)?c.o.map(function(x){return x==null?'':(''+x);}).filter(function(x){return x!=='';}):[]; }
       var dd=parseInt(c.d,10); if(isNaN(dd)) dd=0;
-      if(qq && o.length>=2){ if(dd<0||dd>=o.length) dd=0; cauhoi.push({q:qq,o:o,d:dd}); }
+      if(qq && o.length>=2){ if(dd<0||dd>=o.length) dd=0; cauhoi.push({loai:loai, q:qq, o:o, d:dd}); }
     });
     if(!cauhoi.length) return null;
     var id=(q.id||'').toString().trim() || ('q'+Date.now().toString(36)+Math.random().toString(36).slice(2,5));
@@ -6307,30 +6429,169 @@ async function moKhoaLuanTuVi(){
       }).catch(function(e){ if(note){ note.style.color='#E8A45C'; note.textContent='Đã lưu trên máy này. Đồng bộ đám mây lỗi ('+(e&&e.code?e.code:'?')+') - cần đăng nhập quản trị.'; } });
     } else if(note){ note.style.color='#E8A45C'; note.textContent='Đã lưu trên máy này ('+list.length+' bộ). Đăng nhập quản trị để đồng bộ đám mây cho mọi người.'; }
   }
-  function renderQuizAdmin(){
-    var box=el('quizAdminList'); if(!box) return;
+  /* ===== TRÌNH QUẢN LÝ QUIZ (list + tạo/sửa/xoá + export/import) ===== */
+  var editQuiz = null, qmTarget = 'quizAdminList';
+  function setQm(elm){ try{ var p=elm&&elm.closest?elm.closest('.qm'):null; if(p && p.getAttribute('data-target')) qmTarget=p.getAttribute('data-target'); }catch(e){} }
+  function renderQuizManager(cid){
+    qmTarget = cid || qmTarget;
+    var box=el(qmTarget); if(!box) return;
     var list=window.KKQuiz.get();
-    box.innerHTML='<div style="font-size:.85rem;color:var(--cream-dim);margin-bottom:6px">Đang có <b>'+list.length+'</b> bộ quiz:</div>'+
-      list.map(function(q){ return '<div class="quiz-admin-item"><span>'+(q.ico||'')+' <b>'+escHtml(q.name||'')+'</b> <span style="color:var(--cream-dim)">('+(q.cauhoi?q.cauhoi.length:0)+' câu)</span></span><button class="btn btn-ghost btn-sm quiz-del" data-qid="'+escHtml(q.id)+'">Xoá</button></div>'; }).join('');
+    var h='<div class="qm" data-target="'+qmTarget+'">';
+    if(qmTarget==='quizMenuPanel') h+='<div style="margin-bottom:10px"><button class="btn btn-ghost btn-sm" id="quizAdminBack">← Quay lại danh sách chơi</button></div>';
+    h+='<div class="qm-bar">'+
+       '<button class="btn btn-gold btn-sm qm-new">+ Tạo bộ quiz mới</button>'+
+       '<button class="btn btn-ghost btn-sm qm-export">⬇ Export (.json)</button>'+
+       '<button class="btn btn-ghost btn-sm qm-import">⬆ Import (.json)</button>'+
+       '<input type="file" class="qm-file" accept=".json,application/json" hidden>'+
+       '</div>';
+    h+='<div style="font-size:.85rem;color:var(--cream-dim);margin:4px 0 6px">Đang có <b>'+list.length+'</b> bộ quiz:</div>';
+    h+='<div class="qm-list">'+ list.map(function(q){
+        return '<div class="quiz-admin-item"><span>'+(q.ico||'')+' <b>'+escHtml(q.name||'')+'</b> <span style="color:var(--cream-dim)">('+(q.cauhoi?q.cauhoi.length:0)+' câu)</span></span>'+
+          '<span style="display:flex;gap:6px"><button class="btn btn-ghost btn-sm qm-edit" data-qid="'+escHtml(q.id)+'">Sửa</button><button class="btn btn-ghost btn-sm qm-del" data-qid="'+escHtml(q.id)+'">Xoá</button></span></div>';
+      }).join('') +'</div>';
+    h+='<div class="qm-editor" style="display:none"></div>';
+    h+='<div class="qm-note" style="font-size:.85rem;margin-top:6px"></div>';
+    h+='</div>';
+    box.innerHTML=h;
   }
-  function escHtml(s){ return (''+s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
-  function taiMauQuiz(){
-    var mau=[{id:"toan-vui",ico:"🔢",name:"Toán vui",desc:"Bộ câu hỏi mẫu - thay bằng nội dung của bạn",cauhoi:[{q:"2 + 2 = ?",o:["3","4","5","6"],d:1},{q:"5 x 3 = ?",o:["15","10","20","8"],d:0},{q:"Số nào lớn nhất?",o:["9","15","7","12"],d:1}]}];
-    var blob=new Blob([JSON.stringify(mau,null,2)],{type:'application/json'});
-    var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='mau-quiz-kk.json'; document.body.appendChild(a); a.click();
+  function renderQuizAdmin(){ renderQuizManager('quizAdminList'); }  /* dùng trong Admin */
+  function qmNote(){ var b=el(qmTarget); return b?b.querySelector('.qm-note'):null; }
+
+  /* ---- Trình soạn 1 bộ quiz ---- */
+  function moTrinhSoan(quiz){
+    if(quiz){ editQuiz=JSON.parse(JSON.stringify(quiz)); editQuiz.cauhoi.forEach(function(c){ if(!c.loai) c.loai=(c.o&&c.o.length===2&&/^đúng$/i.test((c.o[0]||'').trim()))?'dungsai':'chon'; if(c.loai==='dungsai') c.o=['Đúng','Sai']; }); }
+    else { editQuiz={id:'', ico:'📝', name:'', desc:'', cauhoi:[{loai:'chon',q:'',o:['',''],d:0}]}; }
+    renderEditor();
+  }
+  function editorBox(){ var b=el(qmTarget); return b?b.querySelector('.qm-editor'):null; }
+  function renderEditor(){
+    var box=editorBox(); if(!box||!editQuiz) return;
+    var h='<div class="qe-form">';
+    h+='<div class="qe-row"><input class="qe-ico" id="qeIco" maxlength="4" placeholder="Icon" value="'+escAttr(editQuiz.ico)+'"><input class="qe-name" id="qeName" placeholder="Tên bộ quiz" value="'+escAttr(editQuiz.name)+'"></div>';
+    h+='<input class="qe-desc" id="qeDesc" placeholder="Mô tả ngắn (VD: 10 câu lịch sử)" value="'+escAttr(editQuiz.desc)+'">';
+    h+='<div id="qeQuestions">';
+    editQuiz.cauhoi.forEach(function(c,qi){
+      h+='<div class="qe-q"><div class="qe-qtop"><b>Câu '+(qi+1)+'</b>'+
+         '<select class="qe-type" data-qi="'+qi+'"><option value="chon"'+(c.loai!=='dungsai'?' selected':'')+'>Trắc nghiệm</option><option value="dungsai"'+(c.loai==='dungsai'?' selected':'')+'>Đúng / Sai</option></select>'+
+         '<button class="btn btn-ghost btn-sm qe-qdel" data-qi="'+qi+'">Xoá câu</button></div>';
+      h+='<input class="qe-qtext" data-qi="'+qi+'" placeholder="Nội dung câu hỏi" value="'+escAttr(c.q)+'">';
+      h+='<div class="qe-opts">';
+      var opts=(c.loai==='dungsai')?['Đúng','Sai']:c.o;
+      opts.forEach(function(op,oi){
+        h+='<div class="qe-optrow"><input type="radio" name="qec_'+qmTarget+'_'+qi+'" class="qe-correct" data-qi="'+qi+'" data-oi="'+oi+'"'+(c.d===oi?' checked':'')+'>';
+        if(c.loai==='dungsai'){ h+='<span class="qe-fixed">'+op+'</span>'; }
+        else { h+='<input class="qe-opt" data-qi="'+qi+'" data-oi="'+oi+'" placeholder="Đáp án '+(oi+1)+'" value="'+escAttr(op)+'">'+((c.o.length>2)?'<button class="btn btn-ghost btn-sm qe-optdel" data-qi="'+qi+'" data-oi="'+oi+'">✕</button>':''); }
+        h+='</div>';
+      });
+      if(c.loai!=='dungsai' && c.o.length<6) h+='<button class="btn btn-ghost btn-sm qe-optadd" data-qi="'+qi+'">+ Thêm đáp án</button>';
+      h+='<div class="qe-hint">Chọn nút tròn ở đáp án ĐÚNG để chấm điểm.</div>';
+      h+='</div></div>';
+    });
+    h+='</div>';
+    h+='<div class="qe-actions"><button class="btn btn-ghost btn-sm" id="qeAddQ">+ Thêm câu hỏi</button></div>';
+    h+='<div class="qe-actions"><button class="btn btn-gold btn-sm" id="qeSave">Lưu bộ quiz</button><button class="btn btn-ghost btn-sm" id="qeCancel">Huỷ</button><span id="qeNote" style="font-size:.85rem;margin-left:6px"></span></div>';
+    h+='</div>';
+    box.innerHTML=h; box.style.display='block';
+    if(box.scrollIntoView) box.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+  function dongBoEditor(){
+    if(!editQuiz) return; var box=editorBox(); if(!box) return;
+    var n=box.querySelector('#qeName'), ic=box.querySelector('#qeIco'), de=box.querySelector('#qeDesc');
+    if(n) editQuiz.name=n.value.trim(); if(ic) editQuiz.ico=(ic.value.trim()||'📝').slice(0,4); if(de) editQuiz.desc=de.value.trim();
+    editQuiz.cauhoi.forEach(function(c,qi){
+      var qt=box.querySelector('.qe-qtext[data-qi="'+qi+'"]'); if(qt) c.q=qt.value.trim();
+      var ty=box.querySelector('.qe-type[data-qi="'+qi+'"]'); if(ty) c.loai=ty.value;
+      if(c.loai==='dungsai'){ c.o=['Đúng','Sai']; }
+      else { var os=box.querySelectorAll('.qe-opt[data-qi="'+qi+'"]'); if(os.length) c.o=Array.prototype.map.call(os,function(o){return o.value.trim();}); }
+      var ck=box.querySelector('.qe-correct[data-qi="'+qi+'"]:checked');
+      c.d=ck?parseInt(ck.getAttribute('data-oi'),10):0; if(c.d>=c.o.length) c.d=0;
+    });
+  }
+  function luuTrinhSoan(){
+    dongBoEditor(); var note=editorBox()?editorBox().querySelector('#qeNote'):null;
+    if(!editQuiz.name){ if(note){note.style.color='#E86A5C';note.textContent='Nhập tên bộ quiz.';} return; }
+    var nq=normQuiz(editQuiz);
+    if(!nq){ if(note){note.style.color='#E86A5C';note.textContent='Cần ít nhất 1 câu hợp lệ: có nội dung, đủ đáp án, đã chọn đáp án đúng.';} return; }
+    nq.id = editQuiz.id || ('q'+Date.now().toString(36)+Math.random().toString(36).slice(2,5));
+    var cur=window.KKQuiz.get().slice(); var i=cur.map(function(x){return x.id;}).indexOf(nq.id);
+    if(i>=0) cur[i]=nq; else cur.push(nq);
+    editQuiz=null;
+    luuQuizzes(cur, qmNote());
+    renderQuizManager(qmTarget);
+    if(el('quizHome') && el('quizHome').style.display!=='none' && el('quizModal') && el('quizModal').classList.contains('open')) renderQuizHome();
+  }
+  function dongTrinhSoan(){ editQuiz=null; var b=editorBox(); if(b){ b.style.display='none'; b.innerHTML=''; } }
+  function exportQuiz(){
+    var list=window.KKQuiz.get();
+    var blob=new Blob([JSON.stringify(list,null,2)],{type:'application/json'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='quiz-kk-2026-'+new Date().toISOString().slice(0,10)+'.json'; document.body.appendChild(a); a.click();
     setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },500);
-    var note=el('quizAdminNote'); if(note){ note.style.color='#8FD69F'; note.textContent='Đã tải file mẫu "mau-quiz-kk.json". Mở, sửa nội dung rồi nhập lại.'; }
+    var note=qmNote(); if(note){ note.style.color='#8FD69F'; note.textContent='Đã export '+list.length+' bộ quiz ra file .json.'; }
+  }
+  function escAttr(s){ return escHtml(s).replace(/'/g,'&#39;'); }
+  function escHtml(s){ return (''+(s==null?'':s)).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  function taiMauQuiz(){
+    var mau=[
+      {id:"ls-vietnam",ico:"🏛️",name:"Lịch sử Việt Nam",desc:"Kiến thức lịch sử cơ bản",cauhoi:[
+        {loai:"chon",q:"Chiến thắng Điện Biên Phủ diễn ra năm nào?",o:["1954","1945","1975","1930"],d:0},
+        {loai:"chon",q:"Vị vua đầu tiên của nhà Lý là ai?",o:["Lý Thái Tổ","Lý Thái Tông","Lý Thường Kiệt","Lý Nhân Tông"],d:0},
+        {loai:"chon",q:"Kinh đô của nước Văn Lang là?",o:["Phong Châu","Cổ Loa","Hoa Lư","Thăng Long"],d:0},
+        {loai:"chon",q:"Khởi nghĩa Hai Bà Trưng nổ ra năm nào?",o:["Năm 40","Năm 248","Năm 542","Năm 938"],d:0},
+        {loai:"chon",q:"Chiến thắng Bạch Đằng năm 938 gắn với tên tuổi ai?",o:["Ngô Quyền","Trần Hưng Đạo","Lê Lợi","Quang Trung"],d:0}
+      ]},
+      {id:"khoa-hoc",ico:"🔬",name:"Khoa học tự nhiên",desc:"Vật lý, hoá học, thiên văn",cauhoi:[
+        {loai:"chon",q:"Nước có công thức hoá học là?",o:["H2O","CO2","O2","NaCl"],d:0},
+        {loai:"chon",q:"Hành tinh nào gần Mặt Trời nhất?",o:["Sao Thủy","Sao Kim","Trái Đất","Sao Hỏa"],d:0},
+        {loai:"chon",q:"Đơn vị đo cường độ dòng điện là?",o:["Ampe","Vôn","Oát","Ôm"],d:0},
+        {loai:"chon",q:"Khí nào chiếm tỉ lệ lớn nhất trong không khí?",o:["Nitơ","Oxy","CO2","Hydro"],d:0},
+        {loai:"chon",q:"Tốc độ ánh sáng trong chân không xấp xỉ?",o:["300.000 km/s","150.000 km/s","30.000 km/s","1.000 km/s"],d:0}
+      ]},
+      {id:"dia-ly",ico:"🌍",name:"Địa lý thế giới",desc:"Sông, núi, đại dương, thủ đô",cauhoi:[
+        {loai:"chon",q:"Sông dài nhất thế giới là?",o:["Sông Nin","Sông Amazon","Trường Giang","Sông Mê Kông"],d:0},
+        {loai:"chon",q:"Ngọn núi cao nhất thế giới?",o:["Everest","K2","Phú Sĩ","Phan Xi Păng"],d:0},
+        {loai:"chon",q:"Thủ đô của Nhật Bản?",o:["Tokyo","Osaka","Kyoto","Nagoya"],d:0},
+        {loai:"chon",q:"Đại dương lớn nhất?",o:["Thái Bình Dương","Đại Tây Dương","Ấn Độ Dương","Bắc Băng Dương"],d:0},
+        {loai:"chon",q:"Sa mạc nóng lớn nhất thế giới?",o:["Sahara","Gobi","Kalahari","Ả Rập"],d:0}
+      ]},
+      {id:"van-hoc",ico:"📖",name:"Văn học Việt Nam",desc:"Tác giả và tác phẩm",cauhoi:[
+        {loai:"chon",q:"Truyện Kiều của Nguyễn Du có bao nhiêu câu thơ?",o:["3254","1000","2000","5000"],d:0},
+        {loai:"chon",q:"Tác giả 'Nhật ký trong tù'?",o:["Hồ Chí Minh","Tố Hữu","Xuân Diệu","Nam Cao"],d:0},
+        {loai:"chon",q:"'Lão Hạc' là tác phẩm của ai?",o:["Nam Cao","Ngô Tất Tố","Vũ Trọng Phụng","Nguyễn Công Hoan"],d:0},
+        {loai:"chon",q:"Thể thơ của Truyện Kiều?",o:["Lục bát","Song thất lục bát","Thất ngôn","Tự do"],d:0}
+      ]},
+      {id:"toan-vui",ico:"🔢",name:"Toán vui",desc:"Số học cơ bản",cauhoi:[
+        {loai:"chon",q:"12 x 12 = ?",o:["144","124","148","134"],d:0},
+        {loai:"chon",q:"Số nguyên tố nhỏ nhất?",o:["2","1","3","0"],d:0},
+        {loai:"chon",q:"Tổng các góc trong một tam giác?",o:["180°","90°","360°","270°"],d:0},
+        {loai:"chon",q:"Căn bậc hai của 81?",o:["9","8","7","18"],d:0}
+      ]},
+      {id:"dung-sai",ico:"✔️",name:"Đúng hay Sai",desc:"Kiến thức chung dạng đúng/sai",cauhoi:[
+        {loai:"dungsai",q:"Mặt Trời mọc ở hướng Đông.",d:0},
+        {loai:"dungsai",q:"Cá voi là loài cá.",d:1},
+        {loai:"dungsai",q:"Nước sôi ở 100°C ở áp suất khí quyển tiêu chuẩn.",d:0},
+        {loai:"dungsai",q:"Dơi là loài chim.",d:1},
+        {loai:"dungsai",q:"Kim cương là vật liệu tự nhiên cứng nhất.",d:0},
+        {loai:"dungsai",q:"Nhện là côn trùng.",d:1}
+      ]}
+    ];
+    var blob=new Blob([JSON.stringify(mau,null,2)],{type:'application/json'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='thu-vien-quiz-mau-kk.json'; document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },500);
+    var note=el('quizAdminNote'); if(note){ note.style.color='#8FD69F'; note.textContent='Đã tải "thu-vien-quiz-mau-kk.json" gồm 6 bộ (29 câu). Sửa nội dung rồi Import để tạo kho quiz phong phú.'; }
   }
   setTimeout(renderQuizAdmin, 300);
 
   function renderQuizHome(){
     var home = el('quizHome'); if(!home) return;
     if(el('quizPlay')) el('quizPlay').style.display='none';
+    if(el('quizMenuPanel')){ el('quizMenuPanel').style.display='none'; el('quizMenuPanel').innerHTML=''; }
     home.style.display='block';
-    home.innerHTML =
-      '<p class="quiz-intro">Chọn một bộ câu hỏi để bắt đầu. Đây là các Game Quiz mẫu - sau này bạn có thể nạp thêm nội dung từ file để mở rộng kho câu hỏi.</p>' +
+    var laAdmin = (typeof toiLaChuTrang==='function') && toiLaChuTrang();
+    var adminBar = laAdmin ? '<div class="quiz-adminbar"><span>Bạn đang đăng nhập quản trị.</span><button class="btn btn-gold btn-sm" id="quizAdminOpen">⚙ Quản lý / Tạo Quiz</button></div>' : '';
+    home.innerHTML = adminBar +
+      '<p class="quiz-intro">Chọn một bộ câu hỏi để bắt đầu. '+(laAdmin?'Với quyền quản trị, bạn có thể tạo, sửa, xoá và xuất/nhập bộ câu hỏi ngay tại đây.':'Đây là các Game Quiz. Chúc bạn chơi vui!')+'</p>' +
       '<div class="quiz-list">' +
-      QUIZZES.map(function(q){ return '<button class="quiz-card" data-qid="'+q.id+'"><div class="qc-ico">'+q.ico+'</div><div class="qc-name">'+q.name+'</div><div class="qc-meta">'+q.desc+' · '+q.cauhoi.length+' câu</div></button>'; }).join('') +
+      QUIZZES.map(function(q){ return '<button class="quiz-card" data-qid="'+q.id+'"><div class="qc-ico">'+q.ico+'</div><div class="qc-name">'+escHtml(q.name)+'</div><div class="qc-meta">'+escHtml(q.desc)+' · '+q.cauhoi.length+' câu</div></button>'; }).join('') +
       '</div>';
   }
   function batDauQuiz(qid){
@@ -6353,10 +6614,11 @@ async function moKhoaLuanTuVi(){
       return;
     }
     var c = quizCur.cauhoi[quizIdx];
+    var badge = (c.loai==='dungsai') ? '<span class="quiz-type ds">Đúng / Sai</span>' : '<span class="quiz-type">Trắc nghiệm</span>';
     play.innerHTML =
-      '<div class="quiz-prog">Câu '+(quizIdx+1)+' / '+quizCur.cauhoi.length+' · Điểm: '+quizScore+'</div>' +
-      '<div class="quiz-qtext">'+c.q+'</div>' +
-      '<div class="quiz-opts">' + c.o.map(function(op,i){ return '<button class="quiz-opt" data-i="'+i+'">'+op+'</button>'; }).join('') +
+      '<div class="quiz-prog">Câu '+(quizIdx+1)+' / '+quizCur.cauhoi.length+' · Điểm: '+quizScore+' '+badge+'</div>' +
+      '<div class="quiz-qtext">'+escHtml(c.q)+'</div>' +
+      '<div class="quiz-opts'+(c.loai==='dungsai'?' quiz-ds':'')+'">' + c.o.map(function(op,i){ return '<button class="quiz-opt" data-i="'+i+'">'+escHtml(op)+'</button>'; }).join('') +
       '</div><div class="quiz-next" id="quizNextRow"></div>';
   }
   function chonDapAn(i){
@@ -6395,7 +6657,23 @@ async function moKhoaLuanTuVi(){
     ['#quizFilePick',  function(){ if(el('quizFileInput')) el('quizFileInput').click(); }],
     ['#quizTemplateBtn', function(){ taiMauQuiz(); }],
     ['#quizResetBtn',  function(){ window.KKQuiz.reset(); if(typeof fbDb!=='undefined'&&fbDb){ fbDb.collection('settings').doc('quizzes').delete().catch(function(){}); } renderQuizAdmin(); var note=el('quizAdminNote'); if(note){ note.style.color='#8FD69F'; note.textContent='Đã khôi phục bộ quiz mẫu gốc.'; } }],
-    ['.quiz-del',      function(e,elm){ var id=elm.getAttribute('data-qid'); var cur=window.KKQuiz.get().filter(function(x){return x.id!==id;}); if(!cur.length){ (window.toast||alert)('Phải còn ít nhất 1 bộ quiz.'); return; } luuQuizzes(cur, el('quizAdminNote')); }]
+    ['.quiz-del',      function(e,elm){ var id=elm.getAttribute('data-qid'); var cur=window.KKQuiz.get().filter(function(x){return x.id!==id;}); if(!cur.length){ (window.toast||alert)('Phải còn ít nhất 1 bộ quiz.'); return; } luuQuizzes(cur, el('quizAdminNote')); }],
+    /* ---- trình quản lý (panel) ---- */
+    ['.qm-new',        function(e,elm){ setQm(elm); moTrinhSoan(null); }],
+    ['.qm-edit',       function(e,elm){ setQm(elm); var id=elm.getAttribute('data-qid'); var q=window.KKQuiz.get().filter(function(x){return x.id===id;})[0]; if(q) moTrinhSoan(q); }],
+    ['.qm-del',        function(e,elm){ setQm(elm); var id=elm.getAttribute('data-qid'); var cur=window.KKQuiz.get().filter(function(x){return x.id!==id;}); if(!cur.length){ (window.toast||alert)('Phải còn ít nhất 1 bộ quiz.'); return; } if(!confirm('Xoá bộ quiz này?')) return; luuQuizzes(cur, qmNote()); renderQuizManager(qmTarget); }],
+    ['.qm-export',     function(e,elm){ setQm(elm); exportQuiz(); }],
+    ['.qm-import',     function(e,elm){ setQm(elm); var f=el(qmTarget)?el(qmTarget).querySelector('.qm-file'):null; if(f) f.click(); }],
+    /* ---- trình soạn (editor) ---- */
+    ['#qeAddQ',        function(e,elm){ setQm(elm); dongBoEditor(); editQuiz.cauhoi.push({loai:'chon',q:'',o:['',''],d:0}); renderEditor(); }],
+    ['.qe-qdel',       function(e,elm){ setQm(elm); dongBoEditor(); var qi=parseInt(elm.getAttribute('data-qi'),10); editQuiz.cauhoi.splice(qi,1); if(!editQuiz.cauhoi.length) editQuiz.cauhoi.push({loai:'chon',q:'',o:['',''],d:0}); renderEditor(); }],
+    ['.qe-optadd',     function(e,elm){ setQm(elm); dongBoEditor(); var qi=parseInt(elm.getAttribute('data-qi'),10); editQuiz.cauhoi[qi].o.push(''); renderEditor(); }],
+    ['.qe-optdel',     function(e,elm){ setQm(elm); dongBoEditor(); var qi=parseInt(elm.getAttribute('data-qi'),10), oi=parseInt(elm.getAttribute('data-oi'),10); var c=editQuiz.cauhoi[qi]; c.o.splice(oi,1); if(c.d>=c.o.length) c.d=0; renderEditor(); }],
+    ['#qeSave',        function(e,elm){ setQm(elm); luuTrinhSoan(); }],
+    ['#qeCancel',      function(e,elm){ setQm(elm); dongTrinhSoan(); }],
+    /* ---- nút quản lý trên Menu (khi admin đăng nhập) ---- */
+    ['#quizAdminOpen', function(){ var p=el('quizMenuPanel'); if(!p) return; if(el('quizHome')) el('quizHome').style.display='none'; if(el('quizPlay')) el('quizPlay').style.display='none'; p.style.display='block'; renderQuizManager('quizMenuPanel'); }],
+    ['#quizAdminBack', function(){ var p=el('quizMenuPanel'); if(p){ p.style.display='none'; p.innerHTML=''; } renderQuizHome(); }]
   ];
   document.addEventListener('click', function(e){
     var tgt = e.target;
@@ -6419,6 +6697,18 @@ async function moKhoaLuanTuVi(){
     if(e.target && e.target.id==='quizFileInput'){
       var f=e.target.files && e.target.files[0];
       if(f){ var rd=new FileReader(); rd.onload=function(){ if(el('quizImportText')) el('quizImportText').value=rd.result; var note=el('quizAdminNote'); if(note){ note.style.color='#8FD69F'; note.textContent='Đã đọc file. Bấm "Nhập / Thêm" hoặc "Thay thế toàn bộ" để lưu.'; } }; rd.readAsText(f); }
+    }
+    /* đổi loại câu hỏi trong trình soạn -> vẽ lại phần đáp án */
+    if(e.target && e.target.classList && e.target.classList.contains('qe-type')){
+      setQm(e.target); dongBoEditor();
+      var qi=parseInt(e.target.getAttribute('data-qi'),10), c=editQuiz&&editQuiz.cauhoi[qi];
+      if(c){ if(c.loai==='dungsai'){ c.o=['Đúng','Sai']; if(c.d>1)c.d=0; } else if(!c.o||c.o.length<2){ c.o=['','']; } }
+      renderEditor();
+    }
+    /* import file .json ngay trên panel quản lý */
+    if(e.target && e.target.classList && e.target.classList.contains('qm-file')){
+      setQm(e.target); var ff=e.target.files && e.target.files[0];
+      if(ff){ var r2=new FileReader(); r2.onload=function(){ var pr=parseQuizInput(r2.result); var note=qmNote(); if(pr.err){ if(note){note.style.color='#E86A5C';note.textContent=pr.err;} return; } var cur=window.KKQuiz.get().slice(), ids=cur.map(function(x){return x.id;}); pr.list.forEach(function(nq){ var i=ids.indexOf(nq.id); if(i>=0)cur[i]=nq; else {cur.push(nq);ids.push(nq.id);} }); luuQuizzes(cur, note); renderQuizManager(qmTarget); }; r2.readAsText(ff); }
     }
   });
 })();
