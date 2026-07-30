@@ -6514,9 +6514,9 @@ function xuatPdfLuanGiai(){
   var ls = window.__laso;
   if(!ls){ toast('Chưa có lá số để xuất.'); return; }
   try{
-    var html = pdfLuanGiaiHTML(ls);
-    if(inTaiLieuPDF(html)) toast('Đang mở hộp thoại in - chọn "Lưu dưới dạng PDF".');
-  }catch(e){ if(window.console) console.warn('pdf luận giải:', e); toast('Lỗi tạo PDF luận giải: '+(e && e.message ? e.message : 'không rõ')); }
+    var html = pdfTuViCombo(ls);
+    if(inTaiLieuPDF(html)) toast('Đang mở hộp thoại in - chọn "Lưu dưới dạng PDF". (Trang 1: lá số · Trang 2: luận giải)');
+  }catch(e){ if(window.console) console.warn('pdf tử vi:', e); toast('Lỗi tạo PDF: '+(e && e.message ? e.message : 'không rõ')); }
 }
 function pdfLuanGiaiHTML(ls){
   var CAN=TV_CAN, CHI=TV_CHI;
@@ -6613,7 +6613,94 @@ function pdfLuanGiaiHTML(ls){
     '</div></body></html>';
 }
 
-/* ======= PAYWALL LUẬN GIẢI 99.000đ ======= */
+/* ======= LUẬN GIẢI CO GỌN 1 TRANG (khổ ngang) - dùng cho PDF 2 trang ======= */
+function tvLuanCompactParts(ls){
+  var CAN=TV_CAN, CHI=TV_CHI;
+  function e(s){ return (''+(s==null?'':s)).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];}); }
+  var CUNG_MOTA = {'Mệnh':'bản thân, tính cách, vận mệnh','Phụ Mẫu':'cha mẹ, bề trên, học vấn','Phúc Đức':'phúc phần, tinh thần','Điền Trạch':'nhà cửa, tài sản','Quan Lộc':'sự nghiệp, công danh','Nô Bộc':'bạn bè, quan hệ','Thiên Di':'đi xa, môi trường','Tật Ách':'sức khỏe, tai ách','Tài Bạch':'tiền bạc, thu nhập','Tử Tức':'con cái','Phu Thê':'hôn nhân, tình duyên','Huynh Đệ':'anh em, cộng sự'};
+  var order = ['Mệnh','Phu Thê','Tài Bạch','Quan Lộc','Điền Trạch','Phúc Đức','Thiên Di','Tật Ách','Phụ Mẫu','Tử Tức','Nô Bộc','Huynh Đệ'];
+  var chiCuaCung = {}; Object.keys(ls.cungTen).forEach(function(chi){ chiCuaCung[ls.cungTen[chi]] = parseInt(chi,10); });
+  var menhChinh = (ls.sao[ls.menh]||[]).filter(function(s){return s.loai==='chinh';});
+
+  var cung = order.map(function(ten){
+    var chi = chiCuaCung[ten];
+    var stars = (ls.sao[chi]||[]);
+    var chinh = stars.filter(function(s){return s.loai==='chinh';});
+    var cat   = stars.filter(function(s){return s.loai==='phu';});
+    var sat   = stars.filter(function(s){return s.loai==='sat';});
+    var dh    = (ls.daiHan && ls.daiHan[chi]!=null) ? ls.daiHan[chi] : null;
+    var b='';
+    if(chinh.length){
+      b += 'Có <b>' + chinh.map(function(s){return e(s.ten)+(s.hoa?' Hóa '+e(s.hoa):'');}).join(', ') + '</b>. ';
+      chinh.forEach(function(s){ if(TV_LUAN[s.ten]) b += TV_LUAN[s.ten].charAt(0).toUpperCase()+TV_LUAN[s.ten].slice(1)+' '; });
+    } else { b += 'Vô chính diệu - linh hoạt, ảnh hưởng cung xung chiếu. '; }
+    if(cat.length) b += '<span class="lu-cat">Cát: '+cat.map(function(s){return e(s.ten);}).join(', ')+'. </span>';
+    if(sat.length) b += '<span class="lu-sat">Sát: '+sat.map(function(s){return e(s.ten);}).join(', ')+'. </span>';
+    return '<div class="lu-cung"><div class="lu-cung-h">'+e(ten)+' <span>· '+e(CHI[chi])+(dh!=null?' · ĐH '+dh:'')+'</span></div><div class="lu-cung-m">'+e(CUNG_MOTA[ten])+'</div><div class="lu-cung-b">'+b+'</div></div>';
+  }).join('');
+
+  var pt = phanTichKetLuan(ls);
+  var manhLi = pt.manh.map(function(x){return '<li>'+x+'</li>';}).join('');
+  var hoanLi = pt.hoanthien.map(function(x){return '<li>'+x+'</li>';}).join('');
+
+  var css =
+    '.pgLuan{padding:1mm 2mm;color:#2a2418;font-family:"Times New Roman",Georgia,serif;font-size:8.4px;line-height:1.34}'+
+    '.lu-head{text-align:center;font-size:15px;font-weight:800;color:#7a1f1f;letter-spacing:1.5px;border-bottom:2px solid #b8912a;padding-bottom:3px}'+
+    '.lu-who{text-align:center;font-size:9px;color:#5a5240;margin:3px 0 5px}.lu-who b{color:#7a1f1f}'+
+    '.lu-sec{margin:4px 0}'+
+    '.lu-h{font-size:10px;font-weight:700;color:#7a1f1f;border-left:3px solid #b8912a;padding-left:6px;margin-bottom:3px}'+
+    '.lu-lead{background:#faf6ea;border:1px solid #e6d9b0;border-radius:4px;padding:4px 7px}.lu-lead b{color:#7a1f1f}'+
+    '.lu-grid{column-count:3;column-gap:7px}'+
+    '.lu-cung{break-inside:avoid;border:1px solid #e6d9b0;border-radius:4px;padding:3px 6px;margin:0 0 5px;background:#fffdf7;display:inline-block;width:100%}'+
+    '.lu-cung-h{font-weight:700;color:#7a1f1f;font-size:8.8px}.lu-cung-h span{color:#9a8a5a;font-weight:400;font-size:7.4px}'+
+    '.lu-cung-m{font-style:italic;color:#a8892f;font-size:7.2px;margin:0 0 2px}'+
+    '.lu-cung-b{font-size:7.8px;line-height:1.3;color:#2f2a1e}.lu-cung-b b{color:#5a3a1a}'+
+    '.lu-cat{color:#1c6b2f}.lu-sat{color:#b06a12}'+
+    '.lu-2col{column-count:2;column-gap:8px;margin-top:2px}'+
+    '.lu-kl{break-inside:avoid;background:#fbf7ec;border:1px solid #e2cf94;border-radius:5px;padding:5px 8px;margin:0 0 5px}'+
+    '.lu-kt{font-weight:700;font-size:9px;margin-bottom:2px}.lu-kt.up{color:#1c6b2f}.lu-kt.down{color:#a8701a}'+
+    '.lu-kl ul{margin:0;padding-left:14px}.lu-kl li{margin:1.5px 0}.lu-kl b{color:#7a1f1f}'+
+    '.lu-lk{background:#f3f7f1;border:1px solid #cfe3cd;border-radius:5px;padding:5px 8px;margin-top:2px}.lu-lk b{color:#1c6b2f}'+
+    '.lu-ft{text-align:center;color:#7a1f1f;font-size:9.5px;letter-spacing:1px;border-top:1.2px solid #b8912a;margin-top:5px;padding-top:3px;font-weight:700}';
+
+  var body =
+    '<div class="lu-head">LUẬN GIẢI CHI TIẾT LÁ SỐ TỬ VI</div>'+
+    '<div class="lu-who"><b>'+e(ls.ten||'(Quý khách)')+'</b> · '+(ls.gioiTinh==='nam'?'Nam mệnh':'Nữ mệnh')+' · Sinh ÂL '+ls.am.ngay+'/'+ls.am.thang+'/'+ls.am.nam+' (DL '+ls.duong.ngay+'/'+ls.duong.thang+'/'+ls.duong.nam+') · giờ '+e(CHI[ls.gioIdx])+' · Tuổi <b>'+e(CAN[ls.namCan]+' '+CHI[ls.namChi])+'</b> · Mệnh <b>'+e(ls.napAm)+'</b> · Cục <b>'+e(ls.cucTen)+'</b> · <b>'+e(ls.amDuong)+'</b></div>'+
+    '<div class="lu-sec"><div class="lu-h">❖ Tổng quan bản mệnh</div><div class="lu-lead">Người tuổi <b>'+e(CAN[ls.namCan]+' '+CHI[ls.namChi])+'</b>, bản mệnh <b>'+e(ls.napAm)+'</b>, cục <b>'+e(ls.cucTen)+'</b>, <b>'+e(ls.amDuong)+'</b>. Cung Mệnh tại <b>'+e(CHI[ls.menh])+'</b>'+(menhChinh.length?', có <b>'+menhChinh.map(function(s){return e(s.ten);}).join(', ')+'</b>':', vô chính diệu')+'. Đây là nền tảng phản ánh tính cách, khí chất và hướng đi cả đời.</div></div>'+
+    '<div class="lu-sec"><div class="lu-h">❖ Luận giải 12 cung</div><div class="lu-grid">'+cung+'</div></div>'+
+    '<div class="lu-sec"><div class="lu-h">❖ Kết luận &amp; Lời khuyên hoàn thiện bản thân</div>'+
+      '<div class="lu-2col">'+
+        '<div class="lu-kl"><div class="lu-kt up">✦ Điểm mạnh nổi bật</div><ul>'+manhLi+'</ul></div>'+
+        '<div class="lu-kl"><div class="lu-kt down">◈ Điểm nên hoàn thiện</div><ul>'+hoanLi+'</ul></div>'+
+      '</div>'+
+      '<div class="lu-lk"><b>Đôi lời chân thành:</b> Lá số phác họa xu hướng bẩm sinh, nhưng người quyết định cuộc đời chính là bạn. Hãy phát huy sở trường một cách khiêm nhường, xem điểm cần hoàn thiện như cơ hội tốt lên mỗi ngày; rèn sức khỏe điều độ, nuôi dưỡng tâm hồn, giữ tài chính có kế hoạch, sống chân thành - biết ơn - bao dung. Kiên trì tu dưỡng thì dù lá số ra sao, cuộc sống cũng ngày một tốt đẹp, vững vàng và ý nghĩa hơn.</div>'+
+    '</div>'+
+    '<div class="lu-ft">✦ www.kk-book.com ✦</div>';
+
+  return { css: css, body: body };
+}
+
+/* Ghép PDF 2 trang: trang 1 = lá số, trang 2 = luận giải (1 trang, khổ ngang) */
+function pdfTuViCombo(ls){
+  var chartDoc = pdfLaSoHTML(ls);
+  var mS = chartDoc.match(/<style>([\s\S]*?)<\/style>/);
+  var mB = chartDoc.match(/<body>([\s\S]*?)<\/body>/);
+  var chartCss = mS ? mS[1] : '';
+  var chartBody = mB ? mB[1] : '';
+  /* gỡ @page riêng của lá số và đưa base 'body' vào .pgChart để không xung đột */
+  chartCss = chartCss
+    .replace(/@page\{[^}]*\}/, '')
+    .replace(/\}body\{/g, '}.pgChart{')
+    .replace(/@media print\{body\{/g, '@media print{.pgChart{');
+  var luan = tvLuanCompactParts(ls);
+  var css = '@page{size:A4 landscape;margin:7mm}*{box-sizing:border-box}'
+    + '.pgChart{page-break-after:always}'
+    + chartCss + luan.css;
+  return '<!DOCTYPE html><html lang="vi"><head><meta charset="utf-8"><title>Lá số &amp; Luận giải Tử Vi'+(ls.ten?' - '+ls.ten:'')+'</title><style>'+css+'</style></head><body>'
+    + '<div class="pgChart">'+chartBody+'</div>'
+    + '<div class="pgLuan">'+luan.body+'</div>'
+    + '</body></html>';
+}
 var TV_GIA_LUAN = 99000;
 function moPaywallLuan(preview){
   var ls = window.__laso;
