@@ -1532,6 +1532,52 @@ footer{
 .lg-loikhuyen b{color:var(--gold-bright)}
 .lg-note{color:var(--cream-dim);font-size:.83rem;margin-top:14px;font-style:italic}
 .tuvi-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:14px}
+/* ===== XEM NGÀY TỐT ===== */
+.ngay-form,.dich-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:6px}
+.ngay-form label,.dich-form label{display:flex;flex-direction:column;gap:6px;font-size:.85rem;color:var(--gold-bright);font-weight:600}
+.ngay-form input,.ngay-form select,.dich-form input{background:var(--navy-800);border:1px solid rgba(201,162,39,.3);color:var(--cream);border-radius:10px;padding:10px 12px;font-family:inherit;font-size:.92rem}
+.ngay-result{margin-top:20px}
+.nd-head{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding:15px 18px;border:2px solid;border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,.03),transparent)}
+.nd-date{font-family:var(--font-display);font-size:1.25rem;color:var(--gold-bright);font-weight:800}
+.nd-am{font-size:.86rem;color:var(--cream-dim);margin-top:4px;line-height:1.6}
+.nd-am b{color:var(--cream)}
+.nd-rate{text-align:center;flex-shrink:0}
+.nd-stars{font-size:1.3rem;letter-spacing:2px}
+.nd-rlabel{font-size:.82rem;font-weight:700;margin-top:2px}
+.nd-verdict{margin:14px 0;padding:12px 16px;border-left:4px solid;border-radius:10px;background:rgba(255,255,255,.03)}
+.nd-v-t{font-weight:800;font-size:1.02rem}
+.nd-v-d{font-size:.88rem;color:var(--cream-dim);margin-top:3px;line-height:1.6}
+.nd-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+@media(max-width:640px){.nd-grid{grid-template-columns:1fr}}
+.nd-card{border:1px solid rgba(201,162,39,.22);border-radius:12px;padding:13px 15px;background:rgba(255,255,255,.02)}
+.nd-c-h{font-weight:700;color:var(--gold-bright);font-size:.92rem;margin-bottom:7px}
+.nd-c-b{font-size:.88rem;color:var(--cream);line-height:1.7}
+.nd-c-b small{color:var(--cream-dim)}
+.nd-c-note{font-size:.8rem;color:var(--cream-dim);margin-top:8px;font-style:italic}
+.nd-good{color:#5FD6A8;font-weight:700}.nd-bad{color:#F0A090;font-weight:700}
+.nd-hours{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.nd-hg{background:linear-gradient(135deg,rgba(0,194,168,.15),rgba(201,162,39,.1));border:1px solid rgba(0,194,168,.3);border-radius:9px;padding:6px 11px;font-size:.86rem;color:#CFF6EE;font-weight:600}
+.nd-hg small{color:var(--cream-dim);font-weight:400}
+.nd-tip{margin-top:14px;padding:12px 15px;border-radius:10px;background:rgba(201,162,39,.09);border:1px solid rgba(201,162,39,.28);font-size:.88rem;line-height:1.7;color:var(--cream)}
+.nd-tip b{color:var(--gold-bright)}
+.nd-disc{margin-top:12px;font-size:.8rem;color:var(--cream-dim);font-style:italic;line-height:1.6}
+/* ===== KINH DỊCH ===== */
+.dich-result{margin-top:20px}
+.kd-top{display:flex;gap:22px;align-items:center;flex-wrap:wrap;padding:16px 18px;border:1px solid rgba(201,162,39,.28);border-radius:14px;background:linear-gradient(180deg,rgba(201,162,39,.06),transparent)}
+.kd-hexbox{display:flex;flex-direction:column;gap:7px;flex-shrink:0}
+.kd-hao{position:relative;display:flex;gap:10px;width:150px;height:15px;justify-content:center}
+.kd-yang{width:150px;height:15px;background:linear-gradient(90deg,var(--gold),var(--gold-bright));border-radius:3px}
+.kd-yin{width:65px;height:15px;background:linear-gradient(90deg,var(--gold),var(--gold-bright));border-radius:3px}
+.kd-bien{position:absolute;right:-16px;top:50%;transform:translateY(-50%);color:#E86A5C;font-size:.9rem;font-weight:700}
+.kd-info{flex:1;min-width:200px}
+.kd-hoi{font-size:.86rem;color:var(--cream-dim);margin-bottom:4px}.kd-hoi b{color:var(--cream)}
+.kd-num{font-family:var(--font-display);font-size:1.05rem;color:var(--gold);font-weight:700;letter-spacing:1px}
+.kd-name{font-family:var(--font-display);font-size:1.7rem;color:var(--gold-bright);font-weight:800;margin:2px 0}
+.kd-cat{font-size:.9rem;font-weight:800;letter-spacing:1px}
+.kd-bq{font-size:.86rem;color:var(--cream);margin-top:6px}.kd-bq b{color:var(--gold-bright)}
+.kd-bien-note{font-size:.84rem;color:var(--cream-dim);margin-top:8px;line-height:1.6;padding-top:8px;border-top:1px dashed rgba(201,162,39,.25)}
+.kd-bien-note b{color:#5FD6A8}
+.kd-y{margin:14px 0;padding:13px 16px;border-radius:11px;background:rgba(255,255,255,.03);border-left:3px solid var(--gold);font-size:.95rem;line-height:1.75;color:var(--cream)}
 .tv-lunar-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .tv-lunar-row select,.tv-lunar-row input{padding:9px 11px;border-radius:9px;background:var(--navy-800,#0f1830);border:1px solid rgba(201,162,39,.3);color:var(--cream)}
 .tv-lunar-row #tvLYear{width:110px}
@@ -6963,6 +7009,498 @@ async function moKhoaLuanTuVi(){
   }catch(e){ note.style.color='#E86A5C'; note.textContent='Lỗi: '+(e&&e.code?e.code:'không kết nối được'); }
 }
 
+/* ============================================================
+   XEM NGÀY TỐT - Lịch vạn niên (can chi · hoàng đạo · trực · giờ tốt)
+   Dựa trên quy tắc lịch pháp cổ truyền; mang tính tham khảo văn hoá.
+   ============================================================ */
+if(typeof window!=='undefined' && !window.el){ window.el = function(id){ return document.getElementById(id); }; }
+var ND_SAO12 = [
+  {t:'Thanh Long', tot:true},  {t:'Minh Đường', tot:true},  {t:'Thiên Hình', tot:false},
+  {t:'Chu Tước', tot:false},   {t:'Kim Quỹ', tot:true},     {t:'Kim Đường', tot:true},
+  {t:'Bạch Hổ', tot:false},    {t:'Ngọc Đường', tot:true},  {t:'Thiên Lao', tot:false},
+  {t:'Nguyên Vũ', tot:false},  {t:'Tư Mệnh', tot:true},     {t:'Câu Trận', tot:false}
+];
+var ND_TRUC = [
+  {t:'Kiến', tot:1,  ph:'Kiến - vững vàng, khởi đầu', nen:'xuất hành, gặp gỡ, nhậm chức, cầu quan, kết giao', ky:'động thổ, an táng, đào giếng, mở kho'},
+  {t:'Trừ',  tot:1,  ph:'Trừ - trừ cũ đón mới',      nen:'trừ phục, chữa bệnh, tế lễ, dọn dẹp, giải trừ', ky:'xuất hành xa, khai trương, cưới hỏi'},
+  {t:'Mãn',  tot:1,  ph:'Mãn - đầy đủ, viên mãn',    nen:'khai trương, cầu tài, mở kho, xuất hành, giao dịch', ky:'an táng, kiện tụng, uống thuốc'},
+  {t:'Bình', tot:0,  ph:'Bình - bằng phẳng, ổn',     nen:'san lấp, làm đường, sửa chữa, việc thường ngày', ky:'việc trọng đại nên chọn ngày khác tốt hơn'},
+  {t:'Định', tot:1,  ph:'Định - ổn định, an bài',    nen:'cưới hỏi, ký kết, nhập trạch, khánh thành, trồng cây', ky:'kiện tụng, xuất hành xa, tranh chấp'},
+  {t:'Chấp', tot:1,  ph:'Chấp - nắm giữ, kiên trì',  nen:'xây dựng, cầu tài, gieo trồng, tạo tác, lập ước', ky:'di chuyển, mở kho, xuất hành xa'},
+  {t:'Phá',  tot:-1, ph:'Phá - hao tán, đổ vỡ',      nen:'phá dỡ nhà cũ, chữa bệnh nan y', ky:'phần lớn việc trọng đại: khai trương, cưới hỏi, ký kết'},
+  {t:'Nguy', tot:-1, ph:'Nguy - hiểm, cần thận',     nen:'tế lễ cầu an, tĩnh dưỡng', ky:'lên cao, sông nước, mạo hiểm, khởi sự lớn, xuất hành'},
+  {t:'Thành', tot:2, ph:'Thành - thành tựu, tốt',    nen:'khai trương, cưới hỏi, nhập học, ký kết, nhập trạch, giao dịch', ky:'kiện tụng, tranh chấp'},
+  {t:'Thu',  tot:1,  ph:'Thu - thu về, gặt hái',     nen:'thu hoạch, cầu tài, mua vào, nhập kho, khai trương', ky:'an táng, xuất hành xa'},
+  {t:'Khai', tot:2,  ph:'Khai - mở ra, hanh thông',  nen:'khai trương, xuất hành, cưới hỏi, nhập trạch, động thổ, ký kết', ky:'an táng, việc tang'},
+  {t:'Bế',  tot:-1,  ph:'Bế - đóng lại, bế tắc',     nen:'đắp đê, lấp hố, an táng, cất giữ, làm bờ', ky:'khai trương, xuất hành, phẫu thuật, khởi sự mới'}
+];
+/* Hỷ Thần theo Can ngày (hướng cầu may, xuất hành) */
+var ND_HYTHAN = ['Đông Bắc','Tây Bắc','Tây Nam','Chính Nam','Đông Nam','Đông Bắc','Tây Bắc','Tây Nam','Chính Nam','Đông Nam'];
+/* Tài Thần theo Can ngày (hướng cầu tài) */
+var ND_TAITHAN= ['Đông Bắc','Đông Bắc','Chính Tây','Chính Tây','Chính Bắc','Chính Bắc','Chính Đông','Chính Đông','Chính Nam','Chính Nam'];
+var ND_GIO = [['Tý','23-1h'],['Sửu','1-3h'],['Dần','3-5h'],['Mão','5-7h'],['Thìn','7-9h'],['Tỵ','9-11h'],['Ngọ','11-13h'],['Mùi','13-15h'],['Thân','15-17h'],['Dậu','17-19h'],['Tuất','19-21h'],['Hợi','21-23h']];
+
+/* map việc -> nhãn + từ khoá dò trong nen/ky của Trực */
+var ND_VIEC = {
+  chung:     {nhan:'công việc tổng quát', kw:null},
+  xuathanh:  {nhan:'Xuất hành - đi xa',   kw:'xuất hành'},
+  lamnha:    {nhan:'Làm nhà - động thổ',  kw:'động thổ'},
+  cuoihoi:   {nhan:'Cưới hỏi',            kw:'cưới hỏi'},
+  khaitruong:{nhan:'Khai trương - thành lập', kw:'khai trương'},
+  kyket:     {nhan:'Ký kết - giao dịch',  kw:'ký kết'},
+  muaban:    {nhan:'Mua bán - trao đổi',  kw:'cầu tài'},
+  antang:    {nhan:'An táng',             kw:'an táng'}
+};
+
+function phanTichNgay(d,m,y){
+  var jd = tvJd(d,m,y);
+  var am = tvSolar2Lunar(d,m,y,7);
+  var dayCan = ((jd+9)%10+10)%10, dayChi = ((jd+1)%12+12)%12;
+  var yCan = ((am.nam+6)%10+10)%10, yChi = ((am.nam+8)%12+12)%12;
+  var mChi = (am.thang+1)%12;                 /* tháng 1 ÂL -> Dần */
+  var canDan = (yCan*2+2)%10;
+  var mCan = ((canDan + (am.thang-1))%10+10)%10;
+  /* sao hoàng đạo/hắc đạo của NGÀY: khởi Thanh Long theo Chi tháng */
+  var startD = ((mChi%6)*2+8)%12;
+  var saoIdx = ((dayChi - startD)%12+12)%12;
+  var sao = ND_SAO12[saoIdx];
+  /* Trực: Chi ngày - Chi tháng (0=Kiến) */
+  var trucIdx = ((dayChi - mChi)%12+12)%12;
+  var truc = ND_TRUC[trucIdx];
+  /* giờ hoàng đạo: khởi theo Chi ngày */
+  var startH = ((dayChi%6)*2+8)%12, gioTot=[], gioXau=[];
+  for(var h=0;h<12;h++){ var si=((h-startH)%12+12)%12; (ND_SAO12[si].tot?gioTot:gioXau).push(ND_GIO[h]); }
+  return {
+    d:d,m:m,y:y,jd:jd,am:am,
+    dayCan:dayCan,dayChi:dayChi,yCan:yCan,yChi:yChi,mCan:mCan,mChi:mChi,
+    sao:sao,saoIdx:saoIdx,truc:truc,trucIdx:trucIdx,gioTot:gioTot,gioXau:gioXau,
+    hyThan:ND_HYTHAN[dayCan],taiThan:ND_TAITHAN[dayCan],xungChi:(dayChi+6)%12,
+    thu: (new Date(y,m-1,d)).getDay()
+  };
+}
+/* điểm tổng: hoàng đạo + trực */
+function diemNgay(kq){
+  var s = 0;
+  s += kq.sao.tot ? 2 : -1;
+  s += (kq.truc.tot===2?2:kq.truc.tot===1?1:kq.truc.tot===0?0:-2);
+  return s;
+}
+function xepLoaiNgay(s){
+  if(s>=3) return {sao:5,nhan:'Ngày RẤT TỐT (Đại cát)',mau:'#1c9c4a'};
+  if(s>=1) return {sao:4,nhan:'Ngày TỐT (Cát)',mau:'#3ECF7A'};
+  if(s===0)return {sao:3,nhan:'Ngày BÌNH THƯỜNG',mau:'#C9A227'};
+  if(s>=-2)return {sao:2,nhan:'Ngày cần CÂN NHẮC',mau:'#E0872E'};
+  return {sao:1,nhan:'Ngày XẤU (nên tránh việc lớn)',mau:'#E05C4A'};
+}
+function initNgayTot(){
+  var inp = el('ngayDate'); if(inp && !inp.value){ var t=new Date(); inp.value = t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0'); }
+}
+function xemNgayTot(){
+  var inp = el('ngayDate'); if(!inp || !inp.value){ (window.toast||alert)('Hãy chọn ngày.'); return; }
+  var p = inp.value.split('-').map(function(n){return parseInt(n,10);});
+  var viec = (el('ngayViec')&&el('ngayViec').value) || 'chung';
+  var kq = phanTichNgay(p[2],p[1],p[0]);
+  el('ngayResult').style.display='block';
+  el('ngayResult').innerHTML = renderNgay(kq, viec);
+  el('ngayResult').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function renderNgay(kq, viec){
+  var THU=['Chủ Nhật','Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Thứ Sáu','Thứ Bảy'];
+  var CHI=TV_CHI, CAN=TV_CAN;
+  var s = diemNgay(kq), xl = xepLoaiNgay(s);
+  var svc = ND_VIEC[viec] || ND_VIEC.chung;
+  /* nhận định cho việc đã chọn */
+  var vNhan, vMau, vGiaiThich;
+  var nen = kq.truc.nen, ky = kq.truc.ky;
+  function co(str,kw){ return kw && str.indexOf(kw)>=0; }
+  if(viec==='chung'){
+    vNhan = xl.nhan; vMau = xl.mau;
+    vGiaiThich = 'Đánh giá tổng quát dựa trên ngày '+(kq.sao.tot?'Hoàng Đạo':'Hắc Đạo')+' và Trực '+kq.truc.t+'.';
+  } else if(co(ky, svc.kw)){
+    vNhan = 'NÊN TRÁNH việc "'+svc.nhan+'" trong ngày này'; vMau='#E05C4A';
+    vGiaiThich = 'Trực '+kq.truc.t+' kỵ '+svc.kw+'. Nên chọn ngày khác thuận hơn.';
+  } else if(co(nen, svc.kw)){
+    vNhan = 'THUẬN LỢI cho "'+svc.nhan+'"'; vMau=(kq.sao.tot?'#1c9c4a':'#3ECF7A');
+    vGiaiThich = 'Trực '+kq.truc.t+' hợp '+svc.kw+(kq.sao.tot?', lại là ngày Hoàng Đạo':'')+'.';
+  } else {
+    vNhan = (kq.sao.tot && kq.truc.tot>=0) ? 'Có thể tiến hành "'+svc.nhan+'"' : 'Cân nhắc với "'+svc.nhan+'"';
+    vMau = (kq.sao.tot && kq.truc.tot>=0) ? '#C9A227' : '#E0872E';
+    vGiaiThich = 'Trực '+kq.truc.t+' không đặc biệt hợp/kỵ việc này; tham khảo giờ tốt và hướng xuất hành bên dưới.';
+  }
+  var stars = '★★★★★☆☆☆☆☆'.slice(5-xl.sao, 10-xl.sao);
+  var h =
+    '<div class="nd-head" style="border-color:'+xl.mau+'"><div class="nd-h-l">'+
+      '<div class="nd-date">'+THU[kq.thu]+', ngày '+kq.d+'/'+kq.m+'/'+kq.y+'</div>'+
+      '<div class="nd-am">Âm lịch: <b>'+kq.am.ngay+'/'+kq.am.thang+(kq.am.nhuan?' (nhuận)':'')+'/'+kq.am.nam+'</b> · Ngày <b>'+CAN[kq.dayCan]+' '+CHI[kq.dayChi]+'</b>, tháng '+CAN[kq.mCan]+' '+CHI[kq.mChi]+', năm '+CAN[kq.yCan]+' '+CHI[kq.yChi]+'</div>'+
+    '</div><div class="nd-rate" style="color:'+xl.mau+'"><div class="nd-stars">'+stars+'</div><div class="nd-rlabel">'+xl.nhan+'</div></div></div>'+
+
+    '<div class="nd-verdict" style="border-left-color:'+vMau+'"><div class="nd-v-t" style="color:'+vMau+'">'+vNhan+'</div><div class="nd-v-d">'+vGiaiThich+'</div></div>'+
+
+    '<div class="nd-grid">'+
+      '<div class="nd-card"><div class="nd-c-h">☀️ Ngày Hoàng Đạo / Hắc Đạo</div><div class="nd-c-b"><b class="'+(kq.sao.tot?'nd-good':'nd-bad')+'">'+(kq.sao.tot?'HOÀNG ĐẠO':'HẮC ĐẠO')+'</b> - sao '+kq.sao.t+'. '+(kq.sao.tot?'Ngày được sao tốt chiếu, thuận cho việc trọng đại.':'Ngày sao xấu, hạn chế việc lớn, nên hoá giải bằng giờ hoàng đạo.')+'</div></div>'+
+      '<div class="nd-card"><div class="nd-c-h">📜 Trực trong ngày</div><div class="nd-c-b"><b>'+kq.truc.ph+'</b><br><span class="nd-good">Nên:</span> '+nen+'<br><span class="nd-bad">Kỵ:</span> '+ky+'</div></div>'+
+    '</div>'+
+
+    '<div class="nd-card"><div class="nd-c-h">🕐 Giờ Hoàng Đạo (giờ đẹp trong ngày)</div><div class="nd-hours">'+
+      kq.gioTot.map(function(g){ return '<span class="nd-hg">'+g[0]+' <small>('+g[1]+')</small></span>'; }).join('')+
+    '</div><div class="nd-c-note">Giờ hắc đạo (nên tránh việc quan trọng): '+kq.gioXau.map(function(g){return g[0];}).join(', ')+'.</div></div>'+
+
+    '<div class="nd-grid">'+
+      '<div class="nd-card"><div class="nd-c-h">🧭 Hướng xuất hành</div><div class="nd-c-b">Hỷ Thần (cầu may, vui): <b>'+kq.hyThan+'</b><br>Tài Thần (cầu tài lộc): <b>'+kq.taiThan+'</b><br><small>Xuất hành quay mặt về hướng này để đón cát khí.</small></div></div>'+
+      '<div class="nd-card"><div class="nd-c-h">⚠️ Tuổi xung ngày</div><div class="nd-c-b">Ngày <b>'+CHI[kq.dayChi]+'</b> xung với tuổi <b>'+CHI[kq.xungChi]+'</b>. Người tuổi '+CHI[kq.xungChi]+' nên tránh làm chủ sự việc lớn trong ngày này.</div></div>'+
+    '</div>'+
+
+    '<div class="nd-tip">💡 Gợi ý: nếu ngày chưa đẹp, hãy thử chọn ngày khác gần đó. Kết hợp <b>ngày Hoàng Đạo + Trực tốt + giờ Hoàng Đạo</b> sẽ được thời điểm thuận lợi nhất cho việc của bạn.</div>'+
+    '<div class="nd-disc">Thông tin dựa trên lịch pháp cổ truyền (âm lịch, can chi, hoàng đạo, thập nhị trực), mang tính tham khảo văn hoá - tín ngưỡng. Quyết định sau cùng nên kết hợp với điều kiện thực tế và sự chuẩn bị chu đáo của bạn.</div>';
+  return h;
+}
+
+/* Bát quái: value -> tên/ký hiệu (bit dưới->trên, dương=1) */
+var KD_TRI = {0:['Khôn','☷','Đất'],1:['Chấn','☳','Sấm'],2:['Khảm','☵','Nước'],3:['Đoài','☱','Đầm'],4:['Cấn','☶','Núi'],5:['Ly','☲','Lửa'],6:['Tốn','☴','Gió'],7:['Càn','☰','Trời']};
+var KD_KWNUM = [2,24,7,19,15,36,46,11,16,51,40,54,62,55,32,34,8,3,29,60,39,63,48,5,45,17,47,58,31,49,28,43,23,27,4,41,52,22,18,26,35,21,64,38,56,30,50,14,20,42,59,61,53,37,57,9,12,25,6,10,33,13,44,1];
+/* [số, tên, trên, dưới, cát(0/1/2), ý, khuyên] */
+var KD_HEX = {
+  1:{ten:'Thuần Càn',tren:7,duoi:7,cat:2,y:'Trời - sức mạnh cương kiện, sáng tạo không ngừng. Đại cát, thời của bậc quân tử vươn lên.',khuyen:'Giữ chính trực, nỗ lực bền bỉ, tránh kiêu mạn thái quá kẻo \'kháng long hữu hối\'.'},
+  2:{ten:'Thuần Khôn',tren:0,duoi:0,cat:2,y:'Đất - đức dày nâng đỡ muôn vật, nhu thuận mà bền vững. Tốt cho người biết theo và phụ tá.',khuyen:'Lấy nhu thuận, khiêm nhường làm gốc; theo chính đạo thì mọi việc hanh thông.'},
+  3:{ten:'Thủy Lôi Truân',tren:2,duoi:1,cat:0,y:'Buổi đầu gian nan, vạn sự khởi đầu khó khăn như mầm non xuyên đất.',khuyen:'Kiên trì, tìm người giúp đỡ, chớ vội tiến; vững chí sẽ qua bĩ cực.'},
+  4:{ten:'Sơn Thủy Mông',tren:4,duoi:2,cat:1,y:'Non trẻ, mông muội, cần được khai mở và học hỏi.',khuyen:'Khiêm tốn cầu thầy, chăm học hỏi; nuôi dưỡng đúng đắn thì nên người.'},
+  5:{ten:'Thủy Thiên Nhu',tren:2,duoi:7,cat:1,y:'Chờ đợi đúng thời, như phải đợi qua sông. Có thành ý thì hanh.',khuyen:'Nhẫn nại chờ thời cơ, chuẩn bị kỹ; nôn nóng dễ hỏng việc.'},
+  6:{ten:'Thiên Thủy Tụng',tren:7,duoi:2,cat:0,y:'Tranh tụng, bất hòa, mâu thuẫn khó dung hòa.',khuyen:'Nên hòa giải, lùi một bước; tránh kiện cáo tranh chấp đến cùng.'},
+  7:{ten:'Địa Thủy Sư',tren:0,duoi:2,cat:1,y:'Binh chúng, tổ chức đông người; cần người cầm quân chính đáng.',khuyen:'Cần kỷ luật, danh chính ngôn thuận, chọn người hiền tài dẫn dắt.'},
+  8:{ten:'Thủy Địa Tỷ',tren:2,duoi:0,cat:2,y:'Thân phụ, gần gũi, đoàn kết quy về một mối. Cát.',khuyen:'Chân thành gắn kết, chọn minh chủ mà theo; hợp quần thì mạnh.'},
+  9:{ten:'Phong Thiên Tiểu Súc',tren:6,duoi:7,cat:1,y:'Nuôi chứa nhỏ, tích lũy dần; sức còn hạn chế, chưa thể lớn.',khuyen:'Kiên nhẫn tích lũy, làm việc nhỏ chắc chắn; chờ thời tế lớn.'},
+  10:{ten:'Thiên Trạch Lý',tren:7,duoi:3,cat:1,y:'Nết đi, cách hành xử; đi trên đuôi hổ mà cẩn thận thì không sao.',khuyen:'Giữ lễ, thận trọng, đi đúng đạo thì dù nguy vẫn an.'},
+  11:{ten:'Địa Thiên Thái',tren:0,duoi:7,cat:2,y:'Thái hòa, thông suốt, trên dưới giao hòa. Đại cát hanh thông.',khuyen:'Nắm thời thịnh mà vun đắp, giữ khiêm; phòng khi thái quá sinh biến.'},
+  12:{ten:'Thiên Địa Bĩ',tren:7,duoi:0,cat:0,y:'Bế tắc, trên dưới không thông, tiểu nhân đắc thế.',khuyen:'Nên ẩn nhẫn giữ mình, chờ vận chuyển; không cưỡng cầu lúc bĩ.'},
+  13:{ten:'Thiên Hỏa Đồng Nhân',tren:7,duoi:5,cat:2,y:'Cùng người, hòa đồng, chung chí hướng. Hợp tác thì lợi.',khuyen:'Rộng lòng công tâm, kết giao người hiền; đồng lòng thì việc lớn thành.'},
+  14:{ten:'Hỏa Thiên Đại Hữu',tren:5,duoi:7,cat:2,y:'Có lớn, sở hữu dồi dào, sáng rực. Đại cát.',khuyen:'Giàu mà biết chia sẻ, khiêm hạ; giữ đức thì phúc bền.'},
+  15:{ten:'Địa Sơn Khiêm',tren:0,duoi:4,cat:2,y:'Khiêm nhường; núi ẩn dưới đất. Quân tử khiêm thì hanh, có chung cát.',khuyen:'Càng cao càng khiêm; khiêm tốn giúp giữ và phát triển thành quả.'},
+  16:{ten:'Lôi Địa Dự',tren:1,duoi:0,cat:1,y:'Vui vẻ, thuận theo mà động; có chuẩn bị thì an.',khuyen:'Vui nhưng chớ buông thả; phòng xa, thuận thời mà hành.'},
+  17:{ten:'Trạch Lôi Tùy',tren:3,duoi:1,cat:1,y:'Đi theo, tùy thời thuận thế; theo điều chính thì hanh.',khuyen:'Biết tùy thời, theo người hiền lẽ phải; chớ theo mù quáng.'},
+  18:{ten:'Sơn Phong Cổ',tren:4,duoi:6,cat:0,y:'Đổ nát, tệ hại tích tụ cần chỉnh đốn, sửa sai.',khuyen:'Mạnh dạn cải cách, sửa cái hỏng từ gốc; chậm trễ càng nát.'},
+  19:{ten:'Địa Trạch Lâm',tren:0,duoi:3,cat:2,y:'Tới gần, lớn dần, dương khí đang thịnh. Hanh thông.',khuyen:'Nắm thời đang lên mà tiến; giữ chính, phòng lúc suy sẽ đến.'},
+  20:{ten:'Phong Địa Quán',tren:6,duoi:0,cat:1,y:'Quan sát, chiêm ngưỡng, suy xét trước khi hành.',khuyen:'Nhìn xa trông rộng, tu thân làm gương; xét kỹ rồi mới quyết.'},
+  21:{ten:'Hỏa Lôi Phệ Hạp',tren:5,duoi:1,cat:1,y:'Cắn để hợp, trừ chướng ngại; dùng hình phạt cho thông.',khuyen:'Kiên quyết dẹp trở ngại, xử việc minh bạch thì thông suốt.'},
+  22:{ten:'Sơn Hỏa Bí',tren:4,duoi:5,cat:1,y:'Trang sức, văn vẻ đẹp đẽ; hình thức hỗ trợ nội dung.',khuyen:'Chú trọng cả nội dung lẫn hình thức; đừng phù phiếm bề ngoài.'},
+  23:{ten:'Sơn Địa Bác',tren:4,duoi:0,cat:0,y:'Bóc lột, tiêu mòn, dương sắp bị bóc hết. Suy.',khuyen:'Nên thủ, dưỡng sức chờ thời; không nên khởi sự lớn.'},
+  24:{ten:'Địa Lôi Phục',tren:0,duoi:1,cat:2,y:'Trở lại, một dương sinh, vận mới bắt đầu. Cát.',khuyen:'Vận đang hồi phục, kiên trì theo chính đạo thì tiến dần.'},
+  25:{ten:'Thiên Lôi Vô Vọng',tren:7,duoi:1,cat:1,y:'Không càn bậy, chân thật tự nhiên; theo lẽ trời thì hanh.',khuyen:'Giữ tâm chân chính, làm việc thuận đạo; chớ tham vọng hão.'},
+  26:{ten:'Sơn Thiên Đại Súc',tren:4,duoi:7,cat:2,y:'Nuôi chứa lớn, tích đức tích tài dồi dào. Cát.',khuyen:'Tích lũy thực lực và đức độ; dưỡng tài chờ thời làm việc lớn.'},
+  27:{ten:'Sơn Lôi Di',tren:4,duoi:1,cat:1,y:'Nuôi dưỡng; xem cách nuôi thân và nuôi người.',khuyen:'Nuôi thân bằng chính đạo, lời nói và ăn uống chừng mực.'},
+  28:{ten:'Trạch Phong Đại Quá',tren:3,duoi:6,cat:0,y:'Quá mức, gánh nặng vượt sức như cột nhà oằn.',khuyen:'Biết lượng sức, giảm tải, tìm trợ giúp; chớ ôm đồm quá độ.'},
+  29:{ten:'Thuần Khảm',tren:2,duoi:2,cat:0,y:'Hiểm trùng hiểm, nước sâu nguy nan chồng chất.',khuyen:'Giữ lòng thành tín, bình tĩnh vượt hiểm; đừng liều lĩnh.'},
+  30:{ten:'Thuần Ly',tren:5,duoi:5,cat:1,y:'Sáng, bám víu; lửa cần chất để cháy. Nương tựa chính đáng thì hanh.',khuyen:'Nương vào điều chính, giữ sáng suốt; đừng để rực rỡ rồi tàn.'},
+  31:{ten:'Trạch Sơn Hàm',tren:3,duoi:4,cat:2,y:'Cảm ứng, giao cảm; nam nữ đôi lứa hòa hợp. Cát cho hôn nhân.',khuyen:'Chân thành cảm hóa, giao tiếp thật lòng thì được ứng.'},
+  32:{ten:'Lôi Phong Hằng',tren:1,duoi:6,cat:1,y:'Lâu bền, giữ đạo thường hằng. Kiên trì thì hanh.',khuyen:'Bền chí giữ đạo lâu dài; đừng thay đổi thất thường.'},
+  33:{ten:'Thiên Sơn Độn',tren:7,duoi:4,cat:1,y:'Lui ẩn, rút lui đúng lúc để giữ mình.',khuyen:'Biết tiến biết thoái; lúc bất lợi thì lui giữ, chờ thời.'},
+  34:{ten:'Lôi Thiên Đại Tráng',tren:1,duoi:7,cat:2,y:'Lớn mạnh, thịnh vượng đầy sức. Cát nhưng chớ dùng bừa sức.',khuyen:'Mạnh mà giữ chính; đừng cậy sức làm càn kẻo tổn.'},
+  35:{ten:'Hỏa Địa Tấn',tren:5,duoi:0,cat:2,y:'Tiến lên, thăng tiến rực rỡ như mặt trời mọc. Cát.',khuyen:'Thời đang lên, tiến bằng chính đạo; giữ khiêm để bền.'},
+  36:{ten:'Địa Hỏa Minh Di',tren:0,duoi:5,cat:0,y:'Ánh sáng bị che, hiền tài gặp thời tối. Gian nan.',khuyen:'Ẩn tài giữ chí, kiên nhẫn chờ sáng; chớ khoe khoang lúc nguy.'},
+  37:{ten:'Phong Hỏa Gia Nhân',tren:6,duoi:5,cat:2,y:'Người nhà, gia đạo; trong nhà thuận thì ngoài yên. Cát.',khuyen:'Giữ nề nếp gia đình, mỗi người đúng vị; trong ấm ngoài êm.'},
+  38:{ten:'Hỏa Trạch Khuê',tren:5,duoi:3,cat:0,y:'Trái lìa, hiểu lầm, bất đồng; việc nhỏ thì được.',khuyen:'Hòa nhi bất đồng, kiên nhẫn hóa giải hiểu lầm; việc lớn hãy khoan.'},
+  39:{ten:'Thủy Sơn Kiển',tren:2,duoi:4,cat:0,y:'Gian nan, khập khiễng, đường đi trắc trở.',khuyen:'Gặp khó nên dừng lại tìm đường, cầu người giúp; chớ liều tiến.'},
+  40:{ten:'Lôi Thủy Giải',tren:1,duoi:2,cat:2,y:'Cởi mở, giải trừ, khó khăn được hóa giải. Cát.',khuyen:'Nhân lúc gỡ được nút thắt mà tiến; tha thứ, buông bỏ oán cũ.'},
+  41:{ten:'Sơn Trạch Tổn',tren:4,duoi:3,cat:1,y:'Bớt đi; giảm dưới ích trên, có thành ý thì cát.',khuyen:'Biết bớt cái thừa, giảm ham muốn; hy sinh đúng chỗ sẽ được đền.'},
+  42:{ten:'Phong Lôi Ích',tren:6,duoi:1,cat:2,y:'Thêm lợi; giảm trên ích dưới, lợi cho tiến hành. Cát.',khuyen:'Thời được trợ giúp, mạnh dạn làm việc lớn và làm điều thiện.'},
+  43:{ten:'Trạch Thiên Quải',tren:3,duoi:7,cat:1,y:'Quyết, dứt khoát loại trừ điều xấu; cần cương quyết.',khuyen:'Quyết đoán trừ tiểu nhân/thói xấu, nhưng đường đường chính chính.'},
+  44:{ten:'Thiên Phong Cấu',tren:7,duoi:6,cat:0,y:'Gặp gỡ bất ngờ; một âm sinh, tiểu nhân bắt đầu xâm.',khuyen:'Cảnh giác điều bất chính chớm nở; chớ để nữ/âm khí lấn át.'},
+  45:{ten:'Trạch Địa Tụy',tren:3,duoi:0,cat:2,y:'Tụ họp, quy tụ đông đảo. Có lãnh đạo chính thì cát.',khuyen:'Đoàn kết quy tụ quanh điều chính; phòng lộn xộn khi tụ đông.'},
+  46:{ten:'Địa Phong Thăng',tren:0,duoi:6,cat:2,y:'Đi lên, thăng tiến dần như cây mọc. Cát, hanh.',khuyen:'Tiến từng bước vững chắc, thuận theo thời; gặp bậc trên thì lợi.'},
+  47:{ten:'Trạch Thủy Khốn',tren:3,duoi:2,cat:0,y:'Khốn cùng, bức bách, tài lực cạn kiệt.',khuyen:'Giữ chí khí và lòng thành trong nghịch cảnh; bền tâm sẽ qua.'},
+  48:{ten:'Thủy Phong Tỉnh',tren:2,duoi:6,cat:1,y:'Giếng nước nuôi người, đức bền không cạn.',khuyen:'Tu dưỡng nội lực nuôi người; giữ nguồn trong sạch, đừng bỏ dở.'},
+  49:{ten:'Trạch Hỏa Cách',tren:3,duoi:5,cat:1,y:'Cải cách, thay cũ đổi mới; đúng thời thì được tin.',khuyen:'Cải cách hợp thời và hợp lòng người; chớ nóng vội tùy tiện.'},
+  50:{ten:'Hỏa Phong Đỉnh',tren:5,duoi:6,cat:2,y:'Cái đỉnh, ổn định nuôi dưỡng bậc hiền. Đại cát hanh.',khuyen:'Ổn định căn cơ, trọng dụng hiền tài; hợp làm việc mới lớn.'},
+  51:{ten:'Thuần Chấn',tren:1,duoi:1,cat:1,y:'Sấm động, chấn kinh; biến động khiến người tỉnh ngộ.',khuyen:'Gặp biến chớ hoảng, giữ vững tâm mà tự xét; kính sợ thì an.'},
+  52:{ten:'Thuần Cấn',tren:4,duoi:4,cat:1,y:'Núi, dừng lại đúng lúc; tĩnh tại, biết ngừng.',khuyen:'Biết dừng đúng chỗ, tĩnh tâm; không vọng động thì không lỗi.'},
+  53:{ten:'Phong Sơn Tiệm',tren:6,duoi:4,cat:2,y:'Tiến dần theo thứ tự, như chim hồng bay tuần tự. Cát.',khuyen:'Tiến từ từ đúng trình tự; hôn nhân, sự nghiệp nên tuần tự mà bền.'},
+  54:{ten:'Lôi Trạch Quy Muội',tren:1,duoi:3,cat:0,y:'Gả muội, danh không chính; quan hệ lệch thì bất lợi.',khuyen:'Giữ đúng danh phận và lễ nghĩa; việc cưới gả chớ vội, xét kỹ.'},
+  55:{ten:'Lôi Hỏa Phong',tren:1,duoi:5,cat:1,y:'Thịnh lớn, phồn thịnh cực điểm; sáng mà lo suy.',khuyen:'Đang thịnh nên giữ sáng suốt, phòng khi quá đầy sinh khuyết.'},
+  56:{ten:'Hỏa Sơn Lữ',tren:5,duoi:4,cat:0,y:'Lữ khách, xa nhà cô lẻ; việc nhỏ thì được, cẩn thận.',khuyen:'Nơi đất khách giữ khiêm hòa, thận trọng; chớ khoe của gây họa.'},
+  57:{ten:'Thuần Tốn',tren:6,duoi:6,cat:1,y:'Gió, thuận nhập; mềm mại thấm dần. Việc nhỏ hanh.',khuyen:'Khiêm thuận len lỏi mà đạt; theo bậc trên, kiên trì thấm nhuần.'},
+  58:{ten:'Thuần Đoài',tren:3,duoi:3,cat:2,y:'Đầm, vui hòa; hòa duyệt mà chính thì hanh. Cát.',khuyen:'Vui vẻ chân thành, hòa ái với người; giữ chính thì được lợi.'},
+  59:{ten:'Phong Thủy Hoán',tren:6,duoi:2,cat:1,y:'Ly tán rồi tụ lại; giải tán bế tắc để lưu thông.',khuyen:'Phá bỏ trì trệ, quy tụ lòng người trở lại; hợp cho việc lớn.'},
+  60:{ten:'Thủy Trạch Tiết',tren:2,duoi:3,cat:1,y:'Tiết chế, chừng mực; điều độ thì hanh, quá khổ thì không nên.',khuyen:'Sống có tiết độ, chi tiêu chừng mực; đừng ép mình thái quá.'},
+  61:{ten:'Phong Trạch Trung Phu',tren:6,duoi:3,cat:2,y:'Lòng thành tín từ bên trong; thành tín cảm hóa. Cát.',khuyen:'Lấy chân thành làm gốc; giữ tín thì cảm được cả vật khó.'},
+  62:{ten:'Lôi Sơn Tiểu Quá',tren:1,duoi:4,cat:1,y:'Hơi quá; việc nhỏ thì được, việc lớn chớ làm.',khuyen:'Khiêm hạ, làm việc nhỏ cẩn thận; chớ vượt phận làm việc lớn.'},
+  63:{ten:'Thủy Hỏa Ký Tế',tren:2,duoi:5,cat:1,y:'Đã xong, mọi việc đã thành nhưng dễ sinh biến.',khuyen:'Thành rồi càng phải giữ gìn, phòng loạn; chớ chủ quan.'},
+  64:{ten:'Hỏa Thủy Vị Tế',tren:5,duoi:2,cat:1,y:'Chưa xong, việc còn dang dở nhưng có triển vọng.',khuyen:'Kiên trì hoàn tất phần cuối, cẩn trọng vượt qua thì thành.'}
+};
+
+/* ============================================================
+   KINH DỊCH - Gieo quẻ (3 đồng tiền) & luận giải
+   ============================================================ */
+var TV_GIA_DICH = 99000;
+var KD_PD = {
+  2:{ tq:'Quẻ tốt, vận đang lên, phần nhiều hanh thông, mưu sự dễ thành.',
+      cn:'Công danh sự nghiệp thuận lợi, có quý nhân trợ giúp; nên chủ động nắm cơ hội tiến tới.',
+      tl:'Tài lộc dồi dào, cầu tài được như ý, đầu tư có lợi - song chớ tham lam quá độ.',
+      td:'Tình duyên - gia đạo hòa hợp, đôi lứa gắn bó, hôn nhân đại cát.',
+      sk:'Sức khỏe ổn định, tinh thần phấn chấn; giữ điều độ thì an khang.',
+      xh:'Xuất hành, khởi sự đều thuận; việc mong cầu phần nhiều toại nguyện.' },
+  1:{ tq:'Quẻ ở thế trung bình, cần tùy thời và kiên nhẫn thì mới nên.',
+      cn:'Sự nghiệp cần nỗ lực bền bỉ, tiến từng bước chắc chắn; chớ nóng vội thì dần khởi sắc.',
+      tl:'Tài lộc vừa phải, nên giữ chắc, chi tiêu có kế hoạch; tránh mạo hiểm lớn.',
+      td:'Tình duyên cần vun đắp chân thành, lắng nghe và thấu hiểu nhau thì bền lâu.',
+      sk:'Sức khỏe bình thường; chú ý nghỉ ngơi, tránh lo nghĩ và làm việc quá sức.',
+      xh:'Xuất hành, cầu sự nên chọn thời điểm thích hợp và chuẩn bị kỹ mới nên tiến.' },
+  0:{ tq:'Quẻ đang ở thế khó, nên thủ hơn công, giữ mình chờ thời chuyển vận.',
+      cn:'Sự nghiệp gặp trắc trở; nên giữ vững lập trường, tránh tranh chấp, chờ cơ hội tốt hơn.',
+      tl:'Tài lộc hao hụt, cần thận trọng chi tiêu, tạm hoãn đầu tư mạo hiểm để bảo toàn.',
+      td:'Tình duyên dễ hiểu lầm; nên nhẫn nhịn, chân thành hóa giải, chớ vội vàng quyết định.',
+      sk:'Chú ý sức khỏe, nghỉ ngơi điều độ; phòng bệnh hơn chữa bệnh.',
+      xh:'Xuất hành và khởi sự lớn nên tạm hoãn; chờ khi quẻ tốt hơn hãy tiến hành.' }
+};
+
+function kdGieoHao(){ var s=0; for(var i=0;i<3;i++) s+=(Math.random()<0.5?2:3); return {duong:(s===7||s===9),bien:(s===6||s===9),val:s}; }
+function gieoQue(){
+  var haos=[]; for(var i=0;i<6;i++) haos.push(kdGieoHao());   /* hào 1 (dưới) -> hào 6 (trên) */
+  var hexVal=0; for(var i=0;i<6;i++){ if(haos[i].duong) hexVal|=(1<<i); }
+  var num=KD_KWNUM[hexVal];
+  var bienVal=hexVal; for(var i=0;i<6;i++){ if(haos[i].bien) bienVal^=(1<<i); }
+  var soBien=haos.filter(function(h){return h.bien;}).length;
+  var bienNum=soBien?KD_KWNUM[bienVal]:0;
+  __que={ haos:haos,hexVal:hexVal,num:num,bienVal:bienVal,bienNum:bienNum,soBien:soBien,
+          ten:(el('dichName')&&el('dichName').value||'').trim(),
+          hoi:(el('dichHoi')&&el('dichHoi').value||'').trim(),
+          ngay:(function(){var d=new Date();return d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();})() };
+  window.__que=__que;
+  var box=el('dichResult'); box.style.display='block'; box.innerHTML=renderQueFree(__que);
+  if(el('dichRutLai')) el('dichRutLai').style.display='inline-flex';
+  box.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+var __que=null;
+/* vẽ 6 hào (hào 6 trên cùng) - dùng cho màn hình */
+function kdVeHao(haos, cls){
+  var h='';
+  for(var i=5;i>=0;i--){ var y=haos[i].duong, bn=haos[i].bien;
+    h+='<div class="'+(cls||'kd-hao')+'">'+(y?'<span class="kd-yang"></span>':'<span class="kd-yin"></span><span class="kd-yin"></span>')+(bn?'<span class="kd-bien">'+(y?'○':'✕')+'</span>':'')+'</div>';
+  }
+  return h;
+}
+function kdTenQue(num){ var q=KD_HEX[num]; return q?('Quẻ '+num+' - '+q.ten):('Quẻ '+num); }
+function kdBatQuai(num){ var q=KD_HEX[num]; if(!q) return ''; var tr=KD_TRI[q.tren], du=KD_TRI[q.duoi];
+  return 'Thượng: <b>'+tr[0]+' '+tr[1]+'</b> ('+tr[2]+') · Hạ: <b>'+du[0]+' '+du[1]+'</b> ('+du[2]+')'; }
+
+function renderQueFree(q){
+  var hx=KD_HEX[q.num]||{};
+  var catLbl=['Quẻ HUNG','Quẻ BÌNH HÒA','Quẻ CÁT'][hx.cat!=null?hx.cat:1];
+  var catMau=['#E05C4A','#C9A227','#1c9c4a'][hx.cat!=null?hx.cat:1];
+  var h=
+    '<div class="kd-top">'+
+      '<div class="kd-hexbox">'+kdVeHao(q.haos)+'</div>'+
+      '<div class="kd-info">'+
+        (q.hoi?'<div class="kd-hoi">Điều hỏi: <b>'+escapeHtml(q.hoi)+'</b></div>':'')+
+        '<div class="kd-num">QUẺ SỐ '+q.num+'/64</div>'+
+        '<div class="kd-name">'+escapeHtml(hx.ten||'')+'</div>'+
+        '<div class="kd-cat" style="color:'+catMau+'">'+catLbl+'</div>'+
+        '<div class="kd-bq">'+kdBatQuai(q.num)+'</div>'+
+        (q.soBien?'<div class="kd-bien-note">Có '+q.soBien+' hào động → biến sang <b>Quẻ '+q.bienNum+' - '+(KD_HEX[q.bienNum]?KD_HEX[q.bienNum].ten:'')+'</b> (diễn tiến về sau).</div>':'<div class="kd-bien-note">Không có hào động - quẻ tĩnh, xem ngay chính quẻ.</div>')+
+      '</div>'+
+    '</div>'+
+    '<div class="kd-y">'+escapeHtml(hx.y||'')+'</div>'+
+    '<div class="tv-actions"><button class="btn btn-gold" id="dichLuan">Xem luận giải chi tiết</button></div>'+
+    '<div class="tv-luan-free" id="dichLuanFree"></div>';
+  return h;
+}
+function luanQueFull(q){
+  var hx=KD_HEX[q.num]||{}; var pd=KD_PD[hx.cat!=null?hx.cat:1];
+  var tr=KD_TRI[hx.tren], du=KD_TRI[hx.duoi];
+  var bienTxt = q.soBien
+    ? 'Quẻ có <b>'+q.soBien+' hào động</b>, biến sang <b>Quẻ '+q.bienNum+' - '+(KD_HEX[q.bienNum]?KD_HEX[q.bienNum].ten:'')+'</b>. Chính quẻ nói về hiện tại, biến quẻ cho biết chiều hướng về sau: '+(KD_HEX[q.bienNum]?KD_HEX[q.bienNum].y:'')+''
+    : 'Quẻ <b>tĩnh</b> (không hào động), luận theo chính quẻ; tình thế ổn định, ít biến chuyển đột ngột.';
+  function muc(t,n){ return '<div class="lg-cung"><div class="lg-cung-h"><b>'+t+'</b></div><p>'+n+'</p></div>'; }
+  var h='<div class="lg-doc">'+
+    '<div class="lg-toolbar"><button class="btn btn-gold" id="dichLuanPdf">📄 Lưu quẻ &amp; luận giải ra PDF</button></div>'+
+    '<div class="lg-sec"><h4>❖ Tượng quẻ &amp; ý nghĩa</h4>'+
+      '<p>Quẻ số <b>'+q.num+'/64 - '+escapeHtml(hx.ten||'')+'</b>. Trên là <b>'+tr[0]+' '+tr[1]+'</b> ('+tr[2]+'), dưới là <b>'+du[0]+' '+du[1]+'</b> ('+du[2]+'). '+escapeHtml(hx.y||'')+'</p></div>'+
+    '<div class="lg-sec"><h4>❖ Luận giải theo từng phương diện</h4>'+
+      muc('Tổng quan vận sự', pd.tq)+
+      muc('Công danh - Sự nghiệp', pd.cn)+
+      muc('Tài lộc - Kinh doanh', pd.tl)+
+      muc('Tình duyên - Gia đạo', pd.td)+
+      muc('Sức khỏe', pd.sk)+
+      muc('Xuất hành - Cầu sự', pd.xh)+
+    '</div>'+
+    '<div class="lg-sec"><h4>❖ Hào động &amp; chiều hướng (biến quẻ)</h4><p>'+bienTxt+'</p></div>'+
+    '<div class="lg-sec lg-ketluan"><h4>❖ Lời khuyên</h4>'+
+      '<div class="lg-loikhuyen"><div class="lg-lk-t">💛 Đúc kết</div><p>'+escapeHtml(hx.khuyen||'')+'</p>'+
+      '<p>Kinh Dịch trọng ở chữ "tùy thời" và "giữ chính". Quẻ chỉ ra xu thế, còn <b>thành bại do ở đức và sự cố gắng của chính bạn</b>. Hãy lấy quẻ làm lời nhắc để hành xử sáng suốt, giữ tâm ngay thẳng và kiên trì điều thiện.</p></div></div>'+
+    '<p class="lg-note">Luận giải dựa trên Kinh Dịch (Chu Dịch) cổ truyền, mang tính tham khảo - chiêm nghiệm. Mọi quyết định quan trọng nên cân nhắc cùng thực tế và lý trí.</p>'+
+  '</div>';
+  return h;
+}
+
+/* ---------- PAYWALL KINH DỊCH 99.000đ ---------- */
+function moPaywallDich(preview){
+  var q=window.__que; if(!q){ toast('Chưa có quẻ. Hãy gieo quẻ trước.'); return; }
+  var box=document.getElementById('dichLuanFree');
+  var laAdmin=(typeof toiLaChuTrang==='function' && toiLaChuTrang());
+  var daMo=laAdmin
+    || (typeof myAccess!=='undefined' && myAccess && (myAccess.all || (myAccess.books && myAccess.books['kinhdich-luan'])))
+    || (function(){ try{ return localStorage.getItem('kkUnlock_kinhdich-luan')==='1'; }catch(e){ return false; } })();
+  if(daMo && !preview){
+    var gia0=TV_GIA_DICH.toLocaleString('vi-VN');
+    var adminBar=laAdmin?'<div class="tv-admin-note">✓ Tính năng <b>thu phí luận giải Kinh Dịch đang BẬT</b> (khách phải trả <b>'+gia0+'đ</b> và nhập Email). Bạn xem <b>miễn phí</b> vì là quản trị. <button class="btn btn-ghost btn-sm" id="dichPreviewPay" style="margin-top:6px">Xem thử màn hình thanh toán</button></div>':'';
+    box.innerHTML=adminBar+luanQueFull(q);
+    if(laAdmin){ var pv=document.getElementById('dichPreviewPay'); if(pv) pv.addEventListener('click',function(){ moPaywallDich(true); }); }
+    box.scrollIntoView({behavior:'smooth'}); return;
+  }
+  var ma='KD'+q.num+Math.random().toString(36).slice(2,6).toUpperCase();
+  var gia=TV_GIA_DICH.toLocaleString('vi-VN');
+  var inpCss='width:100%;padding:11px 13px;border-radius:10px;background:var(--navy-800);border:1px solid rgba(201,162,39,.3);color:var(--cream);margin-bottom:8px';
+  function buoc1(){
+    box.innerHTML='<div class="tv-luan-locked">'+
+      (preview?'<div class="tv-preview-tag">🔎 Đang XEM THỬ màn hình thanh toán (chế độ quản trị) - không tạo yêu cầu thật.</div>':'')+
+      '<h4 style="margin-top:0">Luận giải chi tiết quẻ '+q.num+' - '+escapeHtml((KD_HEX[q.num]||{}).ten||'')+'</h4>'+
+      '<p style="color:var(--cream-dim);font-size:.9rem">Bản luận giải đầy đủ (6 phương diện + biến quẻ + lời khuyên) có phí <b style="color:var(--gold-bright)">'+gia+' đ</b>. Nhập <b>Email</b> để nhận kết quả luận giải và mã mở khoá.</p>'+
+      '<div style="max-width:360px;margin:14px auto 0;text-align:left">'+
+      '<label style="font-size:.82rem;color:var(--gold-bright);display:block;margin-bottom:5px">Email của bạn <span style="color:#E86A5C">* bắt buộc</span></label>'+
+      '<input type="email" id="dEmail" placeholder="email@gmail.com" maxlength="60" style="'+inpCss+'">'+
+      '<button class="btn btn-gold" id="dGoQR" style="width:100%">Tiếp tục - Lấy mã QR thanh toán</button>'+
+      '<div style="margin-top:14px;border-top:1px solid rgba(201,162,39,.2);padding-top:12px">'+
+      '<label style="font-size:.82rem;color:var(--cream-dim);display:block;margin-bottom:5px">Đã có mã mở luận giải?</label>'+
+      '<input type="text" id="dCode" placeholder="Nhập mã mở khoá" maxlength="20" style="'+inpCss+';text-transform:uppercase">'+
+      '<button class="btn btn-ghost" id="dUnlock" style="width:100%">Mở luận giải</button></div>'+
+      '<div id="dPayNote" style="font-size:.84rem;margin-top:10px;text-align:center"></div>'+
+      '</div></div>';
+    document.getElementById('dGoQR').addEventListener('click',function(){
+      var email=(document.getElementById('dEmail').value||'').trim(); var note=document.getElementById('dPayNote');
+      if(!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(email)){ note.style.color='#E86A5C'; note.textContent='Vui lòng nhập đúng Email để nhận kết quả.'; return; }
+      buoc2(email);
+    });
+    document.getElementById('dUnlock').addEventListener('click',function(){ moKhoaLuanDich(); });
+  }
+  function buoc2(email){
+    var qr='';
+    if(typeof payCfg!=='undefined' && payCfg.bank && payCfg.acc){
+      var url='https://img.vietqr.io/image/'+encodeURIComponent(payCfg.bank)+'-'+encodeURIComponent(payCfg.acc)+'-compact2.png?amount='+TV_GIA_DICH+'&addInfo='+encodeURIComponent(ma)+'&accountName='+encodeURIComponent(payCfg.name||'');
+      qr='<img src="'+url+'" alt="QR" style="width:190px;height:190px;border-radius:10px;background:#fff;padding:6px" onerror="this.style.display=\'none\'">';
+    }
+    box.innerHTML='<div class="tv-luan-locked">'+
+      '<h4 style="margin-top:0">Quét mã QR để thanh toán</h4>'+
+      '<p style="color:var(--cream-dim);font-size:.9rem">Chuyển khoản <b style="color:var(--gold-bright)">'+gia+' đ</b>. Kết quả gửi về: <b style="color:var(--cream)">'+escapeHtml(email)+'</b></p>'+
+      '<div style="margin:12px 0">'+qr+'</div>'+
+      (typeof payCfg!=='undefined' && payCfg.acc?'<div style="font-size:.85rem;line-height:1.7">Ngân hàng: <b>'+escapeHtml(payCfg.bank||'')+'</b> · STK: <b>'+escapeHtml(payCfg.acc||'')+'</b><br>Chủ TK: <b>'+escapeHtml(payCfg.name||'')+'</b><br>Số tiền: <b>'+gia+' đ</b> · Nội dung CK: <b style="color:var(--gold-bright)">'+ma+'</b></div>':'<div style="color:#E86A5C">Chủ web chưa cấu hình tài khoản nhận tiền.</div>')+
+      '<div style="max-width:360px;margin:14px auto 0">'+
+      '<button class="btn btn-gold" id="dPaid" style="width:100%">Tôi đã chuyển khoản</button>'+
+      '<button class="btn btn-ghost" id="dBackEmail" style="width:100%;margin-top:8px">Sửa Email</button>'+
+      '<div style="margin-top:14px;border-top:1px solid rgba(201,162,39,.2);padding-top:12px">'+
+      '<label style="font-size:.82rem;color:var(--cream-dim);display:block;margin-bottom:5px">Đã có mã mở luận giải?</label>'+
+      '<input type="text" id="dCode" placeholder="Nhập mã mở khoá" maxlength="20" style="'+inpCss+';text-transform:uppercase">'+
+      '<button class="btn btn-ghost" id="dUnlock" style="width:100%">Mở luận giải</button></div>'+
+      '<div id="dPayNote" style="font-size:.84rem;margin-top:10px;text-align:center"></div>'+
+      '</div></div>';
+    document.getElementById('dPaid').addEventListener('click',function(){ if(preview){ (window.toast||alert)('Chế độ xem thử: khách bấm nút này sẽ gửi yêu cầu về cho quản trị.'); return; } guiYeuCauLuanDich(ma,email); });
+    document.getElementById('dBackEmail').addEventListener('click',buoc1);
+    document.getElementById('dUnlock').addEventListener('click',function(){ moKhoaLuanDich(); });
+    box.scrollIntoView({behavior:'smooth'});
+  }
+  buoc1(); box.scrollIntoView({behavior:'smooth'});
+}
+async function guiYeuCauLuanDich(ma, email){
+  var note=document.getElementById('dPayNote');
+  try{
+    if(typeof fbDb==='undefined'||!fbDb){ if(note){note.style.color='#E86A5C';note.textContent='Chưa kết nối được máy chủ.';} return; }
+    await fbDb.collection('payments').add({ status:'pending', bookId:'kinhdich-luan', bookTitle:'Luận giải Kinh Dịch - Quẻ '+((window.__que||{}).num||''),
+      amount:TV_GIA_DICH, code:ma, contact:email, email:email, ip:'', thoiGian:new Date().toLocaleString('vi-VN'),
+      ts:firebase.firestore.FieldValue.serverTimestamp() });
+    if(note){ note.style.color='var(--ok)'; note.innerHTML='✅ Đã gửi yêu cầu! Sau khi xác nhận chuyển khoản, quản trị sẽ gửi mã mở khoá về Email <b>'+escapeHtml(email)+'</b>.'; }
+  }catch(e){ if(note){ note.style.color='#E86A5C'; note.textContent='Lỗi gửi yêu cầu: '+(e&&e.code?e.code:'không kết nối được'); } }
+}
+async function moKhoaLuanDich(){
+  var note=document.getElementById('dPayNote'); var ma=((document.getElementById('dCode')||{}).value||'').trim().toUpperCase();
+  if(!ma){ if(note){note.style.color='#E86A5C';note.textContent='Hãy nhập mã mở khoá.';} return; }
+  if(typeof fbDb==='undefined'||!fbDb){ if(note){note.style.color='#E86A5C';note.textContent='Chưa kết nối được máy chủ.';} return; }
+  try{
+    var ref=fbDb.collection('codes').doc(ma); var d=await ref.get();
+    if(!d.exists){ note.style.color='#E86A5C'; note.textContent='Mã không đúng hoặc không tồn tại.'; return; }
+    var cd=d.data(); if(cd.used){ note.style.color='#E86A5C'; note.textContent='Mã này đã được dùng rồi.'; return; }
+    await ref.set({used:true, usedBy:(typeof fbUser!=='undefined'&&fbUser)?(fbUser.email||fbUser.uid):'khach', usedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+    if(typeof myAccess!=='undefined'){ myAccess.books['kinhdich-luan']=true; }
+    if(typeof fbUser!=='undefined' && fbUser){ await fbDb.collection('access').doc(fbUser.uid).set({books:{'kinhdich-luan':true}},{merge:true}); }
+    else { try{ localStorage.setItem('kkUnlock_kinhdich-luan','1'); }catch(e){} }
+    document.getElementById('dichLuanFree').innerHTML=luanQueFull(window.__que);
+    toast('Đã mở khoá luận giải Kinh Dịch!');
+  }catch(e){ note.style.color='#E86A5C'; note.textContent='Lỗi: '+(e&&e.code?e.code:'không kết nối được'); }
+}
+
+/* ---------- PDF KINH DỊCH 2 trang ---------- */
+function xuatPdfKinhDich(){
+  var q=window.__que; if(!q){ toast('Chưa có quẻ để xuất.'); return; }
+  try{ var html=pdfKinhDichCombo(q); if(inTaiLieuPDF(html)) toast('Đang mở hộp thoại in - chọn "Lưu dưới dạng PDF". (Trang 1: quẻ · Trang 2: luận giải)'); }
+  catch(e){ if(window.console) console.warn('pdf kd:',e); toast('Lỗi tạo PDF: '+(e&&e.message?e.message:'không rõ')); }
+}
+function pdfKinhDichCombo(q){
+  function e(s){ return (''+(s==null?'':s)).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];}); }
+  var hx=KD_HEX[q.num]||{}, pd=KD_PD[hx.cat!=null?hx.cat:1], tr=KD_TRI[hx.tren], du=KD_TRI[hx.duoi];
+  var catLbl=['QUẺ HUNG','QUẺ BÌNH HÒA','QUẺ CÁT'][hx.cat!=null?hx.cat:1];
+  /* trang 1: hình 6 hào lớn */
+  var haoHtml=''; for(var i=5;i>=0;i--){ var y=q.haos[i].duong,bn=q.haos[i].bien;
+    haoHtml+='<div class="pk-hao">'+(y?'<span class="pk-yang"></span>':'<span class="pk-yin"></span><span class="pk-yin"></span>')+(bn?'<span class="pk-bien">'+(y?'○':'✕')+'</span>':'')+'</div>';
+  }
+  var page1='<div class="pk-head"><div class="pk-title">QUẺ SỐ '+q.num+' / 64</div><div class="pk-name">'+e(hx.ten||'')+'</div><div class="pk-cat">'+catLbl+'</div></div>'+
+    '<div class="pk-mid"><div class="pk-hex">'+haoHtml+'</div>'+
+    '<table class="pk-info"><tr><td>Thượng quái</td><td><b>'+tr[0]+' '+tr[1]+'</b> ('+tr[2]+')</td></tr>'+
+    '<tr><td>Hạ quái</td><td><b>'+du[0]+' '+du[1]+'</b> ('+du[2]+')</td></tr>'+
+    (q.hoi?'<tr><td>Điều hỏi</td><td><b>'+e(q.hoi)+'</b></td></tr>':'')+
+    (q.ten?'<tr><td>Người gieo</td><td><b>'+e(q.ten)+'</b></td></tr>':'')+
+    '<tr><td>Ngày gieo</td><td>'+e(q.ngay||'')+'</td></tr>'+
+    '<tr><td>Hào động</td><td>'+(q.soBien?(q.soBien+' hào → biến Quẻ '+q.bienNum+' - '+e((KD_HEX[q.bienNum]||{}).ten||'')):'Không (quẻ tĩnh)')+'</td></tr>'+
+    '</table></div>'+
+    '<div class="pk-y">'+e(hx.y||'')+'</div>';
+  /* trang 2: luận giải */
+  function m(t,n){ return '<div class="lu-cung"><div class="lu-cung-h">'+t+'</div><div class="lu-cung-b">'+e(n)+'</div></div>'; }
+  var bienTxt=q.soBien?('Quẻ có '+q.soBien+' hào động, biến sang Quẻ '+q.bienNum+' - '+e((KD_HEX[q.bienNum]||{}).ten||'')+'. Biến quẻ cho biết chiều hướng về sau: '+e((KD_HEX[q.bienNum]||{}).y||'')):'Quẻ tĩnh (không hào động) - tình thế ổn định, luận theo chính quẻ.';
+  var page2='<div class="lu-title"><div class="lu-orn">⟡ ⋆ ❖ ⋆ ⟡</div><h2>LUẬN GIẢI CHI TIẾT</h2><div class="lu-orn">✦ QUẺ '+q.num+' - '+e(hx.ten||'')+' ✦</div></div>'+
+    '<div class="lu-who">'+(q.ten?'<b>'+e(q.ten)+'</b> · ':'')+(q.hoi?'Hỏi: <b>'+e(q.hoi)+'</b> · ':'')+'Ngày gieo '+e(q.ngay||'')+' · Thượng <b>'+tr[0]+'</b> / Hạ <b>'+du[0]+'</b></div>'+
+    '<div class="lu-h">Tượng quẻ &amp; ý nghĩa</div><div class="lu-lead">'+e(hx.y||'')+'</div>'+
+    '<div class="lu-h">Luận giải theo từng phương diện</div>'+
+    '<div class="lu-grid">'+m('Tổng quan vận sự',pd.tq)+m('Công danh - Sự nghiệp',pd.cn)+m('Tài lộc - Kinh doanh',pd.tl)+m('Tình duyên - Gia đạo',pd.td)+m('Sức khỏe',pd.sk)+m('Xuất hành - Cầu sự',pd.xh)+'</div>'+
+    '<div class="lu-h">Hào động &amp; chiều hướng</div><div class="lu-lead">'+bienTxt+'</div>'+
+    '<div class="lu-h">Lời khuyên</div>'+
+    '<div class="lu-lk"><span class="lu-lkt">💛 Đúc kết</span>'+e(hx.khuyen||'')+' Kinh Dịch trọng chữ "tùy thời" và "giữ chính" - quẻ chỉ ra xu thế, còn thành bại do ở đức và sự cố gắng của chính bạn. Hãy lấy quẻ làm lời nhắc để hành xử sáng suốt, giữ tâm ngay thẳng và kiên trì điều thiện.</div>';
+
+  var css='@page{size:A4 portrait;margin:8mm}*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}body{margin:0;background:#fff}'+
+    '.pgChart{page-break-after:always}'+
+    '.sheet{position:relative;background:#fefcf6;border:3px double #b8912a;border-radius:7px;padding:6mm;min-height:274mm;overflow:hidden;font-family:"Times New Roman",Georgia,serif;color:#2a2418}'+
+    '.sheet::after{content:"";position:absolute;top:2.4mm;left:2.4mm;right:2.4mm;bottom:2.4mm;border:.7px solid #d9c489;border-radius:4px;z-index:0}'+
+    '.cnr{position:absolute;color:#b8912a;font-size:16px;z-index:2;opacity:.9}.cnr.tl{top:3.2mm;left:4mm}.cnr.tr{top:3.2mm;right:4mm}.cnr.bl{bottom:3.2mm;left:4mm}.cnr.br{bottom:3.2mm;right:4mm}'+
+    '.wm{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:260px;color:#7a1f1f;opacity:.035;z-index:0;line-height:1}'+
+    '.inner{position:relative;z-index:1;display:flex;flex-direction:column;min-height:262mm}'+
+    '.sheet-ft{margin-top:auto;text-align:center;color:#7a1f1f;font-size:11px;letter-spacing:1.5px;font-weight:700;border-top:1.4px solid #b8912a;padding-top:5px}.sheet-ft .w{color:#1c4f8a}.sheet-ft .sub{display:block;font-size:8.5px;color:#9a8a5a;font-weight:400;margin-top:1px}'+
+    /* trang 1 */
+    '.pk-head{text-align:center;border-bottom:2px solid #b8912a;padding-bottom:8px;margin-bottom:10px}'+
+    '.pk-title{font-size:20px;font-weight:800;color:#7a1f1f;letter-spacing:3px}.pk-name{font-size:26px;font-weight:800;color:#5a3a1a;margin:4px 0}.pk-cat{font-size:13px;color:#a8701a;letter-spacing:2px}'+
+    '.pk-mid{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}'+
+    '.pk-hex{display:flex;flex-direction:column;gap:9px;align-items:center}'+
+    '.pk-hao{position:relative;display:flex;gap:12px;width:120mm;height:9mm;justify-content:center}'+
+    '.pk-yang{width:120mm;height:9mm;background:#7a1f1f;border-radius:2px}'+
+    '.pk-yin{width:52mm;height:9mm;background:#7a1f1f;border-radius:2px}'+
+    '.pk-bien{position:absolute;right:-12mm;top:50%;transform:translateY(-50%);color:#c0392b;font-size:15px;font-weight:700}'+
+    '.pk-info{border-collapse:collapse;font-size:12px;min-width:130mm}.pk-info td{padding:4px 10px;border-bottom:1px dotted #e0d3af}.pk-info td:first-child{color:#8a6a1f;width:38%}.pk-info b{color:#5a3a1a}'+
+    '.pk-y{margin-top:8px;background:#faf6ea;border:1px solid #e6d9b0;border-left:3px solid #b8912a;border-radius:6px;padding:9px 13px;font-size:12px;line-height:1.6;color:#2f2a1e}'+
+    /* trang 2 - dùng lớp lu-* như luận giải Tử Vi */
+    '.pgLuan .inner{font-size:10px;line-height:1.42}'+
+    '.lu-title{text-align:center;margin-bottom:4px}.lu-title h2{margin:0;font-size:17px;font-weight:800;color:#7a1f1f;letter-spacing:2px}.lu-orn{color:#b8912a;font-size:11px;letter-spacing:3px;margin:2px 0}'+
+    '.lu-who{text-align:center;font-size:9.5px;color:#5a5240;margin-bottom:5px}.lu-who b{color:#7a1f1f}'+
+    '.lu-h{font-size:11px;font-weight:700;color:#7a1f1f;margin:7px 0 4px;display:flex;align-items:center;gap:6px}.lu-h::before{content:"❖";color:#b8912a;font-size:10px}.lu-h::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,#d9c489,transparent)}'+
+    '.lu-lead{background:#faf6ea;border:1px solid #e6d9b0;border-left:3px solid #b8912a;border-radius:4px;padding:7px 10px;font-size:10px}'+
+    '.lu-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}'+
+    '.lu-cung{border:1px solid #e6d9b0;border-radius:5px;padding:6px 9px;background:#fffdf7}.lu-cung-h{font-weight:700;color:#7a1f1f;font-size:10px;margin-bottom:2px}.lu-cung-b{font-size:9.4px;line-height:1.4;color:#2f2a1e}'+
+    '.lu-lk{background:#f3f7f1;border:1px solid #cfe3cd;border-radius:5px;padding:8px 11px;margin-top:3px;font-size:9.6px;line-height:1.5}.lu-lk .lu-lkt{font-weight:700;color:#1c6b2f;font-size:10.5px;display:block;margin-bottom:2px}';
+
+  var corners='<span class="cnr tl">❦</span><span class="cnr tr">❧</span><span class="cnr bl">❧</span><span class="cnr br">❦</span>';
+  var wm='<div class="wm">☯</div>';
+  var ft='<div class="sheet-ft">✦ <span class="w">www.kk-book.com</span> ✦<span class="sub">THƯ VIỆN SÁCH CÁ NHÂN · KINH DỊCH</span></div>';
+  return '<!DOCTYPE html><html lang="vi"><head><meta charset="utf-8"><title>Quẻ '+q.num+' - Luận giải Kinh Dịch</title><style>'+css+'</style></head><body>'+
+    '<div class="pgChart"><div class="sheet">'+corners+wm+'<div class="inner">'+page1+ft+'</div></div></div>'+
+    '<div class="pgLuan"><div class="sheet">'+corners+wm+'<div class="inner">'+page2+ft+'</div></div></div>'+
+    '</body></html>';
+}
+
+
+
+
 
 
 </script>
@@ -6993,7 +7531,7 @@ async function moKhoaLuanTuVi(){
 <div class="modal-backdrop" id="servicesModal">
   <div class="modal modal-page">
     <div class="page-head">
-      <h3>Dịch vụ khác</h3>
+      <h3>DỊCH VỤ KHÁC</h3>
       <button class="admin-close" id="servicesClose" title="Đóng">✕</button>
     </div>
     <div class="page-body">
@@ -7003,11 +7541,16 @@ async function moKhoaLuanTuVi(){
           <div class="svc-name">Lập lá số Tử Vi Online</div>
           <div class="svc-desc">An sao tự động, xuất lá số ra PDF. Luận giải chi tiết theo yêu cầu.</div>
         </button>
-        <div class="svc-card svc-soon">
-          <div class="svc-ico">🔮</div>
-          <div class="svc-name">Xem ngày tốt (sắp có)</div>
-          <div class="svc-desc">Chọn ngày giờ hoàng đạo cho việc trọng đại.</div>
-        </div>
+        <button class="svc-card" id="svcNgay">
+          <div class="svc-ico">📅</div>
+          <div class="svc-name">Xem Ngày Tốt</div>
+          <div class="svc-desc">Chọn ngày - giờ hoàng đạo cho xuất hành, làm nhà, cưới hỏi, khai trương, ký kết, mua bán...</div>
+        </button>
+        <button class="svc-card" id="svcDich">
+          <div class="svc-ico">☰</div>
+          <div class="svc-name">Kinh Dịch - Bói Quẻ</div>
+          <div class="svc-desc">Rút quẻ online theo Kinh Dịch, luận giải chi tiết vận sự. Xuất quẻ &amp; luận giải ra PDF.</div>
+        </button>
       </div>
 
       <!-- KHUNG LẬP LÁ SỐ TỬ VI -->
@@ -7048,6 +7591,44 @@ async function moKhoaLuanTuVi(){
           </div>
           <div class="tv-luan-free" id="tvLuanFree"></div>
         </div>
+      </div>
+
+      <!-- KHUNG XEM NGÀY TỐT -->
+      <div class="tuvi-wrap" id="ngayWrap" style="display:none">
+        <button class="tuvi-back" id="ngayBack">← Về danh sách dịch vụ</button>
+        <h2 class="tuvi-title">📅 Xem Ngày Tốt - Lịch Vạn Niên</h2>
+        <p class="tuvi-sub">Chọn ngày dương lịch để xem ngày hoàng đạo, giờ tốt, hướng xuất hành, việc nên làm và nên tránh (xuất hành, làm nhà, cưới hỏi, khai trương, ký kết, mua bán...). Có thể xem trước nhiều ngày để chọn ngày đẹp nhất.</p>
+        <div class="ngay-form">
+          <label>Chọn ngày (dương lịch)<input type="date" id="ngayDate"></label>
+          <label>Xem cho việc<select id="ngayViec">
+            <option value="chung">Tổng quát (mọi việc)</option>
+            <option value="xuathanh">Xuất hành - đi xa</option>
+            <option value="lamnha">Làm nhà - động thổ - sửa chữa</option>
+            <option value="cuoihoi">Cưới hỏi - đính hôn</option>
+            <option value="khaitruong">Khai trương - mở hàng - thành lập</option>
+            <option value="kyket">Ký kết - giao dịch - hợp tác</option>
+            <option value="muaban">Mua bán - trao đổi - tậu xe/nhà</option>
+            <option value="antang">An táng - cải táng</option>
+          </select></label>
+        </div>
+        <button class="btn btn-gold" id="ngayXem" style="margin-top:6px">Xem ngày này</button>
+        <div class="ngay-result" id="ngayResult" style="display:none"></div>
+      </div>
+
+      <!-- KHUNG KINH DỊCH -->
+      <div class="tuvi-wrap" id="dichWrap" style="display:none">
+        <button class="tuvi-back" id="dichBack">← Về danh sách dịch vụ</button>
+        <h2 class="tuvi-title">☰ Kinh Dịch - Gieo Quẻ Luận Vận</h2>
+        <p class="tuvi-sub">Tĩnh tâm, nghĩ về điều bạn muốn hỏi (công việc, tài lộc, tình duyên, quyết định...) rồi gieo quẻ. Hệ thống lập quẻ theo phép Kinh Dịch, cho biết quẻ số mấy và luận giải. Xuất quẻ &amp; luận giải ra PDF 2 trang.</p>
+        <div class="dich-form">
+          <label>Họ tên (không bắt buộc)<input type="text" id="dichName" placeholder="VD: Nguyễn Văn A" maxlength="50"></label>
+          <label>Điều muốn hỏi<input type="text" id="dichHoi" placeholder="VD: Công việc sắp tới thế nào?" maxlength="120"></label>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
+          <button class="btn btn-gold" id="dichRut">🎲 Gieo quẻ (3 đồng tiền)</button>
+          <button class="btn btn-ghost" id="dichRutLai" style="display:none">Gieo lại quẻ khác</button>
+        </div>
+        <div class="dich-result" id="dichResult" style="display:none"></div>
       </div>
     </div>
   </div>
@@ -7156,8 +7737,10 @@ async function moKhoaLuanTuVi(){
   }
 
   /* ---------- DỊCH VỤ: danh sách <-> Tử Vi ---------- */
-  function showSvcHome(){ var g=el('svcGrid'), w=el('tuviWrap'); if(g) g.style.display='grid'; if(w) w.style.display='none'; }
-  function showTuvi(){ var g=el('svcGrid'), w=el('tuviWrap'); if(g) g.style.display='none'; if(w) w.style.display='block'; napGioSelect(); napLunarSelects(); }
+  function showSvcHome(){ ['svcGrid','tuviWrap','ngayWrap','dichWrap'].forEach(function(id,i){ var el2=el(id); if(el2) el2.style.display = (i===0?'grid':'none'); }); }
+  function showNgay(){ if(el('svcGrid'))el('svcGrid').style.display='none'; if(el('tuviWrap'))el('tuviWrap').style.display='none'; if(el('dichWrap'))el('dichWrap').style.display='none'; if(el('ngayWrap'))el('ngayWrap').style.display='block'; }
+  function showDich(){ if(el('svcGrid'))el('svcGrid').style.display='none'; if(el('tuviWrap'))el('tuviWrap').style.display='none'; if(el('ngayWrap'))el('ngayWrap').style.display='none'; if(el('dichWrap'))el('dichWrap').style.display='block'; }
+  function showTuvi(){ var g=el('svcGrid'), w=el('tuviWrap'); if(g) g.style.display='none'; if(el('ngayWrap'))el('ngayWrap').style.display='none'; if(el('dichWrap'))el('dichWrap').style.display='none'; if(w) w.style.display='block'; napGioSelect(); napLunarSelects(); }
   function napLunarSelects(){
     var sd=el('tvLDay'), sm=el('tvLMonth');
     if(sd && !sd.dataset.done){ sd.dataset.done='1'; var o=''; for(var i=1;i<=30;i++) o+='<option value="'+i+'">Ngày '+i+'</option>'; sd.innerHTML=o; }
@@ -7644,6 +8227,15 @@ async function moKhoaLuanTuVi(){
     ['#servicesClose',function(){ closeModal('servicesModal'); }],
     ['#quizClose',    function(){ closeModal('quizModal'); }],
     ['#svcTuvi',      function(){ showTuvi(); }],
+    ['#svcNgay',      function(){ showNgay(); if(typeof initNgayTot==='function') initNgayTot(); }],
+    ['#svcDich',      function(){ showDich(); }],
+    ['#ngayBack',     function(){ showSvcHome(); }],
+    ['#dichBack',     function(){ showSvcHome(); }],
+    ['#ngayXem',      function(){ if(typeof xemNgayTot==='function') xemNgayTot(); }],
+    ['#dichRut',      function(){ if(typeof gieoQue==='function') gieoQue(); }],
+    ['#dichRutLai',   function(){ if(typeof gieoQue==='function') gieoQue(); }],
+    ['#dichLuan',     function(){ if(typeof moPaywallDich==='function') moPaywallDich(); }],
+    ['#dichLuanPdf',  function(){ if(typeof xuatPdfKinhDich==='function') xuatPdfKinhDich(); }],
     ['#tuviBack',     function(){ showSvcHome(); }],
     ['#tvLap',        function(){ lapLaSo(); }],
     ['#tvPdf',        function(){ if(typeof xuatPdfLaSo==='function') xuatPdfLaSo(); else (window.toast||alert)('Chưa sẵn sàng, thử lại sau.'); }],
