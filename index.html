@@ -239,6 +239,19 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
   padding:64px 20px 58px;text-align:center;
   display:flex;flex-direction:column;align-items:center;
 }
+/* nội dung nổi trên watermark */
+.hero-inner > *{position:relative;z-index:1}
+/* LOGO KK ngược phóng to - nền mờ ôm trọn tiêu đề & chỉ số */
+.hero-wm{
+  position:absolute;z-index:0;top:54%;left:50%;
+  transform:translate(-50%,-50%);
+  width:min(640px,94vw);height:auto;
+  opacity:.09;pointer-events:none;
+  filter:drop-shadow(0 6px 46px rgba(201,162,39,.35));
+  animation:wmBreathe 9s ease-in-out infinite;
+}
+@keyframes wmBreathe{0%,100%{opacity:.075;transform:translate(-50%,-50%) scale(1)}50%{opacity:.12;transform:translate(-50%,-50%) scale(1.03)}}
+@media(max-width:560px){ .hero-wm{width:118vw;opacity:.07} }
 /* logo với vòng quỹ đạo xoay */
 .logo-stage{position:relative;width:150px;height:150px;display:flex;align-items:center;justify-content:center}
 .logo-stage .ring{
@@ -916,6 +929,13 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
 .me-perks-t{font-weight:700;color:#8FE9DA;font-size:.86rem;margin-bottom:6px}
 .me-perks ul{margin:0;padding-left:18px;line-height:1.7;color:var(--cream);font-size:.85rem}
 .me-perks b{color:var(--gold-bright)}
+/* Quên mật khẩu */
+.join-forgot{text-align:right;margin:-4px 0 10px}
+.join-forgot a{color:var(--gold);font-size:.84rem;text-decoration:none;border-bottom:1px dashed rgba(201,162,39,.4)}
+.join-forgot a:hover{color:var(--gold-bright);border-bottom-style:solid}
+.join-note{font-size:.85rem;line-height:1.6;padding:10px 12px;border-radius:9px;margin-bottom:10px}
+.join-note.ok{background:rgba(0,194,168,.12);border:1px solid rgba(0,194,168,.35);color:#B6F0E4}
+.join-note.err{background:rgba(232,106,92,.12);border:1px solid rgba(232,106,92,.4);color:#F4B8B0}
 #fbInput{
   width:100%;background:var(--navy-800);border:1px solid rgba(201,162,39,.25);
   color:var(--cream);border-radius:10px;padding:11px;
@@ -1645,6 +1665,8 @@ footer{
 .qb-nm small{color:#22E0B8;font-weight:700}
 .qb-pt{color:var(--gold-bright);font-weight:800;font-size:.9rem;white-space:nowrap;min-width:26px;text-align:right}
 .qb-empty,.qb-loading{color:var(--cream-dim);font-size:.85rem;padding:14px 8px;text-align:center;line-height:1.5;list-style:none}
+.qb-crit{margin-top:12px;padding-top:11px;border-top:1px dashed rgba(201,162,39,.25);font-size:.76rem;color:var(--cream-dim);line-height:1.6}
+.qb-crit b{color:var(--gold-bright);font-weight:700}
 @media(max-width:820px){
   .quiz-layout{flex-direction:column}
   .quiz-side{width:100%;position:static}
@@ -1820,6 +1842,19 @@ footer{
   </svg>
 
   <div class="hero-inner">
+    <svg class="hero-wm" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <defs>
+        <linearGradient id="wmKKg" x1="0" y1="0" x2="0.35" y2="1">
+          <stop offset="0%" stop-color="#F3D98B"/>
+          <stop offset="55%" stop-color="#E4C158"/>
+          <stop offset="100%" stop-color="#B98F1E"/>
+        </linearGradient>
+      </defs>
+      <text x="58" y="152" font-family="Playfair Display, serif" font-weight="900" font-size="158" fill="url(#wmKKg)" text-anchor="middle">K</text>
+      <g transform="translate(200,0) scale(-1,1)">
+        <text x="58" y="152" font-family="Playfair Display, serif" font-weight="900" font-size="158" fill="url(#wmKKg)" text-anchor="middle">K</text>
+      </g>
+    </svg>
     <div class="logo-stage">
       <span class="ring" aria-hidden="true"></span>
       <span class="ring ring2" aria-hidden="true"></span>
@@ -2100,6 +2135,8 @@ footer{
       <input type="password" id="joinPass" minlength="6" autocomplete="current-password" placeholder="Tối thiểu 6 ký tự">
       <div class="hint">Chưa có tài khoản? Hệ thống tự tạo mới cho bạn khi bấm Tiếp tục.</div>
     </div>
+    <div class="join-forgot"><a href="#" id="joinForgot">Quên mật khẩu?</a></div>
+    <div class="join-note" id="joinNote" style="display:none"></div>
     <input type="text" id="joinName" style="display:none">
     <div class="modal-actions">
       <button class="btn btn-ghost" id="joinCancel">Hủy</button>
@@ -2866,6 +2903,10 @@ async function fbSignIn(email, pass){
 }
 async function fbResend(){
   if(fbAuth.currentUser) await fbAuth.currentUser.sendEmailVerification();
+}
+/* gửi email đặt lại mật khẩu (quên mật khẩu) */
+async function fbResetPassword(email){
+  await fbAuth.sendPasswordResetEmail(email);
 }
 async function fbSignOut(){ await fbAuth.signOut(); }
 
@@ -4543,6 +4584,7 @@ $('#ttsVoice').addEventListener('change', ()=>{
 function openJoin(){
   if(!fbReady){ toast(t('fbOffline')); return; }
   $('#joinEmail').value=''; $('#joinPass').value='';
+  var n=$('#joinNote'); if(n){ n.style.display='none'; n.textContent=''; }
   $('#joinModal').classList.add('open');
   setTimeout(()=>$('#joinEmail').focus(), 60);
 }
@@ -4550,6 +4592,26 @@ $('#joinCancel').addEventListener('click', ()=>$('#joinModal').classList.remove(
 $('#joinOk').addEventListener('click', doJoin);
 $('#joinPass').addEventListener('keydown', e=>{ if(e.key==='Enter') doJoin(); });
 $('#joinEmail').addEventListener('keydown', e=>{ if(e.key==='Enter') $('#joinPass').focus(); });
+/* QUÊN MẬT KHẨU: gửi email đặt lại mật khẩu về hộp thư */
+$('#joinForgot').addEventListener('click', async (e)=>{
+  e.preventDefault();
+  const note = $('#joinNote');
+  const email = ($('#joinEmail').value||'').trim();
+  function show(txt, ok){ if(!note) return; note.style.display='block'; note.className='join-note '+(ok?'ok':'err'); note.textContent=txt; }
+  if(!fbReady){ show('Hệ thống chưa sẵn sàng, hãy tải lại trang.', false); return; }
+  if(!email || email.indexOf('@')<0){ show('Hãy nhập Email đã đăng ký để nhận thư đặt lại mật khẩu.', false); $('#joinEmail').focus(); return; }
+  const link = $('#joinForgot'); link.style.pointerEvents='none'; const cu=link.textContent; link.textContent='Đang gửi...';
+  try{
+    await fbResetPassword(email);
+    show('Đã gửi thư đặt lại mật khẩu tới ' + email + '. Hãy mở email và bấm liên kết để tạo mật khẩu mới (kiểm tra cả mục Spam/Quảng cáo).', true);
+  }catch(err){
+    const c = err.code || '';
+    if(c==='auth/user-not-found') show('Email này chưa đăng ký tài khoản. Hãy nhập email khác hoặc bấm Tiếp tục để tạo mới.', false);
+    else if(c==='auth/invalid-email') show('Email không hợp lệ.', false);
+    else if(c==='auth/too-many-requests') show('Bạn thao tác quá nhiều lần, hãy đợi một lát rồi thử lại.', false);
+    else show('Không gửi được thư: ' + (c || 'lỗi kết nối'), false);
+  }finally{ link.style.pointerEvents=''; link.textContent=cu; }
+});
 
 /* ĐĂNG NHẬP THÔNG MINH: tự đăng nhập nếu đã có tài khoản, tự tạo mới nếu chưa */
 async function doJoin(){
@@ -6151,15 +6213,48 @@ function luanGiaiFull(ls){
   return html;
 }
 
+/* In tài liệu ra PDF ổn định qua iframe ẩn (tránh bị chặn popup); dự phòng window.open */
+function inTaiLieuPDF(html){
+  try{
+    var old = document.getElementById('kkPrintFrame');
+    if(old && old.parentNode) old.parentNode.removeChild(old);
+    var ifr = document.createElement('iframe');
+    ifr.id = 'kkPrintFrame';
+    ifr.style.cssText = 'position:fixed;right:0;bottom:0;width:1px;height:1px;opacity:0;border:0;z-index:-1;';
+    document.body.appendChild(ifr);
+    var doc = ifr.contentWindow.document;
+    doc.open(); doc.write(html); doc.close();
+    var done = false;
+    function go(){
+      if(done) return; done = true;
+      try{ ifr.contentWindow.focus(); ifr.contentWindow.print(); }
+      catch(e){
+        /* dự phòng: mở cửa sổ mới */
+        var w = window.open('', '_blank');
+        if(w){ w.document.write(html); w.document.close(); setTimeout(function(){ try{ w.focus(); w.print(); }catch(_){}}, 400); }
+      }
+      setTimeout(function(){ try{ if(ifr.parentNode) ifr.parentNode.removeChild(ifr); }catch(_){} }, 60000);
+    }
+    ifr.onload = function(){ setTimeout(go, 350); };
+    setTimeout(go, 1200); /* dự phòng nếu onload không bắn */
+    return true;
+  }catch(e){
+    var w2 = window.open('', '_blank');
+    if(!w2){ if(window.toast) toast('Trình duyệt chặn cửa sổ in. Hãy cho phép popup rồi thử lại.'); return false; }
+    w2.document.write(html); w2.document.close();
+    setTimeout(function(){ try{ w2.focus(); w2.print(); }catch(_){}}, 400);
+    return true;
+  }
+}
+
 /* xuất lá số ra PDF (qua cửa sổ in -> Lưu thành PDF) */
 function xuatPdfLaSo(){
   var ls = window.__laso;
-  if(!ls){ toast('Chưa có lá số để xuất.'); return; }
-  var w = window.open('', '_blank');
-  if(!w){ toast('Trình duyệt chặn cửa sổ in. Hãy cho phép popup rồi thử lại.'); return; }
-  w.document.write(pdfLaSoHTML(ls));
-  w.document.close();
-  setTimeout(function(){ try{ w.focus(); w.print(); }catch(_){} }, 500);
+  if(!ls){ toast('Chưa có lá số để xuất. Hãy bấm "An sao - Lập lá số" trước.'); return; }
+  try{
+    var html = pdfLaSoHTML(ls);
+    if(inTaiLieuPDF(html)) toast('Đang mở hộp thoại in - chọn "Lưu dưới dạng PDF".');
+  }catch(e){ if(window.console) console.warn('pdf lá số:', e); toast('Lỗi tạo PDF lá số: '+(e && e.message ? e.message : 'không rõ')); }
 }
 function pdfLaSoHTML(ls){
   var CAN=TV_CAN, CHI=TV_CHI;
@@ -6315,11 +6410,10 @@ function pdfLaSoHTML(ls){
 function xuatPdfLuanGiai(){
   var ls = window.__laso;
   if(!ls){ toast('Chưa có lá số để xuất.'); return; }
-  var w = window.open('', '_blank');
-  if(!w){ toast('Trình duyệt chặn cửa sổ in. Hãy cho phép popup rồi thử lại.'); return; }
-  w.document.write(pdfLuanGiaiHTML(ls));
-  w.document.close();
-  setTimeout(function(){ try{ w.focus(); w.print(); }catch(_){} }, 500);
+  try{
+    var html = pdfLuanGiaiHTML(ls);
+    if(inTaiLieuPDF(html)) toast('Đang mở hộp thoại in - chọn "Lưu dưới dạng PDF".');
+  }catch(e){ if(window.console) console.warn('pdf luận giải:', e); toast('Lỗi tạo PDF luận giải: '+(e && e.message ? e.message : 'không rõ')); }
 }
 function pdfLuanGiaiHTML(ls){
   var CAN=TV_CAN, CHI=TV_CHI;
@@ -7094,7 +7188,9 @@ async function moKhoaLuanTuVi(){
           QUIZZES.map(function(q){ return '<button class="quiz-card" data-qid="'+q.id+'"><div class="qc-ico">'+q.ico+'</div><div class="qc-name">'+escHtml(q.name)+'</div><div class="qc-meta">'+escHtml(q.desc)+' · '+q.cauhoi.length+' câu</div></button>'; }).join('') +
           '</div>' +
         '</div>' +
-        '<aside class="quiz-side"><div class="qb-head">🏆 Top 20 KK-QUIZ</div><div class="qb-sub">20 người điểm cao nhất</div><ol id="quizLeaderboard" class="qb-list"><li class="qb-loading">Đang tải...</li></ol></aside>' +
+        '<aside class="quiz-side"><div class="qb-head">🏆 Top 20 KK-QUIZ</div><div class="qb-sub">20 người điểm cao nhất</div><ol id="quizLeaderboard" class="qb-list"><li class="qb-loading">Đang tải...</li></ol>' +
+        '<div class="qb-crit"><b>Cách tính điểm:</b> mỗi câu đúng được <b>1 điểm</b>. Hệ thống lưu <b>điểm cao nhất của bạn ở mỗi bộ</b>; tổng điểm xếp hạng = cộng dồn điểm cao nhất của tất cả các bộ bạn đã chơi. Chơi càng nhiều bộ và trả lời đúng càng nhiều, thứ hạng càng cao.</div>' +
+        '</aside>' +
       '</div>';
     napBangXepHang();
   }
@@ -7131,12 +7227,28 @@ async function moKhoaLuanTuVi(){
       });
       box.innerHTML = rows.join('');
     }).catch(function(e){
-      box.innerHTML='<li class="qb-empty">Chưa thể tải bảng xếp hạng'+((e&&e.code)?(' ('+e.code+')'):'')+'.</li>';
+      var code = e && e.code ? e.code : '';
+      var msg = (code.indexOf('permission')>=0)
+        ? 'Chưa bật quyền đọc bảng xếp hạng (cần cấu hình Firestore Rules cho quizScores).'
+        : 'Chưa thể tải bảng xếp hạng'+(code?(' ('+code+')'):'')+'.';
+      box.innerHTML='<li class="qb-empty">'+msg+'</li>';
     });
   }
+  function tronMang(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
   function batDauQuiz(qid){
-    quizCur = QUIZZES.filter(function(q){ return q.id===qid; })[0];
-    if(!quizCur) return;
+    var src = QUIZZES.filter(function(q){ return q.id===qid; })[0];
+    if(!src) return;
+    /* bản sao sâu + TRỘN NGẪU NHIÊN thứ tự đáp án (câu trắc nghiệm) để tăng độ khó */
+    quizCur = JSON.parse(JSON.stringify(src));
+    (quizCur.cauhoi||[]).forEach(function(c){
+      if(c.loai==='dungsai') return;                 /* giữ Đúng/Sai */
+      if(!Array.isArray(c.o) || c.o.length < 2) return;
+      var oldD = parseInt(c.d,10); if(isNaN(oldD)) oldD=0;
+      var order = c.o.map(function(_,i){ return i; });
+      tronMang(order);
+      c.o = order.map(function(i){ return c.o[i]; });
+      c.d = order.indexOf(oldD);
+    });
     quizIdx=0; quizScore=0;
     if(el('quizHome')) el('quizHome').style.display='none';
     if(el('quizPlay')) el('quizPlay').style.display='block';
