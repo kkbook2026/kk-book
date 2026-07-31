@@ -1274,6 +1274,10 @@ body.desktop-view .hdr-inner{flex-wrap:nowrap}
 .assist-box .sec-desc b{color:#D7A6F5}
 .assist-lock{display:flex;align-items:center;gap:7px;font-size:.82rem;color:var(--cream);white-space:nowrap;padding-bottom:8px;cursor:pointer}
 .assist-lock input{width:16px;height:16px;accent-color:#C46BF0}
+.svc-pay-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.svc-pay-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border:1px solid rgba(201,162,39,.25);border-radius:10px;background:rgba(255,255,255,.02);cursor:pointer;font-size:.9rem;color:var(--cream)}
+.svc-pay-item input{width:18px;height:18px;accent-color:#00C2A8}
+@media(max-width:560px){.svc-pay-grid{grid-template-columns:1fr}}
 
 /* ============ MODALS ============ */
 .modal-backdrop{
@@ -1668,6 +1672,39 @@ footer{
 .kd-bien-note{font-size:.84rem;color:var(--cream-dim);margin-top:8px;line-height:1.6;padding-top:8px;border-top:1px dashed rgba(201,162,39,.25)}
 .kd-bien-note b{color:#5FD6A8}
 .kd-y{margin:14px 0;padding:13px 16px;border-radius:11px;background:rgba(255,255,255,.03);border-left:3px solid var(--gold);font-size:.95rem;line-height:1.75;color:var(--cream)}
+/* ===== TỨ TRỤ BÁT TỰ ===== */
+.bt-top{display:flex;gap:18px;flex-wrap:wrap;align-items:center;padding:16px;border:1px solid rgba(201,162,39,.28);border-radius:14px;background:linear-gradient(180deg,rgba(201,162,39,.06),transparent)}
+.bt-tru{border-collapse:collapse;flex:1;min-width:280px}
+.bt-tru th{background:rgba(201,162,39,.14);color:var(--gold-bright);padding:6px 10px;border:1px solid rgba(201,162,39,.25);font-size:.82rem}
+.bt-tru td{border:1px solid rgba(201,162,39,.2);padding:7px 10px;text-align:center;color:var(--cream)}
+.bt-tru .bt-can b,.bt-tru .bt-chi b{font-family:var(--font-display);font-size:1.5rem}
+.bt-tru small{color:var(--cream-dim);font-size:.7rem}
+.bt-tru .bt-tt small{color:var(--gold);font-size:.76rem}
+.bt-sum{min-width:180px}
+.bt-ns{font-size:1.02rem;color:var(--cream)}.bt-ns b{font-family:var(--font-display)}
+.bt-than{font-weight:800;color:var(--gold-bright);margin:5px 0}
+.bt-dt{font-size:.9rem;color:var(--cream)}.bt-dt b{color:#5FD6A8}
+.bt-nh{margin:14px 0;padding:14px 16px;border:1px solid rgba(201,162,39,.2);border-radius:12px;background:rgba(255,255,255,.02)}
+.bt-nh-h{font-weight:700;color:var(--gold-bright);margin-bottom:9px;font-size:.92rem}
+.nh-bars{display:flex;flex-direction:column;gap:7px}
+.nh-bar{display:flex;align-items:center;gap:10px}
+.nh-lb{width:42px;font-size:.85rem;color:var(--cream)}
+.nh-track{flex:1;height:12px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden}
+.nh-fill{display:block;height:100%;border-radius:99px}
+.nh-bar b{width:20px;text-align:right;color:var(--cream);font-size:.9rem}
+/* ===== LỤC HÀO ===== */
+.lh-top{padding:14px 16px;border:1px solid rgba(201,162,39,.28);border-radius:14px;background:linear-gradient(180deg,rgba(201,162,39,.06),transparent);margin-bottom:12px}
+.lh-nhatthan{font-size:.84rem;color:var(--cream-dim);margin-top:6px;padding-top:7px;border-top:1px dashed rgba(201,162,39,.25)}.lh-nhatthan b{color:var(--gold-bright)}
+.lh-tbl{width:100%;border-collapse:collapse;margin:6px 0}
+.lh-tbl th{background:rgba(201,162,39,.12);color:var(--gold-bright);padding:6px 8px;border:1px solid rgba(201,162,39,.2);font-size:.78rem;font-weight:700}
+.lh-tbl td{border:1px solid rgba(201,162,39,.16);padding:6px 8px;text-align:center;font-size:.84rem;color:var(--cream)}
+.lh-god{color:#C88BF0}.lh-than{color:#5FD6A8;font-weight:600}
+.lh-draw{min-width:120px}
+.lh-yang{display:inline-block;width:96px;height:11px;background:linear-gradient(90deg,var(--gold),var(--gold-bright));border-radius:3px;vertical-align:middle}
+.lh-yin{display:inline-block;width:42px;height:11px;background:linear-gradient(90deg,var(--gold),var(--gold-bright));border-radius:3px;margin:0 3px;vertical-align:middle}
+.lh-dong{color:#E86A5C;font-weight:700;margin-left:6px}
+.lh-chi small{color:var(--cream-dim);font-size:.72rem}
+.lh-the{color:#F0C24B}.lh-ung{color:#5B9CFF}
 .tv-lunar-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .tv-lunar-row select,.tv-lunar-row input{padding:9px 11px;border-radius:9px;background:var(--navy-800,#0f1830);border:1px solid rgba(201,162,39,.3);color:var(--cream)}
 .tv-lunar-row #tvLYear{width:110px}
@@ -2584,6 +2621,48 @@ footer{
         <button class="btn btn-gold btn-sm" id="saveAssist">Lưu cấu hình Siêu Trợ Lý</button>
       </div>
       <div id="assistNote" style="font-size:.84rem;margin-top:8px"></div>
+    </div>
+
+    <!-- ===== THU PHÍ 4 DỊCH VỤ KHOA HỌC Á ĐÔNG ===== -->
+    <div class="section-head" style="margin-top:26px;margin-bottom:4px">
+      <h2 style="font-size:1.05rem">💳 Thu phí luận giải - Khoa học Á Đông</h2>
+    </div>
+    <div class="assist-box" style="border-color:rgba(0,194,168,.35);background:linear-gradient(180deg,rgba(0,194,168,.07),rgba(0,194,168,.02))">
+      <div class="sec-desc" style="max-width:none;margin-bottom:12px">Bật = khách phải trả <b>99.000đ</b> + nhập Email để nhận luận giải. Tắt = ai cũng xem luận giải miễn phí. (Quản trị luôn xem miễn phí.)</div>
+      <div class="svc-pay-grid">
+        <label class="svc-pay-item"><span>☯ Lá số Tử Vi</span><input type="checkbox" id="spTuvi"></label>
+        <label class="svc-pay-item"><span>☰ Kinh Dịch</span><input type="checkbox" id="spDich"></label>
+        <label class="svc-pay-item"><span>🎋 Tứ Trụ - Bát Tự</span><input type="checkbox" id="spBat"></label>
+        <label class="svc-pay-item"><span>🀄 Kỳ Môn / Lục Hào</span><input type="checkbox" id="spLuc"></label>
+      </div>
+      <div class="modal-actions" style="justify-content:flex-start;margin-top:12px">
+        <button class="btn btn-gold btn-sm" id="saveSvcPay">Lưu cấu hình thu phí</button>
+      </div>
+      <div id="svcPayNote" style="font-size:.84rem;margin-top:8px"></div>
+    </div>
+
+    <!-- ===== SAO LƯU & PHỤC HỒI ===== -->
+    <div class="section-head" style="margin-top:26px;margin-bottom:4px">
+      <h2 style="font-size:1.05rem">💾 Sao lưu &amp; Phục hồi cấu hình</h2>
+    </div>
+    <div class="assist-box" style="border-color:rgba(201,162,39,.35)">
+      <div class="sec-desc" style="max-width:none;margin-bottom:12px">Sao lưu toàn bộ <b>cấu hình web</b> (thông tin site, tài khoản nhận tiền, danh sách quản trị, cấu hình thu phí, Siêu Trợ Lý...) ra một file <b>.json</b> có ghi thời điểm. Khi cần, chọn đúng file để phục hồi lại đúng trạng thái lúc đó.</div>
+      <div class="dock-row" style="gap:10px;flex-wrap:wrap">
+        <button class="btn btn-gold btn-sm" id="backupBtn">⬇️ Sao lưu ngay (tải file .json)</button>
+        <button class="btn btn-ghost btn-sm" id="restoreBtn">⬆️ Phục hồi từ file .json</button>
+        <input type="file" id="restoreFile" accept="application/json,.json" style="display:none">
+      </div>
+      <div id="backupNote" style="font-size:.84rem;margin-top:8px"></div>
+    </div>
+
+    <!-- ===== TỰ SỬA LỖI WEB ===== -->
+    <div class="section-head" style="margin-top:26px;margin-bottom:4px">
+      <h2 style="font-size:1.05rem">🔧 Tự sửa lỗi Website</h2>
+    </div>
+    <div class="assist-box" style="border-color:rgba(224,135,46,.4);background:linear-gradient(180deg,rgba(224,135,46,.07),rgba(224,135,46,.02))">
+      <div class="sec-desc" style="max-width:none;margin-bottom:12px">Nếu một chức năng nào đó <b>không hoạt động hoặc chập chờn</b>, bấm nút dưới đây để dọn bộ nhớ tạm, nạp lại cấu hình và làm mới giao diện. Không mất dữ liệu trên máy chủ.</div>
+      <button class="btn btn-gold" id="selfFixBtn">🔧 Tự sửa lỗi &amp; làm mới web</button>
+      <div id="selfFixNote" style="font-size:.84rem;margin-top:8px"></div>
     </div>
 
     <!-- ===== YÊU CẦU THANH TOÁN ===== -->
@@ -5039,6 +5118,9 @@ let adminCfg  = { emails:[], phone:'' };
 let payCfg    = { enabled:false, freePages:5, amount:10000, bank:'', acc:'', name:'' };
 /* Cấu hình RIÊNG cho bộ Siêu Trợ Lý - độc lập với sách thường (bật/tắt, trang đọc thử, giá, khoá) */
 let assistCfg = { enabled:false, freePages:2, amount:99000, locked:false };
+/* Bật/tắt THU PHÍ luận giải cho 4 dịch vụ Khoa học Á Đông (true = thu phí 99.000đ) */
+let svcPay = { tuvi:true, dich:true, bat:true, luchao:true };
+function luanThuPhi(key){ return svcPay[key] !== false; }
 let myAccess  = { all:false, books:{} };
 
 /* danh sách email có quyền quản trị = chủ chính + admin phụ */
@@ -5067,16 +5149,18 @@ async function loadSiteConfig(soLanThu){
     return;
   }
   try{
-    const [s1, s2, s3, s4] = await Promise.all([
+    const [s1, s2, s3, s4, s5] = await Promise.all([
       fbDb.collection('settings').doc('site').get(),
       fbDb.collection('settings').doc('admins').get(),
       fbDb.collection('settings').doc('pay').get(),
-      fbDb.collection('settings').doc('assist').get()
+      fbDb.collection('settings').doc('assist').get(),
+      fbDb.collection('settings').doc('svcpay').get()
     ]);
     if(s1.exists) siteCfg  = Object.assign(siteCfg,  s1.data());
     if(s2.exists) adminCfg = Object.assign(adminCfg, s2.data());
     if(s3.exists){ payCfg = Object.assign(payCfg, s3.data()); __payCfgDaLoad = true; }
     if(s4.exists) assistCfg = Object.assign(assistCfg, s4.data());
+    if(s5.exists) svcPay = Object.assign(svcPay, s5.data());
   }catch(e){
     console.warn('cfg', e && e.code);
     /* đọc lỗi (mạng chập) -> thử lại vài lần, KHÔNG để mất trạng thái thu phí */
@@ -5422,6 +5506,12 @@ function veTrangThaiQuanTri(){
     $('#asAmount').value  = assistCfg.amount || 99000;
     $('#asLocked').checked = !!assistCfg.locked;
   }
+  if($('#spTuvi')){
+    $('#spTuvi').checked = svcPay.tuvi !== false;
+    $('#spDich').checked = svcPay.dich !== false;
+    $('#spBat').checked  = svcPay.bat  !== false;
+    $('#spLuc').checked  = svcPay.luchao !== false;
+  }
 }
 
 async function luuSite(patch){
@@ -5528,6 +5618,80 @@ function initAdminExtras(){
     if(!ok){ assistCfg.enabled = truoc; veTrangThaiQuanTri(); }
   });
   if($('#saveAssist')) $('#saveAssist').addEventListener('click', luuAssist);
+
+  /* ===== THU PHÍ 4 DỊCH VỤ ===== */
+  async function luuSvcPay(){
+    if(!chiChuTrang()) return;
+    var note=$('#svcPayNote');
+    var data={ tuvi:!!$('#spTuvi').checked, dich:!!$('#spDich').checked, bat:!!$('#spBat').checked, luchao:!!$('#spLuc').checked, updated:firebase.firestore.FieldValue.serverTimestamp() };
+    try{
+      await fbDb.collection('settings').doc('svcpay').set(data,{merge:true});
+      svcPay=Object.assign(svcPay,{tuvi:data.tuvi,dich:data.dich,bat:data.bat,luchao:data.luchao});
+      if(note){ note.style.color='var(--ok)'; note.textContent='Đã lưu cấu hình thu phí 4 dịch vụ.'; }
+      toast('Đã lưu cấu hình thu phí');
+    }catch(e){ if(note){ note.style.color='var(--danger)'; note.textContent='Lỗi: '+(e.code||e.message); } }
+  }
+  if($('#saveSvcPay')) $('#saveSvcPay').addEventListener('click', luuSvcPay);
+
+  /* ===== SAO LƯU & PHỤC HỒI ===== */
+  async function saoLuu(){
+    if(!chiChuTrang()) return;
+    var note=$('#backupNote');
+    try{
+      if(note){ note.style.color='var(--cream-dim)'; note.textContent='Đang thu thập cấu hình...'; }
+      var docs=['site','admins','pay','assist','svcpay'];
+      var data={};
+      for(var i=0;i<docs.length;i++){ try{ var d=await fbDb.collection('settings').doc(docs[i]).get(); data[docs[i]]=d.exists?d.data():null; }catch(e){ data[docs[i]]=null; } }
+      var backup={ _type:'kkbook-config-backup', _version:1, _time:new Date().toISOString(), settings:data };
+      var stamp=new Date(); var fn='kkbook-backup-'+stamp.getFullYear()+String(stamp.getMonth()+1).padStart(2,'0')+String(stamp.getDate()).padStart(2,'0')+'-'+String(stamp.getHours()).padStart(2,'0')+String(stamp.getMinutes()).padStart(2,'0')+'.json';
+      var blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
+      var url=URL.createObjectURL(blob); var a=document.createElement('a'); a.href=url; a.download=fn; document.body.appendChild(a); a.click(); document.body.removeChild(a); setTimeout(function(){URL.revokeObjectURL(url);},1500);
+      if(note){ note.style.color='var(--ok)'; note.textContent='Đã tạo bản sao lưu: '+fn; }
+      toast('Đã sao lưu cấu hình');
+    }catch(e){ if(note){ note.style.color='var(--danger)'; note.textContent='Lỗi sao lưu: '+(e.code||e.message); } }
+  }
+  async function phucHoi(file){
+    if(!chiChuTrang()) return;
+    var note=$('#backupNote');
+    try{
+      var text=await file.text(); var obj=JSON.parse(text);
+      if(!obj || obj._type!=='kkbook-config-backup' || !obj.settings){ if(note){note.style.color='var(--danger)';note.textContent='File không hợp lệ (không phải bản sao lưu KK-BOOK).';} return; }
+      if(!confirm('Phục hồi cấu hình từ bản sao lưu lúc '+(obj._time||'?')+'?\nCác cấu hình hiện tại sẽ bị ghi đè.')) return;
+      var docs=Object.keys(obj.settings); var n=0;
+      for(var i=0;i<docs.length;i++){ var k=docs[i]; if(obj.settings[k]){ var v=Object.assign({},obj.settings[k]); delete v.updated; await fbDb.collection('settings').doc(k).set(v,{merge:true}); n++; } }
+      if(note){ note.style.color='var(--ok)'; note.textContent='Đã phục hồi '+n+' mục cấu hình. Đang nạp lại...'; }
+      toast('Đã phục hồi cấu hình');
+      if(typeof loadSiteConfig==='function'){ __payCfgDaLoad=false; await loadSiteConfig(); }
+      if(typeof veTrangThaiQuanTri==='function') veTrangThaiQuanTri();
+    }catch(e){ if(note){ note.style.color='var(--danger)'; note.textContent='Lỗi phục hồi: '+(e.message||e); } }
+  }
+  if($('#backupBtn')) $('#backupBtn').addEventListener('click', saoLuu);
+  if($('#restoreBtn')) $('#restoreBtn').addEventListener('click', function(){ var f=$('#restoreFile'); if(f) f.click(); });
+  if($('#restoreFile')) $('#restoreFile').addEventListener('change', function(e){ var f=e.target.files&&e.target.files[0]; if(f) phucHoi(f); e.target.value=''; });
+
+  /* ===== TỰ SỬA LỖI WEB ===== */
+  async function tuSuaLoi(){
+    var note=$('#selfFixNote');
+    if(note){ note.style.color='var(--cream-dim)'; note.textContent='Đang dọn bộ nhớ tạm và nạp lại cấu hình...'; }
+    try{
+      /* xoá cache/cờ tạm dễ gây chập chờn (giữ lại đăng nhập & mở khoá đã mua) */
+      try{ sessionStorage.clear(); }catch(e){}
+      try{
+        var giu=[]; for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(/^kkUnlock_|kkWelcome_off/.test(k)) giu.push(k); }
+        var save={}; giu.forEach(function(k){ save[k]=localStorage.getItem(k); });
+        localStorage.clear();
+        giu.forEach(function(k){ localStorage.setItem(k, save[k]); });
+      }catch(e){}
+      /* nạp lại cấu hình + render lại */
+      if(typeof loadSiteConfig==='function'){ __payCfgDaLoad=false; await loadSiteConfig(); }
+      if(typeof renderLibrary==='function'){ var g=$('#catGrid'); if(g) delete g.dataset.built; renderLibrary(); }
+      if(typeof renderAccountBar==='function') renderAccountBar();
+      if(typeof veTrangThaiQuanTri==='function') veTrangThaiQuanTri();
+      if(note){ note.style.color='var(--ok)'; note.innerHTML='✅ Đã làm mới xong. Nếu vẫn lỗi, bấm nút bên dưới để tải lại trang hoàn toàn.<br><button class="btn btn-ghost btn-sm" id="hardReload" style="margin-top:6px">🔄 Tải lại trang (F5)</button>'; var hr=$('#hardReload'); if(hr) hr.addEventListener('click',function(){ location.reload(true); }); }
+      toast('Đã tự sửa lỗi & làm mới');
+    }catch(e){ if(note){ note.style.color='var(--danger)'; note.textContent='Có lỗi khi làm mới: '+(e.message||e)+' - hãy thử tải lại trang (Ctrl+F5).'; } }
+  }
+  if($('#selfFixBtn')) $('#selfFixBtn').addEventListener('click', tuSuaLoi);
 
   $('#testQr').addEventListener('click', ()=>{
     const box = $('#qrTest');
@@ -7023,6 +7187,9 @@ function moPaywallLuan(preview){
   var ls = window.__laso;
   if(!ls){ toast('Chưa có lá số.'); return; }
   var box = document.getElementById('tvLuanFree');
+  if(typeof luanThuPhi==='function' && !luanThuPhi('tuvi') && !preview){
+    box.innerHTML = luanGiaiFull(ls); box.scrollIntoView({behavior:'smooth'}); return;
+  }
   var laAdmin = (typeof toiLaChuTrang==='function' && toiLaChuTrang());
   /* đã mở khoá luận giải tử vi (chủ web / đã mua) -> hiện luôn */
   var daMoLuan = laAdmin
@@ -7468,6 +7635,9 @@ function luanQueFull(q){
 function moPaywallDich(preview){
   var q=window.__que; if(!q){ toast('Chưa có quẻ. Hãy gieo quẻ trước.'); return; }
   var box=document.getElementById('dichLuanFree');
+  if(typeof luanThuPhi==='function' && !luanThuPhi('dich') && !preview){
+    box.innerHTML=luanQueFull(q); box.scrollIntoView({behavior:'smooth'}); return;
+  }
   var laAdmin=(typeof toiLaChuTrang==='function' && toiLaChuTrang());
   var daMo=laAdmin
     || (typeof myAccess!=='undefined' && myAccess && (myAccess.all || (myAccess.books && myAccess.books['kinhdich-luan'])))
@@ -7632,6 +7802,399 @@ function pdfKinhDichCombo(q){
     '</body></html>';
 }
 
+/* ============================================================
+   HÀM DÙNG CHUNG: paywall + khung PDF 2 trang (cho Bát Tự, Lục Hào)
+   ============================================================ */
+function _escH(s){ return (''+(s==null?'':s)).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];}); }
+function pdfFrameDoc(opt){
+  var css='@page{size:A4 portrait;margin:8mm}*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}body{margin:0;background:#fff}'+
+    '.pgChart{page-break-after:always}'+
+    '.sheet{position:relative;background:#fefcf6;border:3px double #b8912a;border-radius:7px;padding:6mm;min-height:274mm;overflow:hidden;font-family:"Times New Roman",Georgia,serif;color:#2a2418}'+
+    '.sheet::after{content:"";position:absolute;top:2.4mm;left:2.4mm;right:2.4mm;bottom:2.4mm;border:.7px solid #d9c489;border-radius:4px;z-index:0}'+
+    '.cnr{position:absolute;color:#b8912a;font-size:16px;z-index:2;opacity:.9}.cnr.tl{top:3.2mm;left:4mm}.cnr.tr{top:3.2mm;right:4mm}.cnr.bl{bottom:3.2mm;left:4mm}.cnr.br{bottom:3.2mm;right:4mm}'+
+    '.wm{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:250px;color:#7a1f1f;opacity:.035;z-index:0;line-height:1}'+
+    '.inner{position:relative;z-index:1;display:flex;flex-direction:column;min-height:262mm}'+
+    '.sheet-ft{margin-top:auto;text-align:center;color:#7a1f1f;font-size:11px;letter-spacing:1.5px;font-weight:700;border-top:1.4px solid #b8912a;padding-top:5px}.sheet-ft .w{color:#1c4f8a}.sheet-ft .sub{display:block;font-size:8.5px;color:#9a8a5a;font-weight:400;margin-top:1px}'+
+    /* lớp luận giải chung */
+    '.lu-title{text-align:center;margin-bottom:4px}.lu-title h2{margin:0;font-size:17px;font-weight:800;color:#7a1f1f;letter-spacing:2px}.lu-orn{color:#b8912a;font-size:11px;letter-spacing:3px;margin:2px 0}'+
+    '.lu-who{text-align:center;font-size:9.5px;color:#5a5240;margin-bottom:5px}.lu-who b{color:#7a1f1f}'+
+    '.lu-h{font-size:11px;font-weight:700;color:#7a1f1f;margin:7px 0 4px;display:flex;align-items:center;gap:6px}.lu-h::before{content:"\\2756";color:#b8912a;font-size:10px}.lu-h::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,#d9c489,transparent)}'+
+    '.lu-lead{background:#faf6ea;border:1px solid #e6d9b0;border-left:3px solid #b8912a;border-radius:4px;padding:7px 10px;font-size:10px;line-height:1.5}'+
+    '.lu-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}'+
+    '.lu-cung{border:1px solid #e6d9b0;border-radius:5px;padding:6px 9px;background:#fffdf7}.lu-cung-h{font-weight:700;color:#7a1f1f;font-size:10px;margin-bottom:2px}.lu-cung-b{font-size:9.4px;line-height:1.4;color:#2f2a1e}'+
+    '.lu-lk{background:#f3f7f1;border:1px solid #cfe3cd;border-radius:5px;padding:8px 11px;margin-top:3px;font-size:9.6px;line-height:1.5}.lu-lk .lu-lkt{font-weight:700;color:#1c6b2f;font-size:10.5px;display:block;margin-bottom:2px}'+
+    (opt.css||'');
+  var corners='<span class="cnr tl">\u2766</span><span class="cnr tr">\u2767</span><span class="cnr bl">\u2767</span><span class="cnr br">\u2766</span>';
+  var wm='<div class="wm">'+(opt.wm||'\u262f')+'</div>';
+  var ft='<div class="sheet-ft">\u2726 <span class="w">www.kk-book.com</span> \u2726<span class="sub">'+(opt.sub||'THƯ VIỆN SÁCH CÁ NHÂN')+'</span></div>';
+  return '<!DOCTYPE html><html lang="vi"><head><meta charset="utf-8"><title>'+_escH(opt.title||'')+'</title><style>'+css+'</style></head><body>'+
+    '<div class="pgChart"><div class="sheet">'+corners+wm+'<div class="inner">'+opt.page1+ft+'</div></div></div>'+
+    '<div class="pgLuan"><div class="sheet">'+corners+wm+'<div class="inner">'+opt.page2+ft+'</div></div></div>'+
+    '</body></html>';
+}
+/* Paywall dùng chung. opt:{box,key,bookId,bookTitle,gia,prefix,getData,luanFull,tenLuan} */
+function moPaywallSvc(opt, preview){
+  var data = opt.getData(); if(!data){ toast('Chưa có dữ liệu. Hãy lập lá số / gieo quẻ trước.'); return; }
+  var box = document.getElementById(opt.box); if(!box) return;
+  var P = opt.prefix;
+  if(typeof luanThuPhi==='function' && !luanThuPhi(opt.key) && !preview){ box.innerHTML=opt.luanFull(data); box.scrollIntoView({behavior:'smooth'}); return; }
+  var laAdmin=(typeof toiLaChuTrang==='function' && toiLaChuTrang());
+  var daMo=laAdmin
+    || (typeof myAccess!=='undefined' && myAccess && (myAccess.all || (myAccess.books && myAccess.books[opt.bookId])))
+    || (function(){ try{ return localStorage.getItem('kkUnlock_'+opt.bookId)==='1'; }catch(e){ return false; } })();
+  var gia=(opt.gia||99000).toLocaleString('vi-VN');
+  if(daMo && !preview){
+    var adminBar=laAdmin?'<div class="tv-admin-note">\u2713 <b>Thu phí luận giải đang BẬT</b> (khách trả <b>'+gia+'đ</b> + nhập Email). Bạn xem <b>miễn phí</b> vì là quản trị. <button class="btn btn-ghost btn-sm" id="'+P+'PreviewPay" style="margin-top:6px">Xem thử màn hình thanh toán</button></div>':'';
+    box.innerHTML=adminBar+opt.luanFull(data);
+    if(laAdmin){ var pv=document.getElementById(P+'PreviewPay'); if(pv) pv.addEventListener('click',function(){ moPaywallSvc(opt,true); }); }
+    box.scrollIntoView({behavior:'smooth'}); return;
+  }
+  var ma=opt.maPrefix+Math.random().toString(36).slice(2,6).toUpperCase();
+  var inpCss='width:100%;padding:11px 13px;border-radius:10px;background:var(--navy-800);border:1px solid rgba(201,162,39,.3);color:var(--cream);margin-bottom:8px';
+  function buoc1(){
+    box.innerHTML='<div class="tv-luan-locked">'+
+      (preview?'<div class="tv-preview-tag">\ud83d\udd0e Đang XEM THỬ màn hình thanh toán (quản trị) - không tạo yêu cầu thật.</div>':'')+
+      '<h4 style="margin-top:0">'+_escH(opt.tenLuan||'Luận giải chi tiết')+'</h4>'+
+      '<p style="color:var(--cream-dim);font-size:.9rem">Bản luận giải đầy đủ có phí <b style="color:var(--gold-bright)">'+gia+' đ</b>. Nhập <b>Email</b> để nhận kết quả và mã mở khoá.</p>'+
+      '<div style="max-width:360px;margin:14px auto 0;text-align:left">'+
+      '<label style="font-size:.82rem;color:var(--gold-bright);display:block;margin-bottom:5px">Email của bạn <span style="color:#E86A5C">* bắt buộc</span></label>'+
+      '<input type="email" id="'+P+'Email" placeholder="email@gmail.com" maxlength="60" style="'+inpCss+'">'+
+      '<button class="btn btn-gold" id="'+P+'GoQR" style="width:100%">Tiếp tục - Lấy mã QR thanh toán</button>'+
+      '<div style="margin-top:14px;border-top:1px solid rgba(201,162,39,.2);padding-top:12px">'+
+      '<label style="font-size:.82rem;color:var(--cream-dim);display:block;margin-bottom:5px">Đã có mã mở khoá?</label>'+
+      '<input type="text" id="'+P+'Code" placeholder="Nhập mã mở khoá" maxlength="20" style="'+inpCss+';text-transform:uppercase">'+
+      '<button class="btn btn-ghost" id="'+P+'Unlock" style="width:100%">Mở luận giải</button></div>'+
+      '<div id="'+P+'Note" style="font-size:.84rem;margin-top:10px;text-align:center"></div>'+
+      '</div></div>';
+    document.getElementById(P+'GoQR').addEventListener('click',function(){
+      var email=(document.getElementById(P+'Email').value||'').trim(); var note=document.getElementById(P+'Note');
+      if(!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(email)){ note.style.color='#E86A5C'; note.textContent='Vui lòng nhập đúng Email.'; return; }
+      buoc2(email);
+    });
+    document.getElementById(P+'Unlock').addEventListener('click',function(){ moKhoa(); });
+  }
+  function buoc2(email){
+    var qr='';
+    if(typeof payCfg!=='undefined' && payCfg.bank && payCfg.acc){
+      var url='https://img.vietqr.io/image/'+encodeURIComponent(payCfg.bank)+'-'+encodeURIComponent(payCfg.acc)+'-compact2.png?amount='+(opt.gia||99000)+'&addInfo='+encodeURIComponent(ma)+'&accountName='+encodeURIComponent(payCfg.name||'');
+      qr='<img src="'+url+'" alt="QR" style="width:190px;height:190px;border-radius:10px;background:#fff;padding:6px" onerror="this.style.display=\'none\'">';
+    }
+    box.innerHTML='<div class="tv-luan-locked">'+
+      '<h4 style="margin-top:0">Quét mã QR để thanh toán</h4>'+
+      '<p style="color:var(--cream-dim);font-size:.9rem">Chuyển khoản <b style="color:var(--gold-bright)">'+gia+' đ</b>. Kết quả gửi về: <b style="color:var(--cream)">'+_escH(email)+'</b></p>'+
+      '<div style="margin:12px 0">'+qr+'</div>'+
+      (typeof payCfg!=='undefined' && payCfg.acc?'<div style="font-size:.85rem;line-height:1.7">Ngân hàng: <b>'+_escH(payCfg.bank||'')+'</b> · STK: <b>'+_escH(payCfg.acc||'')+'</b><br>Chủ TK: <b>'+_escH(payCfg.name||'')+'</b><br>Nội dung CK: <b style="color:var(--gold-bright)">'+ma+'</b></div>':'<div style="color:#E86A5C">Chủ web chưa cấu hình tài khoản nhận tiền.</div>')+
+      '<div style="max-width:360px;margin:14px auto 0">'+
+      '<button class="btn btn-gold" id="'+P+'Paid" style="width:100%">Tôi đã chuyển khoản</button>'+
+      '<button class="btn btn-ghost" id="'+P+'BackE" style="width:100%;margin-top:8px">Sửa Email</button>'+
+      '<div style="margin-top:14px;border-top:1px solid rgba(201,162,39,.2);padding-top:12px">'+
+      '<input type="text" id="'+P+'Code" placeholder="Nhập mã mở khoá" maxlength="20" style="'+inpCss+';text-transform:uppercase">'+
+      '<button class="btn btn-ghost" id="'+P+'Unlock" style="width:100%">Mở luận giải</button></div>'+
+      '<div id="'+P+'Note" style="font-size:.84rem;margin-top:10px;text-align:center"></div>'+
+      '</div></div>';
+    document.getElementById(P+'Paid').addEventListener('click',function(){ if(preview){ (window.toast||alert)('Chế độ xem thử: khách bấm nút này sẽ gửi yêu cầu về cho quản trị.'); return; } guiYeu(ma,email); });
+    document.getElementById(P+'BackE').addEventListener('click',buoc1);
+    document.getElementById(P+'Unlock').addEventListener('click',function(){ moKhoa(); });
+    box.scrollIntoView({behavior:'smooth'});
+  }
+  async function guiYeu(ma,email){
+    var note=document.getElementById(P+'Note');
+    try{
+      if(typeof fbDb==='undefined'||!fbDb){ if(note){note.style.color='#E86A5C';note.textContent='Chưa kết nối máy chủ.';} return; }
+      await fbDb.collection('payments').add({ status:'pending', bookId:opt.bookId, bookTitle:opt.bookTitle, amount:(opt.gia||99000), code:ma, contact:email, email:email, ip:'', thoiGian:new Date().toLocaleString('vi-VN'), ts:firebase.firestore.FieldValue.serverTimestamp() });
+      if(note){ note.style.color='var(--ok)'; note.innerHTML='\u2705 Đã gửi yêu cầu! Sau khi xác nhận, quản trị sẽ gửi mã mở khoá về Email <b>'+_escH(email)+'</b>.'; }
+    }catch(e){ if(note){ note.style.color='#E86A5C'; note.textContent='Lỗi gửi yêu cầu: '+(e&&e.code?e.code:'không kết nối được'); } }
+  }
+  async function moKhoa(){
+    var note=document.getElementById(P+'Note'); var maC=((document.getElementById(P+'Code')||{}).value||'').trim().toUpperCase();
+    if(!maC){ if(note){note.style.color='#E86A5C';note.textContent='Hãy nhập mã mở khoá.';} return; }
+    if(typeof fbDb==='undefined'||!fbDb){ if(note){note.style.color='#E86A5C';note.textContent='Chưa kết nối máy chủ.';} return; }
+    try{
+      var ref=fbDb.collection('codes').doc(maC); var d=await ref.get();
+      if(!d.exists){ note.style.color='#E86A5C'; note.textContent='Mã không đúng hoặc không tồn tại.'; return; }
+      var cd=d.data(); if(cd.used){ note.style.color='#E86A5C'; note.textContent='Mã này đã được dùng rồi.'; return; }
+      await ref.set({used:true, usedBy:(typeof fbUser!=='undefined'&&fbUser)?(fbUser.email||fbUser.uid):'khach', usedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+      if(typeof myAccess!=='undefined'){ myAccess.books[opt.bookId]=true; }
+      if(typeof fbUser!=='undefined' && fbUser){ var o={}; o[opt.bookId]=true; await fbDb.collection('access').doc(fbUser.uid).set({books:o},{merge:true}); }
+      else { try{ localStorage.setItem('kkUnlock_'+opt.bookId,'1'); }catch(e){} }
+      document.getElementById(opt.box).innerHTML=opt.luanFull(opt.getData());
+      toast('Đã mở khoá luận giải!');
+    }catch(e){ note.style.color='#E86A5C'; note.textContent='Lỗi: '+(e&&e.code?e.code:'không kết nối được'); }
+  }
+  buoc1(); box.scrollIntoView({behavior:'smooth'});
+}
+
+/* ============================================================
+   TỨ TRỤ - BÁT TỰ (Four Pillars)  -- lịch pháp can chi + ngũ hành + thập thần
+   ============================================================ */
+var BT_CANNH=['Mộc','Mộc','Hỏa','Hỏa','Thổ','Thổ','Kim','Kim','Thủy','Thủy'];
+var BT_CHINH=['Thủy','Thổ','Mộc','Mộc','Thổ','Hỏa','Hỏa','Thổ','Kim','Kim','Thổ','Thủy'];
+var NH_MAU={'Mộc':'#3FDD8E','Hỏa':'#F0776A','Thổ':'#E0A44A','Kim':'#EAD98A','Thủy':'#5B9CFF'};
+var NH_SINH={'Mộc':'Hỏa','Hỏa':'Thổ','Thổ':'Kim','Kim':'Thủy','Thủy':'Mộc'};
+var NH_KHAC={'Mộc':'Thổ','Thổ':'Thủy','Thủy':'Hỏa','Hỏa':'Kim','Kim':'Mộc'};
+var BT_TIETDAY=[6,4,6,5,6,6,7,8,8,8,7,7];              /* ngày bắt đầu Tiết mỗi tháng DL (1..12) - xấp xỉ */
+var BT_BRANCHAFTER=[1,2,3,4,5,6,7,8,9,10,11,0];        /* chi Nguyệt kiến sau Tiết: Jan->Sửu ... Dec->Tý */
+function btMonthChi(m,d){ var i=m-1; return d>=BT_TIETDAY[i]?BT_BRANCHAFTER[i]:(BT_BRANCHAFTER[i]+11)%12; }
+function btYear(y,m,d){ return (m<2 || (m===2 && d<4)) ? y-1 : y; }
+function thapThan(dm,o){
+  var e1=BT_CANNH[dm], e2=BT_CANNH[o]; var same=(dm%2)===(o%2);
+  if(e1===e2) return same?'Tỷ Kiên':'Kiếp Tài';
+  if(NH_SINH[e1]===e2) return same?'Thực Thần':'Thương Quan';
+  if(NH_KHAC[e1]===e2) return same?'Thiên Tài':'Chính Tài';
+  if(NH_KHAC[e2]===e1) return same?'Thất Sát':'Chính Quan';
+  if(NH_SINH[e2]===e1) return same?'Thiên Ấn':'Chính Ấn';
+  return '-';
+}
+function lapBatTu(d,m,y,hour){
+  var CAN=TV_CAN, CHI=TV_CHI;
+  var by=btYear(y,m,d); var yCan=((by+6)%10+10)%10, yChi=((by+8)%12+12)%12;
+  var mChi=btMonthChi(m,d); var canDan=(yCan*2+2)%10; var mCan=((canDan+((mChi-2+12)%12))%10+10)%10;
+  var jd=tvJd(d,m,y); var dCan=((jd+9)%10+10)%10, dChi=((jd+1)%12+12)%12;
+  var hChi=Math.floor(((hour+1)%24)/2); var hCan=((dCan*2+hChi)%10+10)%10;
+  var tru=[{ten:'Năm',can:yCan,chi:yChi},{ten:'Tháng',can:mCan,chi:mChi},{ten:'Ngày',can:dCan,chi:dChi},{ten:'Giờ',can:hCan,chi:hChi}];
+  tru.forEach(function(t){ t.canNH=BT_CANNH[t.can]; t.chiNH=BT_CHINH[t.chi]; t.tt=(t.can===dCan&&t.ten==='Ngày')?'Nhật chủ':thapThan(dCan,t.can); });
+  /* đếm ngũ hành 8 chữ */
+  var dem={'Mộc':0,'Hỏa':0,'Thổ':0,'Kim':0,'Thủy':0};
+  tru.forEach(function(t){ dem[t.canNH]++; dem[t.chiNH]++; });
+  var dmNH=BT_CANNH[dCan];
+  var resource=null; for(var e in NH_SINH){ if(NH_SINH[e]===dmNH) resource=e; }
+  var support=dem[dmNH]+dem[resource];
+  var monthSupport=(mChi===dChi)||(BT_CHINH[mChi]===dmNH)||(BT_CHINH[mChi]===resource);
+  var manh = (support + (monthSupport?1.2:0)) >= 4;
+  var than = manh?'Thân VƯỢNG (cường)':'Thân NHƯỢC (yếu)';
+  var dungThan, kyThan;
+  if(manh){ dungThan=[NH_KHAC[dmNH], NH_SINH[dmNH]]; kyThan=[dmNH, resource]; }
+  else { dungThan=[dmNH, resource]; kyThan=[NH_KHAC[dmNH]]; }
+  return { d:d,m:m,y:y,hour:hour,by:by,tru:tru,dCan:dCan,dChi:dChi,dmNH:dmNH,dem:dem,than:than,manh:manh,dungThan:dungThan,kyThan:kyThan,resource:resource,
+           ten:(el('batName')&&el('batName').value||'').trim(), gt:(el('batGt')&&el('batGt').value)||'nam' };
+}
+var BT_TINHCACH={'Mộc':'nhân hậu, hướng thượng, giàu lòng trắc ẩn, thích phát triển và sáng tạo; đôi khi hơi cố chấp.','Hỏa':'nhiệt tình, lễ độ, sáng sủa, giao tiếp tốt, hành động nhanh; cần tiết chế nóng vội.','Thổ':'trung hậu, đáng tin, thực tế, kiên nhẫn, giữ chữ tín; đôi khi bảo thủ, chậm đổi mới.','Kim':'quyết đoán, cương trực, trọng nghĩa, kỷ luật, làm việc bài bản; cần bớt cứng nhắc.','Thủy':'thông minh, linh hoạt, mưu trí, thích ứng nhanh, giỏi giao tế; cần kiên định hơn.'};
+function btAspect(bt){
+  var manh=bt.manh, nh=bt.dmNH;
+  return {
+    cn: manh?'Bản mệnh vững, có chủ kiến và sức bền; hợp làm chủ, lãnh đạo, khởi nghiệp. Nên hướng tới nghề thuộc Dụng thần ('+bt.dungThan.join(', ')+') để phát huy.'
+            :'Nên nương theo tập thể, quý nhân và môi trường ổn định; hợp làm chuyên môn, phụ tá, hợp tác. Bồi thêm hành '+bt.dungThan.join(', ')+' để tăng lực.',
+    tl: manh?'Có khả năng cầu tài chủ động; giữ được tiền nếu biết tiết chế chi tiêu, tránh ôm đồm.'
+            :'Tài đến từ hợp tác và kiên trì tích lũy; tránh đầu tư mạo hiểm khi thân yếu.',
+    td: 'Tình duyên - gia đạo hòa hợp khi bên cạnh người bổ trợ hành '+bt.dungThan[0]+'; nên chọn bạn đời điềm đạm, cùng chí hướng, biết sẻ chia.',
+    sk: 'Chú ý tạng phủ ứng với hành '+ (bt.kyThan[0]||nh) +' (dễ mất cân bằng); giữ nếp sống điều độ, vận động và nghỉ ngơi hợp lý.',
+    kn: 'Phát huy ưu điểm ('+BT_TINHCACH[nh].split(';')[0]+'), lấy Dụng thần <b>'+bt.dungThan.join(' / ')+'</b> làm định hướng (màu sắc, phương hướng, nghề nghiệp), hạn chế nghiêng về Kỵ thần <b>'+bt.kyThan.join(' / ')+'</b>.'
+  };
+}
+function batTuTable(bt){
+  var CAN=TV_CAN, CHI=TV_CHI;
+  var head='', canR='', chiR='', ttR='';
+  bt.tru.forEach(function(t){
+    head+='<th>Trụ '+t.ten+'</th>';
+    canR+='<td><b style="color:'+NH_MAU[t.canNH]+'">'+CAN[t.can]+'</b><br><small>'+t.canNH+'</small></td>';
+    chiR+='<td><b style="color:'+NH_MAU[t.chiNH]+'">'+CHI[t.chi]+'</b><br><small>'+t.chiNH+'</small></td>';
+    ttR+='<td><small>'+t.tt+'</small></td>';
+  });
+  return '<table class="bt-tru"><tr>'+head+'</tr><tr class="bt-can">'+canR+'</tr><tr class="bt-chi">'+chiR+'</tr><tr class="bt-tt">'+ttR+'</tr></table>';
+}
+function nhBars(dem){
+  var max=Math.max(1,dem['Mộc'],dem['Hỏa'],dem['Thổ'],dem['Kim'],dem['Thủy']);
+  return '<div class="nh-bars">'+['Mộc','Hỏa','Thổ','Kim','Thủy'].map(function(e){
+    return '<div class="nh-bar"><span class="nh-lb">'+e+'</span><span class="nh-track"><span class="nh-fill" style="width:'+Math.round(dem[e]/max*100)+'%;background:'+NH_MAU[e]+'"></span></span><b>'+dem[e]+'</b></div>';
+  }).join('')+'</div>';
+}
+function renderBatTuFree(bt){
+  var h='<div class="bt-top">'+batTuTable(bt)+
+    '<div class="bt-sum"><div class="bt-ns">Nhật chủ: <b style="color:'+NH_MAU[bt.dmNH]+'">'+TV_CAN[bt.dCan]+' ('+bt.dmNH+')</b></div>'+
+    '<div class="bt-than">'+bt.than+'</div>'+
+    '<div class="bt-dt">Dụng thần: <b>'+bt.dungThan.join(', ')+'</b></div></div></div>'+
+    '<div class="bt-nh"><div class="bt-nh-h">Phân bố Ngũ hành</div>'+nhBars(bt.dem)+'</div>'+
+    '<div class="tv-actions"><button class="btn btn-gold" id="batLuan">Xem luận giải chi tiết</button></div>'+
+    '<div class="tv-luan-free" id="batLuanFree"></div>';
+  return h;
+}
+function luanBatTuFull(bt){
+  var a=btAspect(bt); var CAN=TV_CAN, CHI=TV_CHI;
+  function muc(t,n){ return '<div class="lg-cung"><div class="lg-cung-h"><b>'+t+'</b></div><p>'+n+'</p></div>'; }
+  return '<div class="lg-doc">'+
+    '<div class="lg-toolbar"><button class="btn btn-gold" id="batLuanPdf">\ud83d\udcc4 Lưu lá số &amp; luận giải ra PDF</button></div>'+
+    '<div class="lg-sec"><h4>\u2756 Tứ trụ &amp; Nhật chủ</h4><p>Bát tự (4 trụ): <b>'+bt.tru.map(function(t){return CAN[t.can]+' '+CHI[t.chi];}).join(' - ')+'</b>. Nhật chủ (bản thân) là <b style="color:'+NH_MAU[bt.dmNH]+'">'+CAN[bt.dCan]+' - hành '+bt.dmNH+'</b>, '+bt.than+'. Người mang khí chất hành '+bt.dmNH+': '+BT_TINHCACH[bt.dmNH]+'</p></div>'+
+    '<div class="lg-sec"><h4>\u2756 Dụng thần - Kỵ thần</h4><p>Dụng thần (nên bồi, mang lại may mắn): <b>'+bt.dungThan.join(', ')+'</b>. Kỵ thần (nên tiết chế): <b>'+bt.kyThan.join(', ')+'</b>. Đây là kim chỉ nam để chọn nghề, màu sắc, phương hướng, bạn đời cho hợp mệnh.</p></div>'+
+    '<div class="lg-sec"><h4>\u2756 Luận giải theo phương diện</h4>'+
+      muc('Công danh - Sự nghiệp', a.cn)+muc('Tài lộc', a.tl)+muc('Tình duyên - Gia đạo', a.td)+muc('Sức khỏe', a.sk)+'</div>'+
+    '<div class="lg-sec lg-ketluan"><h4>\u2756 Lời khuyên hoàn thiện</h4><div class="lg-loikhuyen"><div class="lg-lk-t">\ud83d\udc9b Đúc kết</div><p>'+a.kn+'</p><p>Bát tự cho biết xu hướng bẩm sinh, nhưng <b>vận mệnh do chính bạn vun đắp</b>. Sống thuận Dụng thần, tu dưỡng đức độ và kiên trì thì đời sẽ ngày một hanh thông.</p></div></div>'+
+    '<p class="lg-note">Luận giải dựa trên Tử Bình - Bát Tự cổ truyền, mang tính tham khảo - chiêm nghiệm; nên kết hợp thực tế và nỗ lực bản thân.</p>'+
+  '</div>';
+}
+/* paywall + PDF Bát Tự */
+function moPaywallBat(preview){ moPaywallSvc({ box:'batLuanFree', key:'bat', bookId:'battu-luan', bookTitle:'Luận giải Bát Tự', gia:99000, prefix:'bt', maPrefix:'BT', tenLuan:'Luận giải chi tiết lá số Bát Tự', getData:function(){return window.__battu;}, luanFull:luanBatTuFull }, preview); }
+function xuatPdfBatTu(){ var bt=window.__battu; if(!bt){ toast('Chưa có lá số.'); return; } try{ var html=pdfBatTuCombo(bt); if(inTaiLieuPDF(html)) toast('Đang mở hộp thoại in - chọn "Lưu dưới dạng PDF".'); }catch(e){ if(window.console)console.warn(e); toast('Lỗi tạo PDF: '+(e&&e.message?e.message:'')); } }
+function pdfBatTuCombo(bt){
+  var CAN=TV_CAN, CHI=TV_CHI; var a=btAspect(bt);
+  var GT=bt.gt==='nam'?'Nam mệnh':'Nữ mệnh';
+  var trCells=bt.tru.map(function(t){ return '<td><div class="pk-tru-h">'+t.ten+'</div><div class="pk-can" style="color:'+NH_MAU[t.canNH]+'">'+CAN[t.can]+'</div><div class="pk-chi" style="color:'+NH_MAU[t.chiNH]+'">'+CHI[t.chi]+'</div><div class="pk-nh">'+t.canNH+' / '+t.chiNH+'</div><div class="pk-tt">'+t.tt+'</div></td>'; }).join('');
+  var page1='<div class="pk-head"><div class="pk-title">LÁ SỐ BÁT TỰ - TỨ TRỤ</div><div class="pk-name">'+_escH(bt.ten||'(Quý khách)')+'</div><div class="pk-cat">'+GT+' · Sinh '+bt.d+'/'+bt.m+'/'+bt.y+' giờ '+CHI[Math.floor(((bt.hour+1)%24)/2)]+'</div></div>'+
+    '<div class="pk-mid"><table class="pk-battu"><tr>'+trCells+'</tr></table>'+
+    '<div class="pk-ns">Nhật chủ: <b style="color:'+NH_MAU[bt.dmNH]+'">'+CAN[bt.dCan]+' - '+bt.dmNH+'</b> · '+bt.than+' · Dụng thần: <b>'+bt.dungThan.join(', ')+'</b></div>'+
+    '<table class="pk-nh2"><tr>'+['Mộc','Hỏa','Thổ','Kim','Thủy'].map(function(e){return '<td><b style="color:'+NH_MAU[e]+'">'+e+'</b><br>'+bt.dem[e]+'</td>';}).join('')+'</tr></table></div>';
+  function m(t,n){ return '<div class="lu-cung"><div class="lu-cung-h">'+t+'</div><div class="lu-cung-b">'+_escH(n).replace(/&lt;b&gt;/g,'<b>').replace(/&lt;\/b&gt;/g,'</b>')+'</div></div>'; }
+  var page2='<div class="lu-title"><div class="lu-orn">\u27e1 \u22c6 \u2756 \u22c6 \u27e1</div><h2>LUẬN GIẢI BÁT TỰ</h2><div class="lu-orn">\u2726 TỨ TRỤ \u2726</div></div>'+
+    '<div class="lu-who"><b>'+_escH(bt.ten||'(Quý khách)')+'</b> · '+GT+' · '+bt.d+'/'+bt.m+'/'+bt.y+' · Nhật chủ <b>'+CAN[bt.dCan]+' ('+bt.dmNH+')</b> · '+bt.than+'</div>'+
+    '<div class="lu-h">Tứ trụ &amp; Nhật chủ</div><div class="lu-lead">Bát tự: <b>'+bt.tru.map(function(t){return CAN[t.can]+' '+CHI[t.chi];}).join(' - ')+'</b>. Khí chất hành '+bt.dmNH+': '+_escH(BT_TINHCACH[bt.dmNH])+' Dụng thần: <b>'+bt.dungThan.join(', ')+'</b> · Kỵ thần: <b>'+bt.kyThan.join(', ')+'</b>.</div>'+
+    '<div class="lu-h">Luận giải theo phương diện</div>'+
+    '<div class="lu-grid">'+m('Công danh - Sự nghiệp',a.cn)+m('Tài lộc',a.tl)+m('Tình duyên - Gia đạo',a.td)+m('Sức khỏe',a.sk)+'</div>'+
+    '<div class="lu-h">Lời khuyên hoàn thiện</div>'+
+    '<div class="lu-lk"><span class="lu-lkt">\ud83d\udc9b Đúc kết</span>'+_escH(a.kn).replace(/&lt;b&gt;/g,'<b>').replace(/&lt;\/b&gt;/g,'</b>')+' Bát tự cho biết xu hướng bẩm sinh, nhưng vận mệnh do chính bạn vun đắp - sống thuận Dụng thần, tu dưỡng đức độ và kiên trì thì đời ngày một hanh thông.</div>';
+  var css='.pk-head{text-align:center;border-bottom:2px solid #b8912a;padding-bottom:8px;margin-bottom:10px}.pk-title{font-size:19px;font-weight:800;color:#7a1f1f;letter-spacing:2px}.pk-name{font-size:24px;font-weight:800;color:#5a3a1a;margin:4px 0}.pk-cat{font-size:12px;color:#a8701a}'+
+    '.pk-mid{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}'+
+    '.pk-battu{border-collapse:collapse}.pk-battu td{border:1px solid #d9c489;padding:8px 14px;text-align:center;background:#fffdf7;vertical-align:top}'+
+    '.pk-tru-h{font-size:11px;color:#8a6a1f;font-weight:700;margin-bottom:3px}.pk-can{font-size:26px;font-weight:800;line-height:1.1}.pk-chi{font-size:26px;font-weight:800;line-height:1.1}.pk-nh{font-size:9px;color:#7a6a45;margin-top:2px}.pk-tt{font-size:10px;color:#5a3a1a;margin-top:2px}'+
+    '.pk-ns{font-size:12.5px;color:#2f2a1e;text-align:center;background:#faf6ea;border:1px solid #e6d9b0;border-radius:6px;padding:7px 12px}'+
+    '.pk-nh2{border-collapse:collapse}.pk-nh2 td{border:1px solid #e6d9b0;padding:5px 16px;text-align:center;font-size:12px;background:#fffdf7}'+
+    '.pgLuan .inner{font-size:10px;line-height:1.42}';
+  return pdfFrameDoc({ title:'Bát Tự - '+(bt.ten||''), sub:'THƯ VIỆN SÁCH CÁ NHÂN · TỨ TRỤ BÁT TỰ', wm:'\u58ec', page1:page1, page2:page2, css:css });
+}
+function xemLaSoBatTu(){
+  var nd=el('batDate'); if(!nd||!nd.value){ (window.toast||alert)('Hãy chọn ngày sinh.'); return; }
+  var p=nd.value.split('-').map(function(n){return parseInt(n,10);});
+  var hh=parseInt((el('batHour')&&el('batHour').value)||'12',10);
+  window.__battu=lapBatTu(p[2],p[1],p[0],hh);
+  el('batResult').style.display='block';
+  el('batResult').innerHTML=renderBatTuFree(window.__battu);
+  el('batResult').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+var LH_NAJIA_L={0:[7,5,3],1:[0,2,4],2:[2,4,6],3:[5,3,1],4:[4,6,8],5:[3,1,11],6:[1,11,9],7:[0,2,4]};
+var LH_NAJIA_U={0:[1,11,9],1:[6,8,10],2:[8,10,0],3:[11,9,7],4:[10,0,2],5:[9,7,5],6:[7,5,3],7:[6,8,10]};
+var LH_PALEL=[null,'Kim','Thổ','Thủy','Hỏa','Thổ','Hỏa','Thủy','Thổ','Mộc','Thổ','Thổ','Kim','Hỏa','Kim','Kim','Mộc','Mộc','Mộc','Thổ','Kim','Mộc','Thổ','Kim','Thổ','Mộc','Thổ','Mộc','Mộc','Thủy','Hỏa','Kim','Mộc','Kim','Thổ','Kim','Thủy','Mộc','Thổ','Kim','Mộc','Thổ','Mộc','Thổ','Kim','Kim','Mộc','Kim','Mộc','Thủy','Hỏa','Mộc','Thổ','Thổ','Kim','Thủy','Hỏa','Mộc','Kim','Hỏa','Thủy','Thổ','Kim','Thủy','Hỏa'];
+var LH_THE=[0,6,6,2,4,4,4,3,3,1,5,3,3,3,3,5,1,3,3,2,4,5,1,5,1,4,2,4,4,6,6,3,3,2,4,4,4,2,4,4,2,3,3,5,1,2,4,1,5,4,2,6,6,3,3,5,1,6,6,5,1,4,4,3,3];
+/* ============================================================
+   LỤC HÀO (Na Giáp + Bát cung + Lục Thân + Thế Ứng + Lục Thần)
+   ============================================================ */
+var TV_GIA_LUC = 99000;
+var LH_THAN=['Thanh Long','Chu Tước','Câu Trần','Đằng Xà','Bạch Hổ','Huyền Vũ'];
+function lucThan(palEl, lineEl){
+  if(lineEl===palEl) return 'Huynh Đệ';
+  if(NH_SINH[palEl]===lineEl) return 'Tử Tôn';
+  if(NH_SINH[lineEl]===palEl) return 'Phụ Mẫu';
+  if(NH_KHAC[palEl]===lineEl) return 'Thê Tài';
+  if(NH_KHAC[lineEl]===palEl) return 'Quan Quỷ';
+  return '-';
+}
+function lhGieoHao(){ var s=0; for(var i=0;i<3;i++) s+=(Math.random()<0.5?2:3); return {duong:(s===7||s===9),bien:(s===6||s===9)}; }
+function gieoLucHao(){
+  var haos=[]; for(var i=0;i<6;i++) haos.push(lhGieoHao());
+  var hexVal=0; for(var i=0;i<6;i++){ if(haos[i].duong) hexVal|=(1<<i); }
+  var num=KD_KWNUM[hexVal];
+  var bienVal=hexVal; for(var i=0;i<6;i++){ if(haos[i].bien) bienVal^=(1<<i); }
+  var soBien=haos.filter(function(h){return h.bien;}).length;
+  var bienNum=soBien?KD_KWNUM[bienVal]:0;
+  var lower=hexVal&7, upper=hexVal>>3;
+  var palEl=LH_PALEL[num], theLine=LH_THE[num];
+  var ungLine=theLine<=3?theLine+3:theLine-3;
+  /* ngày gieo -> Lục Thần + nhật thần */
+  var dt=new Date(); var jd=tvJd(dt.getDate(),dt.getMonth()+1,dt.getFullYear());
+  var dCan=((jd+9)%10+10)%10, dChi=((jd+1)%12+12)%12;
+  var si=[0,0,1,1,2,3,4,4,5,5][dCan];
+  var lines=[];
+  for(var i=0;i<6;i++){
+    var chi = i<3 ? LH_NAJIA_L[lower][i] : LH_NAJIA_U[upper][i-3];
+    var el2=BT_CHINH[chi];
+    lines.push({ idx:i+1, duong:haos[i].duong, bien:haos[i].bien, chi:chi, nh:el2,
+      than:lucThan(palEl,el2), god:LH_THAN[(si+i)%6],
+      the:(i+1===theLine), ung:(i+1===ungLine) });
+  }
+  __luchao={ haos:haos, num:num, hexVal:hexVal, bienNum:bienNum, soBien:soBien, palEl:palEl, theLine:theLine, ungLine:ungLine,
+    lines:lines, dCan:dCan, dChi:dChi, ngay:dt.getDate()+'/'+(dt.getMonth()+1)+'/'+dt.getFullYear(),
+    ten:(el('lucName')&&el('lucName').value||'').trim(), hoi:(el('lucHoi')&&el('lucHoi').value||'').trim(),
+    gt:(el('lucGt')&&el('lucGt').value)||'nam' };
+  window.__luchao=__luchao;
+  var box=el('lucResult'); box.style.display='block'; box.innerHTML=renderLucHaoFree(__luchao);
+  if(el('lucRutLai')) el('lucRutLai').style.display='inline-flex';
+  box.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+var __luchao=null;
+function lhHaoRows(lh){
+  var CHI=TV_CHI;
+  var rows='';
+  for(var i=5;i>=0;i--){ var L=lh.lines[i];
+    var draw=L.duong?'<span class="lh-yang"></span>':'<span class="lh-yin"></span><span class="lh-yin"></span>';
+    var mark=L.the?'<b class="lh-the">Thế</b>':(L.ung?'<b class="lh-ung">Ứng</b>':'');
+    rows+='<tr><td class="lh-god">'+L.god+'</td><td class="lh-than">'+L.than+'</td><td class="lh-draw">'+draw+(L.bien?'<span class="lh-dong">'+(L.duong?'\u25cb':'\u2715')+'</span>':'')+'</td><td class="lh-chi" style="color:'+NH_MAU[L.nh]+'">'+CHI[L.chi]+' <small>'+L.nh+'</small></td><td class="lh-mark">'+mark+'</td></tr>';
+  }
+  return '<table class="lh-tbl"><tr><th>Lục Thần</th><th>Lục Thân</th><th>Hào</th><th>Địa chi</th><th></th></tr>'+rows+'</table>';
+}
+function renderLucHaoFree(lh){
+  var hx=KD_HEX[lh.num]||{};
+  var catLbl=['Quẻ HUNG','Quẻ BÌNH HÒA','Quẻ CÁT'][hx.cat!=null?hx.cat:1];
+  var catMau=['#E05C4A','#C9A227','#1c9c4a'][hx.cat!=null?hx.cat:1];
+  var h='<div class="lh-top">'+
+    '<div class="lh-info">'+(lh.hoi?'<div class="kd-hoi">Điều hỏi: <b>'+escapeHtml(lh.hoi)+'</b></div>':'')+
+      '<div class="kd-num">QUẺ SỐ '+lh.num+'/64 · Cung '+lh.palEl+'</div>'+
+      '<div class="kd-name">'+escapeHtml(hx.ten||'')+'</div>'+
+      '<div class="kd-cat" style="color:'+catMau+'">'+catLbl+'</div>'+
+      '<div class="lh-nhatthan">Ngày gieo: <b>'+TV_CAN[lh.dCan]+' '+TV_CHI[lh.dChi]+'</b> (nhật thần)'+(lh.soBien?' · <b>'+lh.soBien+' hào động</b> → biến Quẻ '+lh.bienNum+' - '+((KD_HEX[lh.bienNum]||{}).ten||''):' · quẻ tĩnh')+'</div>'+
+    '</div></div>'+
+    lhHaoRows(lh)+
+    '<div class="kd-y">'+escapeHtml(hx.y||'')+'</div>'+
+    '<div class="tv-actions"><button class="btn btn-gold" id="lucLuan">Xem luận giải chi tiết</button></div>'+
+    '<div class="tv-luan-free" id="lucLuanFree"></div>';
+  return h;
+}
+function lhTimHao(lh, than){ for(var i=0;i<6;i++){ if(lh.lines[i].than===than) return lh.lines[i]; } return null; }
+function luanLucHaoFull(lh){
+  var hx=KD_HEX[lh.num]||{}; var pd=KD_PD[hx.cat!=null?hx.cat:1];
+  var theHao=lh.lines[lh.theLine-1], ungHao=lh.lines[lh.ungLine-1];
+  var tai=lhTimHao(lh,'Thê Tài'), quan=lhTimHao(lh,'Quan Quỷ'), tu=lhTimHao(lh,'Tử Tôn'), phu=lhTimHao(lh,'Phụ Mẫu');
+  function muc(t,n){ return '<div class="lg-cung"><div class="lg-cung-h"><b>'+t+'</b></div><p>'+n+'</p></div>'; }
+  var theUng='Hào Thế (bản thân/việc mình) ở hào '+lh.theLine+' - <b>'+theHao.than+' '+TV_CHI[theHao.chi]+' ('+theHao.nh+')</b>; Hào Ứng (đối phương/hoàn cảnh) ở hào '+lh.ungLine+' - <b>'+ungHao.than+' '+TV_CHI[ungHao.chi]+' ('+ungHao.nh+')</b>. '+
+    (NH_SINH[ungHao.nh]===theHao.nh?'Ứng sinh Thế - hoàn cảnh/đối phương trợ giúp mình, thuận lợi.':(NH_KHAC[ungHao.nh]===theHao.nh?'Ứng khắc Thế - gặp trở lực từ bên ngoài, cần thận trọng.':(NH_SINH[theHao.nh]===ungHao.nh?'Thế sinh Ứng - mình phải bỏ công sức cho việc/người khác.':'Thế Ứng tương hòa - hai bên cân bằng, tùy nỗ lực mà thành.')));
+  var bienTxt=lh.soBien?('Có '+lh.soBien+' hào động, biến sang Quẻ '+lh.bienNum+' - '+((KD_HEX[lh.bienNum]||{}).ten||'')+'. Hào động cho biết yếu tố đang biến chuyển; biến quẻ chỉ chiều hướng kết cục: '+((KD_HEX[lh.bienNum]||{}).y||'')):'Quẻ tĩnh (không hào động) - sự việc ổn định, xem theo chính quẻ và hào Thế.';
+  return '<div class="lg-doc">'+
+    '<div class="lg-toolbar"><button class="btn btn-gold" id="lucLuanPdf">\ud83d\udcc4 Lưu quẻ &amp; luận giải ra PDF</button></div>'+
+    '<div class="lg-sec"><h4>\u2756 Quẻ &amp; Thế - Ứng</h4><p>Quẻ <b>'+lh.num+'/64 - '+escapeHtml(hx.ten||'')+'</b> (cung '+lh.palEl+'). '+escapeHtml(hx.y||'')+'</p><p>'+theUng+'</p></div>'+
+    '<div class="lg-sec"><h4>\u2756 Các hào dụng thần</h4><p>'+
+      (tai?'<b>Thê Tài</b> ('+TV_CHI[tai.chi]+' '+tai.nh+') chủ tiền bạc'+(lh.gt==='nam'?', hôn nhân (vợ)':'')+'. ':'Quẻ khuyết Thê Tài - việc tiền bạc cần xét kỹ ngoại ứng. ')+
+      (quan?'<b>Quan Quỷ</b> ('+TV_CHI[quan.chi]+' '+quan.nh+') chủ công danh, chức vụ'+(lh.gt==='nu'?', hôn nhân (chồng)':'')+'. ':'Quẻ khuyết Quan Quỷ - công danh chưa rõ, chờ thời. ')+
+      (tu?'<b>Tử Tôn</b> ('+TV_CHI[tu.chi]+' '+tu.nh+') chủ bình an, hóa giải, con cái. ':'')+
+      (phu?'<b>Phụ Mẫu</b> ('+TV_CHI[phu.chi]+' '+phu.nh+') chủ giấy tờ, học hành, che chở. ':'')+'</p></div>'+
+    '<div class="lg-sec"><h4>\u2756 Luận theo phương diện</h4>'+
+      muc('Tổng quan', pd.tq)+muc('Công danh - Sự nghiệp', pd.cn+(quan?'':' (thiếu Quan Quỷ nên khó thấy rõ chức vị).'))+
+      muc('Tài lộc', pd.tl+(tai?'':' (thiếu Thê Tài nên tài chưa hiện).'))+
+      muc('Tình duyên - Gia đạo', pd.td)+muc('Cầu sự - Xuất hành', pd.xh)+'</div>'+
+    '<div class="lg-sec"><h4>\u2756 Hào động &amp; chiều hướng</h4><p>'+bienTxt+'</p></div>'+
+    '<div class="lg-sec lg-ketluan"><h4>\u2756 Lời khuyên</h4><div class="lg-loikhuyen"><div class="lg-lk-t">\ud83d\udc9b Đúc kết</div><p>'+escapeHtml(hx.khuyen||'')+'</p><p>Lục hào trọng ở việc xem <b>dụng thần vượng hay suy</b> và Thế - Ứng sinh khắc. Quẻ chỉ ra xu thế; <b>thành bại vẫn do tâm và sức của bạn</b>. Hãy giữ chính, tùy thời mà tiến thoái.</p></div></div>'+
+    '<p class="lg-note">Luận giải theo phép Lục Hào (Nạp Giáp - Kinh Phòng) cổ truyền, mang tính tham khảo - chiêm nghiệm.</p>'+
+  '</div>';
+}
+function moPaywallLuc(preview){ moPaywallSvc({ box:'lucLuanFree', key:'luchao', bookId:'luchao-luan', bookTitle:'Luận giải Lục Hào - Quẻ '+((window.__luchao||{}).num||''), gia:TV_GIA_LUC, prefix:'lh', maPrefix:'LH', tenLuan:'Luận giải chi tiết quẻ Lục Hào', getData:function(){return window.__luchao;}, luanFull:luanLucHaoFull }, preview); }
+function xuatPdfLucHao(){ var lh=window.__luchao; if(!lh){ toast('Chưa có quẻ.'); return; } try{ var html=pdfLucHaoCombo(lh); if(inTaiLieuPDF(html)) toast('Đang mở hộp thoại in - chọn "Lưu dưới dạng PDF".'); }catch(e){ if(window.console)console.warn(e); toast('Lỗi tạo PDF: '+(e&&e.message?e.message:'')); } }
+function pdfLucHaoCombo(lh){
+  var CHI=TV_CHI; var hx=KD_HEX[lh.num]||{}; var pd=KD_PD[hx.cat!=null?hx.cat:1];
+  var catLbl=['QUẺ HUNG','QUẺ BÌNH HÒA','QUẺ CÁT'][hx.cat!=null?hx.cat:1];
+  var rows='';
+  for(var i=5;i>=0;i--){ var L=lh.lines[i]; var draw=L.duong?'<span class="pl-yang"></span>':'<span class="pl-yin"></span><span class="pl-yin"></span>';
+    rows+='<tr><td>'+L.god+'</td><td>'+L.than+'</td><td class="pl-draw">'+draw+(L.bien?' '+(L.duong?'\u25cb':'\u2715'):'')+'</td><td style="color:'+NH_MAU[L.nh]+'"><b>'+CHI[L.chi]+'</b> '+L.nh+'</td><td>'+(L.the?'Thế':(L.ung?'Ứng':''))+'</td></tr>'; }
+  var page1='<div class="pk-head"><div class="pk-title">QUẺ LỤC HÀO SỐ '+lh.num+'/64</div><div class="pk-name">'+_escH(hx.ten||'')+'</div><div class="pk-cat">'+catLbl+' · Cung '+lh.palEl+'</div></div>'+
+    '<div class="pk-mid"><table class="pl-tbl"><tr><th>Lục Thần</th><th>Lục Thân</th><th>Hào</th><th>Địa chi</th><th></th></tr>'+rows+'</table>'+
+    '<table class="pk-info2"><tr><td>Điều hỏi</td><td><b>'+_escH(lh.hoi||'-')+'</b></td></tr>'+(lh.ten?'<tr><td>Người xem</td><td><b>'+_escH(lh.ten)+'</b></td></tr>':'')+
+    '<tr><td>Ngày gieo</td><td>'+_escH(lh.ngay)+' (nhật thần '+TV_CAN[lh.dCan]+' '+CHI[lh.dChi]+')</td></tr>'+
+    '<tr><td>Hào động</td><td>'+(lh.soBien?(lh.soBien+' hào → biến Quẻ '+lh.bienNum+' - '+_escH((KD_HEX[lh.bienNum]||{}).ten||'')):'Không (quẻ tĩnh)')+'</td></tr></table></div>'+
+    '<div class="pk-y2">'+_escH(hx.y||'')+'</div>';
+  function m(t,n){ return '<div class="lu-cung"><div class="lu-cung-h">'+t+'</div><div class="lu-cung-b">'+_escH(n)+'</div></div>'; }
+  var theHao=lh.lines[lh.theLine-1], ungHao=lh.lines[lh.ungLine-1];
+  var page2='<div class="lu-title"><div class="lu-orn">\u27e1 \u22c6 \u2756 \u22c6 \u27e1</div><h2>LUẬN GIẢI LỤC HÀO</h2><div class="lu-orn">\u2726 QUẺ '+lh.num+' - '+_escH(hx.ten||'')+' \u2726</div></div>'+
+    '<div class="lu-who">'+(lh.ten?'<b>'+_escH(lh.ten)+'</b> · ':'')+(lh.hoi?'Hỏi: <b>'+_escH(lh.hoi)+'</b> · ':'')+'Cung '+lh.palEl+' · Thế hào '+lh.theLine+' ('+theHao.than+') · Ứng hào '+lh.ungLine+' ('+ungHao.than+')</div>'+
+    '<div class="lu-h">Quẻ &amp; ý nghĩa</div><div class="lu-lead">'+_escH(hx.y||'')+'</div>'+
+    '<div class="lu-h">Luận theo phương diện</div>'+
+    '<div class="lu-grid">'+m('Tổng quan',pd.tq)+m('Công danh - Sự nghiệp',pd.cn)+m('Tài lộc',pd.tl)+m('Tình duyên - Gia đạo',pd.td)+m('Cầu sự - Xuất hành',pd.xh)+m('Hào động',lh.soBien?(lh.soBien+' hào động, biến Quẻ '+lh.bienNum):'Quẻ tĩnh')+'</div>'+
+    '<div class="lu-h">Lời khuyên</div>'+
+    '<div class="lu-lk"><span class="lu-lkt">\ud83d\udc9b Đúc kết</span>'+_escH(hx.khuyen||'')+' Lục hào trọng ở dụng thần vượng suy và Thế Ứng sinh khắc; quẻ chỉ xu thế, thành bại do tâm và sức của chính bạn. Giữ chính, tùy thời tiến thoái.</div>';
+  var css='.pk-head{text-align:center;border-bottom:2px solid #b8912a;padding-bottom:8px;margin-bottom:10px}.pk-title{font-size:19px;font-weight:800;color:#7a1f1f;letter-spacing:2px}.pk-name{font-size:24px;font-weight:800;color:#5a3a1a;margin:4px 0}.pk-cat{font-size:12px;color:#a8701a}'+
+    '.pk-mid{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}'+
+    '.pl-tbl{border-collapse:collapse;font-size:11px;min-width:150mm}.pl-tbl th{background:#f0e6c8;color:#7a1f1f;padding:4px 8px;border:1px solid #d9c489}.pl-tbl td{border:1px solid #e0d3af;padding:4px 8px;text-align:center}.pl-draw .pl-yang{display:inline-block;width:34mm;height:3.4mm;background:#7a1f1f;border-radius:2px}.pl-draw .pl-yin{display:inline-block;width:15mm;height:3.4mm;background:#7a1f1f;border-radius:2px;margin:0 1mm}'+
+    '.pk-info2{border-collapse:collapse;font-size:11px;min-width:150mm}.pk-info2 td{padding:4px 10px;border-bottom:1px dotted #e0d3af}.pk-info2 td:first-child{color:#8a6a1f;width:30%}'+
+    '.pk-y2{margin-top:6px;background:#faf6ea;border:1px solid #e6d9b0;border-left:3px solid #b8912a;border-radius:6px;padding:8px 12px;font-size:11.5px;line-height:1.55;color:#2f2a1e}'+
+    '.pgLuan .inner{font-size:10px;line-height:1.42}';
+  return pdfFrameDoc({ title:'Lục Hào - Quẻ '+lh.num, sub:'THƯ VIỆN SÁCH CÁ NHÂN · LỤC HÀO', wm:'\u262f', page1:page1, page2:page2, css:css });
+}
+
+
 
 
 
@@ -7684,6 +8247,16 @@ function pdfKinhDichCombo(q){
           <div class="svc-ico">☰</div>
           <div class="svc-name">RÚT QUẺ KINH DỊCH</div>
           <div class="svc-desc">Rút quẻ online theo Kinh Dịch, luận giải chi tiết vận sự. Xuất quẻ &amp; luận giải ra PDF.</div>
+        </button>
+        <button class="svc-card" id="svcBat">
+          <div class="svc-ico">🎋</div>
+          <div class="svc-name">TỨ TRỤ - BÁT TỰ</div>
+          <div class="svc-desc">Lập lá số Bát Tự (4 trụ), phân tích Ngũ hành - Thập thần, luận đoán vận mệnh. Xuất PDF.</div>
+        </button>
+        <button class="svc-card" id="svcLuc">
+          <div class="svc-ico">🀄</div>
+          <div class="svc-name">KỲ MÔN ĐỘN GIÁP / LỤC HÀO</div>
+          <div class="svc-desc">Gieo quẻ Lục Hào (Nạp Giáp - Thế Ứng - Lục Thân), luận đoán cát hung sự việc. Xuất PDF.</div>
         </button>
       </div>
 
@@ -7763,6 +8336,38 @@ function pdfKinhDichCombo(q){
           <button class="btn btn-ghost" id="dichRutLai" style="display:none">Gieo lại quẻ khác</button>
         </div>
         <div class="dich-result" id="dichResult" style="display:none"></div>
+      </div>
+
+      <!-- KHUNG TỨ TRỤ BÁT TỰ -->
+      <div class="tuvi-wrap" id="batWrap" style="display:none">
+        <button class="tuvi-back" id="batBack">← Về danh sách dịch vụ</button>
+        <h2 class="tuvi-title">🎋 TỨ TRỤ - BÁT TỰ</h2>
+        <p class="tuvi-sub">Nhập ngày giờ sinh (dương lịch) để lập lá số Bát Tự - Tứ Trụ. Hệ thống an Can Chi 4 trụ, phân tích Ngũ hành, Thập thần, Nhật chủ vượng nhược và Dụng thần, luận đoán vận mệnh một cách khoa học. Xuất PDF luận giải 2 trang.</p>
+        <div class="dich-form">
+          <label>Họ tên (không bắt buộc)<input type="text" id="batName" placeholder="VD: Nguyễn Văn A" maxlength="50"></label>
+          <label>Giới tính<select id="batGt"><option value="nam">Nam</option><option value="nu">Nữ</option></select></label>
+          <label>Ngày sinh (dương lịch)<input type="date" id="batDate"></label>
+          <label>Giờ sinh<select id="batHour"></select></label>
+        </div>
+        <button class="btn btn-gold" id="batLap" style="margin-top:6px">Lập lá số Bát Tự</button>
+        <div class="dich-result" id="batResult" style="display:none"></div>
+      </div>
+
+      <!-- KHUNG KỲ MÔN / LỤC HÀO -->
+      <div class="tuvi-wrap" id="lucWrap" style="display:none">
+        <button class="tuvi-back" id="lucBack">← Về danh sách dịch vụ</button>
+        <h2 class="tuvi-title">🀄 KỲ MÔN ĐỘN GIÁP / LỤC HÀO</h2>
+        <p class="tuvi-sub">Tĩnh tâm, nghĩ về điều muốn hỏi rồi gieo quẻ Lục Hào. Hệ thống lập quẻ theo phép Nạp Giáp - Kinh Phòng: an Địa chi (Nạp Giáp), Lục Thân, Thế - Ứng, Lục Thần theo ngày gieo, và luận đoán cát hung. Xuất PDF 2 trang.</p>
+        <div class="dich-form">
+          <label>Họ tên (không bắt buộc)<input type="text" id="lucName" placeholder="VD: Nguyễn Văn A" maxlength="50"></label>
+          <label>Giới tính<select id="lucGt"><option value="nam">Nam</option><option value="nu">Nữ</option></select></label>
+          <label>Điều muốn hỏi<input type="text" id="lucHoi" placeholder="VD: Công việc sắp tới thế nào?" maxlength="120"></label>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
+          <button class="btn btn-gold" id="lucRut">🎲 Gieo quẻ Lục Hào</button>
+          <button class="btn btn-ghost" id="lucRutLai" style="display:none">Gieo lại quẻ khác</button>
+        </div>
+        <div class="dich-result" id="lucResult" style="display:none"></div>
       </div>
     </div>
   </div>
@@ -7871,10 +8476,14 @@ function pdfKinhDichCombo(q){
   }
 
   /* ---------- DỊCH VỤ: danh sách <-> Tử Vi ---------- */
-  function showSvcHome(){ ['svcGrid','tuviWrap','ngayWrap','dichWrap'].forEach(function(id,i){ var el2=el(id); if(el2) el2.style.display = (i===0?'grid':'none'); }); }
-  function showNgay(){ if(el('svcGrid'))el('svcGrid').style.display='none'; if(el('tuviWrap'))el('tuviWrap').style.display='none'; if(el('dichWrap'))el('dichWrap').style.display='none'; if(el('ngayWrap'))el('ngayWrap').style.display='block'; }
-  function showDich(){ if(el('svcGrid'))el('svcGrid').style.display='none'; if(el('tuviWrap'))el('tuviWrap').style.display='none'; if(el('ngayWrap'))el('ngayWrap').style.display='none'; if(el('dichWrap'))el('dichWrap').style.display='block'; }
-  function showTuvi(){ var g=el('svcGrid'), w=el('tuviWrap'); if(g) g.style.display='none'; if(el('ngayWrap'))el('ngayWrap').style.display='none'; if(el('dichWrap'))el('dichWrap').style.display='none'; if(w) w.style.display='block'; napGioSelect(); napLunarSelects(); }
+  function showSvcHome(){ ['svcGrid','tuviWrap','ngayWrap','dichWrap','batWrap','lucWrap'].forEach(function(id,i){ var el2=el(id); if(el2) el2.style.display = (i===0?'grid':'none'); }); }
+  function _hideSvc(){ ['svcGrid','tuviWrap','ngayWrap','dichWrap','batWrap','lucWrap'].forEach(function(id){ var e=el(id); if(e) e.style.display='none'; }); }
+  function showBat(){ _hideSvc(); if(el('batWrap'))el('batWrap').style.display='block'; napGioBat(); var bd=el('batDate'); if(bd&&!bd.value){var t=new Date();bd.value=t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');} }
+  function showLuc(){ _hideSvc(); if(el('lucWrap'))el('lucWrap').style.display='block'; }
+  function napGioBat(){ var s=el('batHour'); if(!s||s.options.length) return; var CHI=TV_CHI; var html=''; for(var h=0;h<24;h++){ var ci=Math.floor(((h+1)%24)/2); html+='<option value="'+h+'"'+(h===12?' selected':'')+'>'+String(h).padStart(2,'0')+':00 - giờ '+CHI[ci]+'</option>'; } s.innerHTML=html; }
+  function showNgay(){ _hideSvc(); if(el('ngayWrap'))el('ngayWrap').style.display='block'; }
+  function showDich(){ _hideSvc(); if(el('dichWrap'))el('dichWrap').style.display='block'; }
+  function showTuvi(){ _hideSvc(); if(el('tuviWrap'))el('tuviWrap').style.display='block'; napGioSelect(); napLunarSelects(); }
   function napLunarSelects(){
     var sd=el('tvLDay'), sm=el('tvLMonth');
     if(sd && !sd.dataset.done){ sd.dataset.done='1'; var o=''; for(var i=1;i<=30;i++) o+='<option value="'+i+'">Ngày '+i+'</option>'; sd.innerHTML=o; }
@@ -8363,6 +8972,17 @@ function pdfKinhDichCombo(q){
     ['#svcTuvi',      function(){ showTuvi(); }],
     ['#svcNgay',      function(){ showNgay(); if(typeof initNgayTot==='function') initNgayTot(); }],
     ['#svcDich',      function(){ showDich(); }],
+    ['#svcBat',       function(){ showBat(); }],
+    ['#svcLuc',       function(){ showLuc(); }],
+    ['#batBack',      function(){ showSvcHome(); }],
+    ['#lucBack',      function(){ showSvcHome(); }],
+    ['#batLap',       function(){ if(typeof xemLaSoBatTu==='function') xemLaSoBatTu(); }],
+    ['#batLuan',      function(){ if(typeof moPaywallBat==='function') moPaywallBat(); }],
+    ['#batLuanPdf',   function(){ if(typeof xuatPdfBatTu==='function') xuatPdfBatTu(); }],
+    ['#lucRut',       function(){ if(typeof gieoLucHao==='function') gieoLucHao(); }],
+    ['#lucRutLai',    function(){ if(typeof gieoLucHao==='function') gieoLucHao(); }],
+    ['#lucLuan',      function(){ if(typeof moPaywallLuc==='function') moPaywallLuc(); }],
+    ['#lucLuanPdf',   function(){ if(typeof xuatPdfLucHao==='function') xuatPdfLucHao(); }],
     ['#ngayBack',     function(){ showSvcHome(); }],
     ['#dichBack',     function(){ showSvcHome(); }],
     ['#ngayXem',      function(){ if(typeof xemNgayTot==='function') xemNgayTot(); }],
