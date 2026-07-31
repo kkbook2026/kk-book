@@ -16,7 +16,7 @@
   }catch(e){}
 })();
 </script>
-<title>THƯ VIỆN SÁCH CÁ NHÂN · KK-2026</title>
+<title>THƯ VIỆN SÁCH CÁ NHÂN</title>
 <meta name="robots" content="noarchive, noimageindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -65,7 +65,8 @@ canvas{image-rendering:auto}
 
 body{
   font-family:var(--font-body);
-  background:var(--navy-950);
+  background:linear-gradient(180deg,#12223f 0%,#0e1c37 55%,#0c1830 100%);
+  background-attachment:fixed;
   color:var(--cream);
   min-height:100vh;
   -webkit-user-select:none;-moz-user-select:none;user-select:none;
@@ -83,35 +84,31 @@ header{
   border-bottom:1px solid rgba(201,162,39,.25);
 }
 .header-inner{
-  max-width:1240px;margin:0 auto;padding:12px 20px;
-  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  max-width:1240px;margin:0 auto;padding:10px 20px;
+  display:flex;align-items:center;gap:18px;flex-wrap:wrap;
 }
-.brand{display:flex;align-items:center;gap:14px;cursor:pointer;padding:2px 4px;border-radius:12px;transition:background .18s}
-.brand:hover{background:rgba(201,162,39,.06)}
-.logo-kk{width:60px;height:60px;flex-shrink:0;filter:drop-shadow(0 2px 8px rgba(201,162,39,.28))}
-/* dải phân cách mảnh giữa logo và chữ cho bố cục cân đối, tinh tế */
-.brand-text{
-  display:flex;flex-direction:column;justify-content:center;gap:3px;
-  padding-left:15px;border-left:1px solid rgba(201,162,39,.3);text-align:center;
-}
+.brand-logo{flex-shrink:0;cursor:pointer;display:flex;align-items:center;padding:2px;border-radius:14px;transition:background .18s}
+.brand-logo:hover{background:rgba(201,162,39,.06)}
+.logo-kk{width:92px;height:92px;flex-shrink:0;filter:drop-shadow(0 3px 12px rgba(201,162,39,.32))}
+/* cột bên phải logo: chữ THƯ VIỆN SÁCH CÁ NHÂN trên - menu KK-BOOK dưới */
+.header-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:9px}
+.brand-text{align-self:flex-start;padding-left:2px}
 .brand-text .brand-name{
-  font-family:var(--font-display);font-weight:800;font-size:1.18rem;
-  color:var(--gold-bright);letter-spacing:.16em;line-height:1.08;
+  font-family:var(--font-display);font-weight:800;font-size:1.5rem;
+  color:var(--gold-bright);letter-spacing:.28em;line-height:1;
   white-space:nowrap;text-transform:uppercase;
 }
-.brand-text .brand-name2{
-  font-size:1.18rem;letter-spacing:.66em;color:var(--gold-bright);
-  padding-left:.66em;
+@media(max-width:900px){
+  .logo-kk{width:76px;height:76px}
+  .brand-text .brand-name{font-size:1.2rem;letter-spacing:.2em}
 }
 @media(max-width:560px){
-  .brand{gap:10px}
-  .brand-text{padding-left:11px}
+  .header-inner{gap:12px}
   .brand-text .brand-name{font-size:.98rem;letter-spacing:.12em}
-  .brand-text .brand-name2{font-size:.98rem;letter-spacing:.5em;padding-left:.5em}
-  .logo-kk{width:48px;height:48px}
+  .logo-kk{width:62px;height:62px}
 }
-.header-right{margin-left:auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:flex-end}
-.header-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.header-right{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.header-tools{margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 /* ===== MENU 3 CHỨC NĂNG ===== */
 .main-nav{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .nav-item{
@@ -122,9 +119,6 @@ header{
 }
 .nav-item:hover{background:rgba(201,162,39,.12);border-color:rgba(201,162,39,.35);color:var(--gold-bright)}
 .nav-item.active{background:rgba(201,162,39,.18);border-color:var(--gold);color:var(--gold-bright)}
-@media(max-width:900px){
-  .header-right{width:100%;justify-content:center;margin-left:0;margin-top:6px;border-top:1px solid rgba(201,162,39,.15);padding-top:8px}
-}
 @media(max-width:560px){
   .nav-item{padding:7px 11px;font-size:.82rem}
 }
@@ -237,7 +231,7 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
 .hero-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.85}
 .hero-inner{
   position:relative;z-index:2;max-width:900px;margin:0 auto;
-  padding:64px 20px 58px;text-align:center;
+  padding:30px 20px 24px;text-align:center;
   display:flex;flex-direction:column;align-items:center;
 }
 /* nội dung nổi trên watermark */
@@ -246,7 +240,7 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
 .hero-wm{
   position:absolute;z-index:0;top:54%;left:50%;
   transform:translate(-50%,-50%);
-  width:min(640px,94vw);height:auto;
+  width:min(400px,64vw);height:auto;
   opacity:.09;pointer-events:none;
   filter:drop-shadow(0 6px 46px rgba(201,162,39,.35));
   animation:wmBreathe 9s ease-in-out infinite;
@@ -254,7 +248,7 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
 @keyframes wmBreathe{0%,100%{opacity:.075;transform:translate(-50%,-50%) scale(1)}50%{opacity:.12;transform:translate(-50%,-50%) scale(1.03)}}
 @media(max-width:560px){ .hero-wm{width:118vw;opacity:.07} }
 /* logo với vòng quỹ đạo xoay */
-.logo-stage{position:relative;width:150px;height:150px;display:flex;align-items:center;justify-content:center}
+.logo-stage{position:relative;width:104px;height:104px;display:flex;align-items:center;justify-content:center}
 .logo-stage .ring{
   position:absolute;inset:0;border-radius:50%;
   border:1px solid rgba(201,162,39,.28);
@@ -272,7 +266,7 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
 .logo-stage .ring2::after{background:var(--cream-dim);box-shadow:0 0 8px var(--cream-dim);width:5px;height:5px}
 @keyframes spin{to{transform:rotate(360deg)}}
 .hero-logo{
-  width:96px;height:96px;position:relative;z-index:2;
+  width:66px;height:66px;position:relative;z-index:2;
   filter:drop-shadow(0 8px 30px rgba(201,162,39,.45));
   animation:breathe 5s ease-in-out infinite;
 }
@@ -282,8 +276,8 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
 .hero h1{
   position:relative;
   font-family:var(--font-display);font-weight:900;
-  font-size:clamp(2.5rem, 6.4vw, 4.6rem);line-height:1.06;
-  letter-spacing:.07em;margin-top:24px;
+  font-size:clamp(1.8rem, 4.4vw, 3rem);line-height:1.06;
+  letter-spacing:.07em;margin-top:14px;
   background:linear-gradient(100deg,
     #B98F1E 0%, #E4C158 22%, #FFF3C8 38%, #E4C158 52%, #C9A227 70%, #F3D98B 100%);
   background-size:220% 100%;
@@ -295,25 +289,25 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
   margin-top:10px;font-size:.76rem;letter-spacing:.42em;text-transform:uppercase;
   color:var(--gold);font-weight:600;padding-left:.42em;
 }
-.hero-divider{display:flex;align-items:center;gap:14px;margin:20px 0 16px}
-.hero-divider .line{width:88px;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
+.hero-divider{display:flex;align-items:center;gap:14px;margin:12px 0 10px}
+.hero-divider .line{width:74px;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
 .hero-divider .line:last-child{background:linear-gradient(90deg,var(--gold),transparent)}
 .hero-divider .diamond{
   width:9px;height:9px;background:var(--gold);transform:rotate(45deg);
   box-shadow:0 0 10px rgba(201,162,39,.8);
 }
 .hero p.lede{color:var(--cream-dim);font-size:1rem;line-height:1.75;font-weight:300;max-width:620px}
-.hero-stats{display:flex;gap:0;margin-top:34px;justify-content:center;flex-wrap:wrap}
+.hero-stats{display:flex;gap:0;margin-top:18px;justify-content:center;flex-wrap:wrap}
 .hero-stats .stat{
-  padding:0 34px;border-right:1px solid rgba(201,162,39,.22);
+  padding:0 26px;border-right:1px solid rgba(201,162,39,.22);
 }
 .hero-stats .stat:last-child{border-right:none}
-.hero-stats .stat b{font-family:var(--font-display);font-size:2rem;color:var(--gold-bright);display:block;line-height:1.2}
+.hero-stats .stat b{font-family:var(--font-display);font-size:1.55rem;color:var(--gold-bright);display:block;line-height:1.2}
 .hero-stats .stat span{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--cream-dim)}
 /* dải sách trang trí dưới banner */
 .shelf-strip{
   position:relative;z-index:2;display:flex;justify-content:center;gap:5px;
-  height:26px;align-items:flex-end;margin-top:38px;opacity:.55;
+  height:22px;align-items:flex-end;margin-top:18px;opacity:.5;
 }
 .shelf-strip i{
   display:block;width:7px;border-radius:2px 2px 0 0;
@@ -327,6 +321,41 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
 .section-head{display:flex;align-items:baseline;gap:14px;margin-bottom:22px;flex-wrap:wrap}
 .section-head h2{font-family:var(--font-display);font-size:1.5rem;font-weight:700;color:var(--cream)}
 .section-head .count{color:var(--gold);font-size:.85rem;font-weight:600}
+/* ==== 3 THẺ THỐNG KÊ: màu nổi bật, canh giữa, đếm động ==== */
+.lib-head{position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:22px;min-height:96px}
+.lib-stats-hero{display:flex;gap:18px;flex-wrap:wrap;justify-content:center}
+.lstat{
+  position:relative;overflow:hidden;
+  min-width:150px;display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:16px 26px 14px;border-radius:18px;
+  background:linear-gradient(160deg, color-mix(in srgb, var(--sc) 34%, rgba(255,255,255,.06)), color-mix(in srgb, var(--sc) 14%, rgba(16,26,48,.55)));
+  border:1.5px solid color-mix(in srgb, var(--sc) 60%, transparent);
+  box-shadow:0 10px 28px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.12), 0 0 22px color-mix(in srgb, var(--sc) 22%, transparent);
+}
+.lstat::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--sc),transparent)}
+.lstat-ic{font-size:1.5rem;line-height:1;margin-bottom:3px;filter:drop-shadow(0 2px 6px color-mix(in srgb, var(--sc) 55%, transparent))}
+.lstat-n{
+  font-family:var(--font-display);font-weight:900;font-size:2.5rem;line-height:1;
+  color:#fff;
+  text-shadow:0 0 16px color-mix(in srgb, var(--sc) 75%, transparent), 0 2px 4px rgba(0,0,0,.4);
+}
+.lstat-t{font-size:.76rem;letter-spacing:.16em;text-transform:uppercase;color:var(--cream);font-weight:700;margin-top:3px}
+.lstat.bump{animation:statBump .5s ease}
+@keyframes statBump{0%{transform:scale(1)}40%{transform:scale(1.09)}100%{transform:scale(1)}}
+.lib-head #collapseAll{position:absolute;right:0;top:50%;transform:translateY(-50%)}
+@media(max-width:760px){
+  .lib-head{flex-direction:column;gap:14px;min-height:0}
+  .lib-head #collapseAll{position:static;transform:none}
+  .lstat{min-width:104px;padding:12px 16px 10px}
+  .lstat-n{font-size:1.9rem}
+  .lstat-ic{font-size:1.2rem}
+}
+@media(max-width:400px){ .lib-stats-hero{gap:10px} .lstat{min-width:92px;padding:10px 10px 9px} }
+/* ==== BANNER SLIM (đã bỏ khối trung tâm) ==== */
+.hero-slim .hero-inner{padding:16px 20px 15px;min-height:0}
+.hero-motto{font-size:.82rem;letter-spacing:.26em;text-transform:uppercase;color:var(--gold);font-weight:600;line-height:1.5}
+.hero-motto .hm-orn{color:var(--gold-bright);margin:0 6px}
+@media(max-width:560px){ .hero-motto{font-size:.68rem;letter-spacing:.14em} }
 
 /* ============ BANNER ĐỘNG 2 BÊN ============ */
 .side-banner{
@@ -392,8 +421,8 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
   border:1px solid rgba(201,162,39,.2);
   border-radius:28px;
   background:
-    radial-gradient(120% 80% at 50% 0%, rgba(201,162,39,.08), transparent 62%),
-    rgba(255,255,255,.03);
+    radial-gradient(120% 80% at 50% 0%, rgba(201,162,39,.1), transparent 62%),
+    rgba(255,255,255,.055);
 }
 .grp-box.pos-1{grid-column:1;grid-row:1}
 .grp-box.pos-2{grid-column:3;grid-row:1}
@@ -408,9 +437,9 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
   display:flex;flex-direction:column;
   padding:15px 14px 14px;
   border-radius:22px;                        /* bo tròn góc */
-  background:linear-gradient(165deg, color-mix(in srgb, var(--gc) 22%, rgba(255,255,255,.07)), color-mix(in srgb, var(--gc) 9%, rgba(17,28,52,.55)));
-  border:1.5px solid color-mix(in srgb, var(--gc) 58%, transparent);
-  box-shadow:0 12px 30px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.1);
+  background:linear-gradient(165deg, color-mix(in srgb, var(--gc) 30%, rgba(255,255,255,.09)), color-mix(in srgb, var(--gc) 14%, rgba(24,38,66,.55)));
+  border:1.5px solid color-mix(in srgb, var(--gc) 66%, transparent);
+  box-shadow:0 12px 30px rgba(0,0,0,.26), inset 0 1px 0 rgba(255,255,255,.12);
   transition:border-color .25s, box-shadow .25s, transform .25s;
   overflow:hidden;
 }
@@ -422,7 +451,7 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
 .grp-box::after{
   content:'';position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(110% 65% at 50% 0%, var(--gc), transparent 60%);
-  opacity:.16;
+  opacity:.22;
 }
 .grp-box:hover{
   border-color:var(--gc);transform:translateY(-3px);
@@ -512,15 +541,15 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
   padding:8px 6px;
   border-radius:14px;                          /* bo tròn góc */
-  background:linear-gradient(160deg, color-mix(in srgb, var(--cc) 24%, rgba(255,255,255,.08)), color-mix(in srgb, var(--cc) 9%, rgba(15,24,44,.5)));
-  border:1px solid color-mix(in srgb, var(--cc) 52%, transparent);
+  background:linear-gradient(160deg, color-mix(in srgb, var(--cc) 32%, rgba(255,255,255,.1)), color-mix(in srgb, var(--cc) 14%, rgba(22,34,60,.5)));
+  border:1px solid color-mix(in srgb, var(--cc) 60%, transparent);
   color:var(--cream);cursor:pointer;overflow:hidden;
   transition:border-color .2s, transform .2s, box-shadow .2s, background .2s;
 }
 .cat-tile::before{
   content:'';position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(90% 60% at 50% 0%, var(--cc), transparent 62%);
-  opacity:.18;transition:opacity .2s;
+  opacity:.24;transition:opacity .2s;
 }
 .cat-tile:hover{
   border-color:var(--cc);transform:translateY(-2px);
@@ -536,12 +565,12 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
   position:relative;z-index:1;flex-shrink:0;
   width:34px;height:34px;border-radius:10px;
   display:flex;align-items:center;justify-content:center;
-  background:color-mix(in srgb, var(--cc) 30%, transparent);
-  border:1px solid color-mix(in srgb, var(--cc) 60%, transparent);
+  background:color-mix(in srgb, var(--cc) 40%, transparent);
+  border:1px solid color-mix(in srgb, var(--cc) 68%, transparent);
 }
 .cat-ico svg{
   width:18px;height:18px;
-  stroke:color-mix(in srgb, var(--cc) 82%, #ffffff);fill:none;stroke-width:1.9;
+  stroke:color-mix(in srgb, var(--cc) 75%, #ffffff);fill:none;stroke-width:2;
   stroke-linecap:round;stroke-linejoin:round;
 }
 .cat-label{
@@ -1437,13 +1466,14 @@ footer{
   .footer-inner .f-note{justify-self:start;text-align:left;max-width:none}
 }
 @media (max-width:860px){
-  .hero-inner{padding:40px 20px 38px}
-  .logo-stage{width:112px;height:112px}
-  .hero-logo{width:72px;height:72px}
+  .hero-inner{padding:22px 16px 20px}
+  .logo-stage{width:90px;height:90px}
+  .hero-logo{width:56px;height:56px}
   .hero .tagline{letter-spacing:.28em;font-size:.68rem}
-  .hero-stats{margin-top:26px}
-  .hero-stats .stat{padding:0 20px}
-  .shelf-strip{margin-top:26px}
+  .hero-stats{margin-top:14px}
+  .hero-stats .stat{padding:0 18px}
+  .hero-stats .stat b{font-size:1.35rem}
+  .shelf-strip{margin-top:14px}
   .search-box input{width:150px}
   .search-box input:focus{width:180px}
   .book-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px}
@@ -1772,7 +1802,7 @@ footer{
 <!-- ================= HEADER ================= -->
 <header>
   <div class="header-inner">
-    <div class="brand" id="brandHome" role="button" tabindex="0" aria-label="KK-2026">
+    <div class="brand-logo" id="brandHome" role="button" tabindex="0" aria-label="KK-BOOK - Thư viện sách cá nhân">
       <svg class="logo-kk" viewBox="0 0 100 100" aria-hidden="true">
         <rect x="4" y="4" width="92" height="92" rx="10" fill="none" stroke="#C9A227" stroke-width="3.5"/>
         <rect x="11" y="11" width="78" height="78" rx="6" fill="none" stroke="#C9A227" stroke-width="1.2" opacity=".55"/>
@@ -1781,12 +1811,10 @@ footer{
           <text x="33" y="68" font-family="Playfair Display, serif" font-weight="900" font-size="52" fill="#E4C158" text-anchor="middle">K</text>
         </g>
       </svg>
-      <div class="brand-text">
-        <div class="brand-name">THƯ VIỆN SÁCH</div>
-        <div class="brand-name brand-name2">CÁ NHÂN</div>
-      </div>
     </div>
-    <div class="header-right">
+    <div class="header-main">
+      <div class="brand-text"><span class="brand-name">THƯ VIỆN SÁCH CÁ NHÂN</span></div>
+      <div class="header-right">
     <nav class="main-nav" id="mainNav">
       <div class="nav-dd" id="navBookDD">
         <button class="nav-item nav-dd-btn" id="navBook"><span class="nav-ic">📚</span>KK-BOOK<span class="dd-caret">▾</span></button>
@@ -1814,6 +1842,7 @@ footer{
       </button>
       <button class="btn btn-ghost btn-account" id="accountBtn" data-i18n="joinBtn" style="display:none">Đăng ký</button>
       <button class="btn btn-ghost" id="adminBtn" data-i18n="admin" style="position:relative">Quản trị<span class="admin-badge" id="adminBadge" style="display:none">0</span></button>
+    </div>
     </div>
     </div>
   </div>
@@ -1857,7 +1886,6 @@ footer{
     <text class="bin b1" x="8" y="90" font-family="monospace" font-size="9" fill="#00C2A8">10110</text>
     <text class="bin b2" x="8" y="520" font-family="monospace" font-size="9" fill="#4F8DF7">01001</text>
     <text class="bin b3" x="70" y="200" font-family="monospace" font-size="9" fill="#C9A227">1101</text>
-    <text x="60" y="612" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="11.5" fill="#9aa3b8" text-anchor="middle" letter-spacing="0.5">www.kk-book.com</text>
   </svg>
 </div>
 
@@ -1894,7 +1922,7 @@ footer{
 </div>
 
 <!-- ================= HERO BANNER ================= -->
-<div class="hero">
+<div class="hero hero-slim">
   <svg class="hero-canvas" viewBox="0 0 1200 460" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
     <defs>
       <radialGradient id="glowA" cx="50%" cy="50%">
@@ -1939,55 +1967,18 @@ footer{
   </svg>
 
   <div class="hero-inner">
-    <svg class="hero-wm" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-      <defs>
-        <linearGradient id="wmKKg" x1="0" y1="0" x2="0.35" y2="1">
-          <stop offset="0%" stop-color="#F3D98B"/>
-          <stop offset="55%" stop-color="#E4C158"/>
-          <stop offset="100%" stop-color="#B98F1E"/>
-        </linearGradient>
-      </defs>
-      <text x="58" y="152" font-family="Playfair Display, serif" font-weight="900" font-size="158" fill="url(#wmKKg)" text-anchor="middle">K</text>
-      <g transform="translate(200,0) scale(-1,1)">
-        <text x="58" y="152" font-family="Playfair Display, serif" font-weight="900" font-size="158" fill="url(#wmKKg)" text-anchor="middle">K</text>
-      </g>
-    </svg>
-    <div class="logo-stage">
-      <span class="ring" aria-hidden="true"></span>
-      <span class="ring ring2" aria-hidden="true"></span>
-      <svg class="hero-logo" viewBox="0 0 100 100" aria-hidden="true">
-        <rect x="4" y="4" width="92" height="92" rx="10" fill="rgba(21,38,74,.75)" stroke="#C9A227" stroke-width="3.5"/>
-        <rect x="11" y="11" width="78" height="78" rx="6" fill="none" stroke="#C9A227" stroke-width="1.2" opacity=".55"/>
-        <text x="33" y="68" font-family="Playfair Display, serif" font-weight="900" font-size="52" fill="#E4C158" text-anchor="middle">K</text>
-        <g transform="translate(100,0) scale(-1,1)">
-          <text x="33" y="68" font-family="Playfair Display, serif" font-weight="900" font-size="52" fill="#E4C158" text-anchor="middle">K</text>
-        </g>
-      </svg>
-    </div>
-    <h1>KK - TRI THỨC</h1>
-    <div class="tagline" data-i18n="tagline">Tủ sách chuyên khảo · KK-2026</div>
-    <div class="hero-divider" aria-hidden="true">
-      <span class="line"></span><span class="diamond"></span><span class="line"></span>
-    </div>
-    <div class="hero-stats">
-      <div class="stat"><b id="statBooks">0</b><span>Đầu sách</span></div>
-      <div class="stat"><b id="statCats">12</b><span>Lĩnh vực</span></div>
-      <div class="stat"><b id="statGroups">4</b><span>Nhóm tri thức</span></div>
-    </div>
-    <div class="shelf-strip" aria-hidden="true">
-      <i style="animation-delay:0s"></i><i style="animation-delay:.18s"></i><i style="animation-delay:.36s"></i>
-      <i style="animation-delay:.54s"></i><i style="animation-delay:.72s"></i><i style="animation-delay:.9s"></i>
-      <i style="animation-delay:1.08s"></i><i style="animation-delay:1.26s"></i><i style="animation-delay:1.44s"></i>
-      <i style="animation-delay:1.62s"></i><i style="animation-delay:1.8s"></i><i style="animation-delay:1.98s"></i>
-    </div>
+    <div class="hero-motto"><span class="hm-orn">✦</span> TRI THỨC MỞ CỬA - CHÀO ĐÓN MỌI NGƯỜI ĐẾN VỚI TỦ SÁCH <span class="hm-orn">✦</span></div>
   </div>
 </div>
 
 <!-- ================= LĨNH VỰC (gập/mở) ================= -->
 <div class="section">
-  <div class="section-head">
-    <h2 data-i18n="catTitle">Lĩnh vực</h2>
-    <span class="count" id="bookCount"></span>
+  <div class="section-head lib-head">
+    <div class="lib-stats-hero" aria-label="Thống kê tủ sách">
+      <div class="lstat" style="--sc:#5B9CFF"><span class="lstat-ic">📚</span><b class="lstat-n" id="statBooks" data-target="0">0</b><span class="lstat-t">Đầu sách</span></div>
+      <div class="lstat" style="--sc:#3FDD8E"><span class="lstat-ic">🗂️</span><b class="lstat-n" id="statCats" data-target="0">0</b><span class="lstat-t">Lĩnh vực</span></div>
+      <div class="lstat" style="--sc:#C88BF0"><span class="lstat-ic">🧭</span><b class="lstat-n" id="statGroups" data-target="0">0</b><span class="lstat-t">Nhóm tri thức</span></div>
+    </div>
     <button class="btn btn-ghost btn-sm" id="collapseAll" data-i18n="collapseAll">Thu gọn tất cả</button>
   </div>
   <div class="cat-grid" id="catGrid"></div>
@@ -2004,7 +1995,7 @@ footer{
         <g transform="translate(100,0) scale(-1,1)"><text x="33" y="68" font-family="Playfair Display, serif" font-weight="900" font-size="52" fill="#E4C158" text-anchor="middle">K</text></g>
       </svg>
       <div>
-        <div style="font-family:var(--font-display);font-weight:700;color:var(--gold-bright);font-size:1.05rem">KK-2026</div>
+        <div style="font-family:var(--font-display);font-weight:700;color:var(--gold-bright);font-size:1.05rem">KK-BOOK</div>
         <div class="f-author">Tác giả : Nguyễn Duy Điển</div>
       </div>
     </div>
@@ -2023,7 +2014,7 @@ footer{
     <p class="f-note" data-i18n="footNote">Mọi ấn phẩm trên trang thuộc bản quyền của tác giả. Nghiêm cấm sao chép, in ấn, phân phối lại dưới mọi hình thức khi chưa được phép bằng văn bản.</p>
   </div>
   <div class="footer-bar">
-    <span>© 2026 KK-2026 · kk-book.com</span>
+    <span>© 2026 · www.kk-book.com</span>
     <span class="f-shield" data-i18n="shieldNote">Bảo vệ bản quyền · Watermark từng trang · Quản trị bằng email</span>
   </div>
 </footer>
@@ -2250,7 +2241,7 @@ footer{
         <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/>
       </svg>
     </div>
-    <h3 id="joinTitle">Đăng ký thành viên KK-2026</h3>
+    <h3 id="joinTitle">Đăng ký thành viên KK-BOOK</h3>
     <p class="modal-sub" id="joinSub">Chỉ cần email &amp; mật khẩu. Thành viên được <b style="color:var(--gold-bright)">bảo lưu vĩnh viễn sách đã mua</b>, ghi danh xếp hạng KK-QUIZ, nhận bản tin sách mới và nhiều quyền lợi khác.</p>
 
     <div class="field">
@@ -2376,7 +2367,7 @@ footer{
   <div class="modal modal-admin">
     <div class="admin-header">
       <div>
-        <h3 data-i18n="adminTitle">Bảng quản trị KK-2026</h3>
+        <h3 data-i18n="adminTitle">Bảng quản trị KK-BOOK</h3>
         <p class="modal-sub" data-i18n="adminSub">Quản lý thư viện, thu phí, mã mở khoá và thống kê doanh thu.</p>
       </div>
       <button class="admin-close" id="adminCloseBtn" title="Đóng">✕</button>
@@ -3493,13 +3484,32 @@ function khongDau(w){
   catch(_){ return (w||'').toString().toLowerCase(); }
 }
 
+function animStat(sel, target){
+  var el = (typeof $==='function') ? $(sel) : document.querySelector(sel);
+  if(!el) return;
+  target = target|0;
+  var cur = parseInt(el.getAttribute('data-cur')||'0',10)||0;
+  if(cur === target){ el.textContent = target; el.setAttribute('data-cur', target); return; }
+  var card = el.closest ? el.closest('.lstat') : null;
+  if(card){ card.classList.remove('bump'); void card.offsetWidth; card.classList.add('bump'); }
+  el.setAttribute('data-cur', target);
+  var start = cur, t0 = null, dur = 750;
+  function step(ts){
+    if(t0===null) t0=ts;
+    var p = Math.min((ts-t0)/dur, 1);
+    var e = 1 - Math.pow(1-p, 3);
+    el.textContent = Math.round(start + (target-start)*e);
+    if(p<1) requestAnimationFrame(step); else el.textContent = target;
+  }
+  requestAnimationFrame(step);
+}
 function renderLibrary(){
   const grid = $('#catGrid');
   if(!grid) return;
-  $('#statBooks').textContent = books.length;
-  $('#statCats').textContent = CATS.length;
-  $('#statGroups').textContent = GROUPS.length;
-  $('#bookCount').textContent = books.length + ' đầu sách';
+  animStat('#statBooks', books.length);
+  animStat('#statCats', CATS.length);
+  animStat('#statGroups', GROUPS.length);
+  { const _bc=$('#bookCount'); if(_bc) _bc.textContent = books.length + ' đầu sách'; }
 
   /* Dựng 5 hộp MỘT LẦN. Nếu đã dựng rồi thì chỉ cập nhật nhãn số + trạng thái active */
   if(!grid.dataset.built){
