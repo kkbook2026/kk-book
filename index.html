@@ -1607,6 +1607,15 @@ footer{
 .lg-sec{margin:16px 0;padding:16px 18px;border:1px solid rgba(201,162,39,.2);border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,.02),transparent)}
 .lg-sec h4{margin:0 0 12px;font-family:var(--font-display);color:var(--gold-bright);font-size:1.14rem}
 .lg-cung{padding:11px 13px;margin:9px 0;border-radius:10px;background:rgba(201,162,39,.05);border-left:3px solid rgba(201,162,39,.4)}
+.lg-list{margin:8px 0;padding-left:4px;list-style:none;display:flex;flex-direction:column;gap:7px}
+.lg-list li{position:relative;padding:8px 12px 8px 24px;background:rgba(255,255,255,.03);border:1px solid rgba(201,162,39,.16);border-radius:9px;font-size:.9rem;line-height:1.6;color:var(--cream)}
+.lg-list li::before{content:'❖';position:absolute;left:8px;top:8px;color:var(--gold);font-size:.72rem}
+.lg-list b{color:var(--gold-bright)}
+.dv-tbl{width:100%;border-collapse:collapse;margin:8px 0;font-size:.88rem}
+.dv-tbl th{background:rgba(201,162,39,.12);color:var(--gold-bright);padding:7px 10px;border:1px solid rgba(201,162,39,.2);font-weight:700}
+.dv-tbl td{border:1px solid rgba(201,162,39,.16);padding:6px 10px;text-align:center;color:var(--cream)}
+.dv-tbl td:first-child{text-align:left;color:var(--cream-dim)}
+.lg-mini{font-size:.82rem;color:var(--cream-dim);font-style:italic;margin-top:6px;line-height:1.6}
 .lg-cung-h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
 .lg-cung-h b{color:var(--gold-bright);font-size:1rem}
 .lg-cung-h span{font-size:.8rem;color:var(--cream-dim)}
@@ -7969,18 +7978,58 @@ function lapBatTu(d,m,y,hour){
            ten:(el('batName')&&el('batName').value||'').trim(), gt:(el('batGt')&&el('batGt').value)||'nam' };
 }
 var BT_TINHCACH={'Mộc':'nhân hậu, hướng thượng, giàu lòng trắc ẩn, thích phát triển và sáng tạo; đôi khi hơi cố chấp.','Hỏa':'nhiệt tình, lễ độ, sáng sủa, giao tiếp tốt, hành động nhanh; cần tiết chế nóng vội.','Thổ':'trung hậu, đáng tin, thực tế, kiên nhẫn, giữ chữ tín; đôi khi bảo thủ, chậm đổi mới.','Kim':'quyết đoán, cương trực, trọng nghĩa, kỷ luật, làm việc bài bản; cần bớt cứng nhắc.','Thủy':'thông minh, linh hoạt, mưu trí, thích ứng nhanh, giỏi giao tế; cần kiên định hơn.'};
+
+var NH_CHITIET={
+ 'Mộc':{tc:'nhân hậu, giàu lòng trắc ẩn, hướng thượng, ưa sáng tạo - phát triển, có chí tiến thủ và tinh thần nuôi dưỡng',uu:'bao dung, có tầm nhìn, biết dìu dắt người khác, kiên trì theo đuổi lý tưởng',nhuoc:'đôi khi cố chấp, mềm lòng, hay do dự trước quyết định lớn',nghe:'giáo dục, xuất bản, y - dược, nông - lâm nghiệp, thời trang, thiết kế, nội thất, môi trường',mau:'xanh lá, xanh lục',huong:'Đông, Đông Nam',so:'3, 4',tang:'Gan - Mật: nên giải độc, ngủ sớm, giữ tinh thần thư thái, tránh nóng giận'},
+ 'Hỏa':{tc:'nhiệt tình, lễ độ, sáng sủa, hoạt bát, giao tiếp cuốn hút, hành động nhanh nhạy và giàu nhiệt huyết',uu:'truyền cảm hứng, lan tỏa năng lượng, quyết đoán, dám nghĩ dám làm',nhuoc:'nóng vội, dễ bốc đồng, thiếu kiên nhẫn, cảm xúc lên xuống',nghe:'truyền thông, quảng cáo, biểu diễn - nghệ thuật, điện tử, năng lượng, ẩm thực, làm đẹp',mau:'đỏ, hồng, cam, tím',huong:'Nam',so:'9',tang:'Tim - Ruột non: giữ huyết áp ổn định, tránh căng thẳng, điều hòa cảm xúc'},
+ 'Thổ':{tc:'trung hậu, đáng tin, thực tế, kiên nhẫn, giữ chữ tín, bền bỉ và giàu trách nhiệm',uu:'ổn định, đáng tin cậy, biết vun vén - quy tụ, làm việc chắc chắn',nhuoc:'đôi khi bảo thủ, chậm thích ứng, ngại thay đổi, dễ ôm đồm',nghe:'bất động sản, xây dựng, nông nghiệp, quản lý - hành chính, bảo hiểm, khoáng sản, kho vận',mau:'vàng, nâu, be',huong:'Trung tâm, Tây Nam, Đông Bắc',so:'2, 5, 8',tang:'Tỳ - Vị: chú ý tiêu hóa, ăn uống điều độ, tránh lo nghĩ nhiều'},
+ 'Kim':{tc:'quyết đoán, cương trực, trọng nghĩa khí, kỷ luật, làm việc bài bản và có nguyên tắc',uu:'chính trực, mạnh mẽ, giỏi tổ chức - bảo vệ, giữ lời hứa',nhuoc:'đôi khi cứng nhắc, khắt khe, khó dung hòa, dễ cô đơn',nghe:'tài chính - ngân hàng, cơ khí - kim loại, luật pháp, quân đội - công an, kỹ thuật, trang sức',mau:'trắng, ánh kim, xám bạc',huong:'Tây, Tây Bắc',so:'6, 7',tang:'Phổi - Đại tràng: giữ hô hấp, tránh khô hanh, năng vận động ngoài trời'},
+ 'Thủy':{tc:'thông minh, linh hoạt, mưu trí, thích ứng nhanh, giỏi giao tế và nhiều ý tưởng',uu:'khéo léo, uyển chuyển, giỏi ngoại giao - ứng biến, nắm cơ hội nhanh',nhuoc:'đôi khi thiếu kiên định, hay thay đổi, dễ phân tâm',nghe:'thương mại - xuất nhập khẩu, du lịch, vận tải, truyền thông, thủy sản, dịch vụ, ngoại giao',mau:'đen, xanh dương đậm',huong:'Bắc',so:'1',tang:'Thận - Bàng quang: giữ ấm, uống đủ nước, nghỉ ngơi hợp lý'}
+};
+var THAP_THAN_Y={
+ 'Tỷ Kiên':'anh em - bạn bè, sự tự lập và cạnh tranh: có bản lĩnh, độc lập, song cần biết hợp tác',
+ 'Kiếp Tài':'cạnh tranh - hao tài vì người khác: nghĩa khí nhưng nên thận trọng khi hùn hạp, cho vay',
+ 'Thực Thần':'tài năng - hưởng thụ - con cái, phúc lộc: người có tài lẻ, sống lạc quan, hậu vận tốt',
+ 'Thương Quan':'sáng tạo - cá tính mạnh - tài hoa: giỏi chuyên môn, hợp nghề tự do, song dễ va chạm lời nói',
+ 'Chính Tài':'tiền của chính đáng - sự cần cù: giỏi quản lý tài chính; với nam chủ hôn nhân ổn định',
+ 'Thiên Tài':'tài lộc bất ngờ - cơ hội kinh doanh: nhạy bén thương trường, phóng khoáng, rộng rãi',
+ 'Chính Quan':'công danh - chức vị - kỷ cương: đứng đắn, có uy tín, hợp làm quản lý; với nữ chủ chồng hiền',
+ 'Thất Sát':'quyền lực - quyết liệt - áp lực: bản lĩnh mạnh, hợp cạnh tranh - chỉ huy, cần rèn sự điềm tĩnh',
+ 'Chính Ấn':'học vấn - quý nhân - che chở: ham học, nhân hậu, được bề trên nâng đỡ',
+ 'Thiên Ấn':'trí tuệ khác biệt - huyền học - độc lập: tư duy sâu, hợp nghiên cứu, đôi khi cô độc'
+};
+function btDaiVan(bt){
+ var yangYear=(bt.tru[0].can%2===0); var nam=bt.gt==='nam';
+ var thuan=(yangYear&&nam)||(!yangYear&&!nam);
+ var mCan=bt.tru[1].can, mChi=bt.tru[1].chi; var list=[]; var age=3;
+ for(var i=1;i<=6;i++){ if(thuan){mCan=(mCan+1)%10;mChi=(mChi+1)%12;}else{mCan=(mCan+9)%10;mChi=(mChi+11)%12;}
+   var nh=BT_CANNH[mCan]; var tot=(bt.dungThan.indexOf(nh)>=0), xau=(bt.kyThan.indexOf(nh)>=0);
+   list.push({age:age,can:mCan,chi:mChi,nh:nh,danhgia:tot?'Cát':(xau?'Cần thận':'Bình'),color:tot?'#1c9c4a':(xau?'#E05C4A':'#C9A227')}); age+=10; }
+ return {thuan:thuan,list:list};
+}
+function btThapThanCo(bt){ var m={}; bt.tru.forEach(function(t){ if(t.tt&&t.tt!=='Nhật chủ') m[t.tt]=(m[t.tt]||0)+1; }); return m; }
+
 function btAspect(bt){
-  var manh=bt.manh, nh=bt.dmNH;
+  var manh=bt.manh, nh=bt.dmNH, ct=NH_CHITIET[nh];
+  var duong=bt.dungThan.join(', '), ky=bt.kyThan.join(', ');
   return {
-    cn: manh?'Bản mệnh vững, có chủ kiến và sức bền; hợp làm chủ, lãnh đạo, khởi nghiệp. Nên hướng tới nghề thuộc Dụng thần ('+bt.dungThan.join(', ')+') để phát huy.'
-            :'Nên nương theo tập thể, quý nhân và môi trường ổn định; hợp làm chuyên môn, phụ tá, hợp tác. Bồi thêm hành '+bt.dungThan.join(', ')+' để tăng lực.',
-    tl: manh?'Có khả năng cầu tài chủ động; giữ được tiền nếu biết tiết chế chi tiêu, tránh ôm đồm.'
-            :'Tài đến từ hợp tác và kiên trì tích lũy; tránh đầu tư mạo hiểm khi thân yếu.',
-    td: 'Tình duyên - gia đạo hòa hợp khi bên cạnh người bổ trợ hành '+bt.dungThan[0]+'; nên chọn bạn đời điềm đạm, cùng chí hướng, biết sẻ chia.',
-    sk: 'Chú ý tạng phủ ứng với hành '+ (bt.kyThan[0]||nh) +' (dễ mất cân bằng); giữ nếp sống điều độ, vận động và nghỉ ngơi hợp lý.',
-    kn: 'Phát huy ưu điểm ('+BT_TINHCACH[nh].split(';')[0]+'), lấy Dụng thần <b>'+bt.dungThan.join(' / ')+'</b> làm định hướng (màu sắc, phương hướng, nghề nghiệp), hạn chế nghiêng về Kỵ thần <b>'+bt.kyThan.join(' / ')+'</b>.'
+    cn: (manh?'Bản mệnh vững vàng, nhiều chủ kiến và sức bền, hợp làm chủ - lãnh đạo - khởi nghiệp, tự mình gây dựng sự nghiệp. '
+              :'Nên nương theo tập thể, quý nhân và môi trường ổn định; hợp làm chuyên môn sâu, cố vấn, phụ tá, hợp tác ăn chia. ')+
+        'Ngành nghề hợp mệnh (theo Dụng thần '+duong+'): '+ct.nghe+'. Chọn công việc thuộc các lĩnh vực này sẽ thuận đường phát triển.',
+    tl: (manh?'Có khả năng cầu tài chủ động, dám đầu tư; giữ được của nếu biết tiết chế, tránh ôm đồm và bao đồng. '
+              :'Tài đến từ hợp tác, kiên trì tích lũy và quý nhân; khi thân yếu nên tránh vay mượn lớn, đầu tư mạo hiểm. ')+
+        'Hướng tài lộc tốt: phương '+ct.huong+'; nên khai thác cơ hội gắn với hành '+bt.dungThan[0]+'.',
+    td: (bt.gt==='nam'?'Nam mệnh: hạnh phúc khi bạn đời đảm đang, biết vun vén (Chính Tài); '
+                       :'Nữ mệnh: hạnh phúc khi gặp người chồng đứng đắn, có trách nhiệm (Chính Quan); ')+
+        'gia đạo hòa thuận nhất khi bên cạnh người bổ trợ hành '+bt.dungThan[0]+', tính tình điềm đạm, cùng chí hướng và biết sẻ chia. Nên cưới hỏi vào năm/tháng thuộc Dụng thần.',
+    sk: 'Cần lưu ý '+ct.tang+'. Hành bị lệch (Kỵ thần '+ky+') dễ gây mất cân bằng tạng phủ - giữ nếp sống điều độ, vận động và ngủ nghỉ đúng giờ, ăn uống hợp hành Dụng thần.',
+    qn: 'Quý nhân và học vấn hanh thông khi thân cận người/môi trường mang hành '+bt.dungThan.join(' hoặc ')+'. '+
+        (manh?'Thân vượng nên chủ động tìm thầy, tìm bạn giỏi để dụng thần được sinh trợ đúng lúc.':'Thân nhược rất cần quý nhân nâng đỡ - hãy trọng ân nghĩa, giữ mối quan hệ tốt với bề trên.'),
+    kn: 'Phát huy ưu điểm ('+ct.uu+'), khắc chế nhược điểm ('+ct.nhuoc+'). Lấy Dụng thần <b>'+duong+'</b> làm kim chỉ nam: '+
+        'màu sắc nên dùng <b>'+ct.mau+'</b> (theo hành Dụng thần), phương hướng tốt <b>'+ct.huong+'</b>, con số hợp <b>'+ct.so+'</b>; hạn chế thiên về Kỵ thần <b>'+ky+'</b>.'
   };
 }
+
 function batTuTable(bt){
   var CAN=TV_CAN, CHI=TV_CHI;
   var head='', canR='', chiR='', ttR='';
@@ -8009,46 +8058,97 @@ function renderBatTuFree(bt){
   return h;
 }
 function luanBatTuFull(bt){
-  var a=btAspect(bt); var CAN=TV_CAN, CHI=TV_CHI;
+  var a=btAspect(bt); var CAN=TV_CAN, CHI=TV_CHI; var ct=NH_CHITIET[bt.dmNH];
+  var dv=btDaiVan(bt); var tt=btThapThanCo(bt);
   function muc(t,n){ return '<div class="lg-cung"><div class="lg-cung-h"><b>'+t+'</b></div><p>'+n+'</p></div>'; }
+  var ttList=Object.keys(tt).map(function(k){ return '<li><b>'+k+'</b> ('+tt[k]+'): '+THAP_THAN_Y[k]+'</li>'; }).join('');
+  if(!ttList) ttList='<li>Các trụ phần lớn là Tỷ/Kiếp - bản thân mạnh về tự lập, cần chú ý hợp tác.</li>';
+  var dvRows=dv.list.map(function(d){ return '<tr><td>'+d.age+' - '+(d.age+9)+' tuổi</td><td>'+CAN[d.can]+' '+CHI[d.chi]+'</td><td style="color:'+d.color+'"><b>'+d.danhgia+'</b> ('+d.nh+')</td></tr>'; }).join('');
+  var demSorted=['Mộc','Hỏa','Thổ','Kim','Thủy'].sort(function(x,y){return bt.dem[y]-bt.dem[x];});
+  var manhNhat=demSorted[0], yeuNhat=demSorted[4];
   return '<div class="lg-doc">'+
-    '<div class="lg-toolbar"><button class="btn btn-gold" id="batLuanPdf">\ud83d\udcc4 Lưu lá số &amp; luận giải ra PDF</button></div>'+
-    '<div class="lg-sec"><h4>\u2756 Tứ trụ &amp; Nhật chủ</h4><p>Bát tự (4 trụ): <b>'+bt.tru.map(function(t){return CAN[t.can]+' '+CHI[t.chi];}).join(' - ')+'</b>. Nhật chủ (bản thân) là <b style="color:'+NH_MAU[bt.dmNH]+'">'+CAN[bt.dCan]+' - hành '+bt.dmNH+'</b>, '+bt.than+'. Người mang khí chất hành '+bt.dmNH+': '+BT_TINHCACH[bt.dmNH]+'</p></div>'+
-    '<div class="lg-sec"><h4>\u2756 Dụng thần - Kỵ thần</h4><p>Dụng thần (nên bồi, mang lại may mắn): <b>'+bt.dungThan.join(', ')+'</b>. Kỵ thần (nên tiết chế): <b>'+bt.kyThan.join(', ')+'</b>. Đây là kim chỉ nam để chọn nghề, màu sắc, phương hướng, bạn đời cho hợp mệnh.</p></div>'+
-    '<div class="lg-sec"><h4>\u2756 Luận giải theo phương diện</h4>'+
-      muc('Công danh - Sự nghiệp', a.cn)+muc('Tài lộc', a.tl)+muc('Tình duyên - Gia đạo', a.td)+muc('Sức khỏe', a.sk)+'</div>'+
-    '<div class="lg-sec lg-ketluan"><h4>\u2756 Lời khuyên hoàn thiện</h4><div class="lg-loikhuyen"><div class="lg-lk-t">\ud83d\udc9b Đúc kết</div><p>'+a.kn+'</p><p>Bát tự cho biết xu hướng bẩm sinh, nhưng <b>vận mệnh do chính bạn vun đắp</b>. Sống thuận Dụng thần, tu dưỡng đức độ và kiên trì thì đời sẽ ngày một hanh thông.</p></div></div>'+
-    '<p class="lg-note">Luận giải dựa trên Tử Bình - Bát Tự cổ truyền, mang tính tham khảo - chiêm nghiệm; nên kết hợp thực tế và nỗ lực bản thân.</p>'+
+    '<div class="lg-toolbar"><button class="btn btn-gold" id="batLuanPdf">\ud83d\udcc4 Lưu lá số &amp; luận giải ra PDF (2 trang)</button></div>'+
+    '<div class="lg-sec"><h4>\u2756 I. Tứ trụ &amp; Nhật chủ</h4>'+
+      '<p>Bát tự (4 trụ): <b>'+bt.tru.map(function(t){return CAN[t.can]+' '+CHI[t.chi];}).join(' &nbsp;|&nbsp; ')+'</b>.</p>'+
+      '<p>Nhật chủ (đại diện cho chính bạn) là <b style="color:'+NH_MAU[bt.dmNH]+'">'+CAN[bt.dCan]+' - hành '+bt.dmNH+'</b>, ở thế <b>'+bt.than+'</b>. Người mang khí chất hành '+bt.dmNH+' thường: '+ct.tc+'. <b>Ưu điểm:</b> '+ct.uu+'. <b>Cần khắc phục:</b> '+ct.nhuoc+'.</p></div>'+
+    '<div class="lg-sec"><h4>\u2756 II. Cân bằng Ngũ hành</h4>'+
+      '<p>Trong lá số, hành <b style="color:'+NH_MAU[manhNhat]+'">'+manhNhat+'</b> vượng nhất ('+bt.dem[manhNhat]+'/8), hành <b style="color:'+NH_MAU[yeuNhat]+'">'+yeuNhat+'</b> yếu nhất ('+bt.dem[yeuNhat]+'/8). '+
+      (bt.manh?'Nhật chủ vượng nên <b>ưa tiết - khắc</b> (dùng hành làm hao bớt cái mạnh) để cân bằng.':'Nhật chủ nhược nên <b>ưa sinh - phù</b> (bồi thêm hành cùng loại và hành sinh cho mình) để thêm vững.')+'</p>'+nhBars(bt.dem)+'</div>'+
+    '<div class="lg-sec"><h4>\u2756 III. Thập thần trong lá số</h4><ul class="lg-list">'+ttList+'</ul></div>'+
+    '<div class="lg-sec"><h4>\u2756 IV. Dụng thần - Kỵ thần &amp; Phong thủy bản mệnh</h4>'+
+      '<p><b>Dụng thần</b> (nên bồi, mang may mắn): <b style="color:#1c9c4a">'+bt.dungThan.join(', ')+'</b>. <b>Kỵ thần</b> (nên tiết chế): <b style="color:#E05C4A">'+bt.kyThan.join(', ')+'</b>.</p>'+
+      '<p>Màu sắc hợp mệnh: <b>'+ct.mau+'</b> · Phương hướng tốt: <b>'+ct.huong+'</b> · Con số may mắn: <b>'+ct.so+'</b>.</p></div>'+
+    '<div class="lg-sec"><h4>\u2756 V. Vận trình - Đại vận</h4>'+
+      '<p>Chiều đại vận: <b>'+(dv.thuan?'Thuận hành':'Nghịch hành')+'</b> (theo âm dương năm sinh và giới tính). Các giai đoạn 10 năm:</p>'+
+      '<table class="dv-tbl"><tr><th>Giai đoạn</th><th>Can Chi</th><th>Đánh giá</th></tr>'+dvRows+'</table>'+
+      '<p class="lg-mini">Giai đoạn ghi "Cát" là vận thuận (hợp Dụng thần) nên mạnh dạn tiến thủ; "Cần thận" là vận Kỵ thần nên thủ vững, tránh mạo hiểm lớn.</p></div>'+
+    '<div class="lg-sec"><h4>\u2756 VI. Luận đoán theo phương diện</h4>'+
+      muc('Công danh - Sự nghiệp', a.cn)+muc('Tài lộc - Kinh doanh', a.tl)+muc('Tình duyên - Hôn nhân - Gia đạo', a.td)+muc('Sức khỏe', a.sk)+muc('Quý nhân - Học vấn', a.qn)+'</div>'+
+    '<div class="lg-sec lg-ketluan"><h4>\u2756 VII. Lời khuyên hoàn thiện</h4><div class="lg-loikhuyen"><div class="lg-lk-t">\ud83d\udc9b Đúc kết</div><p>'+a.kn+'</p>'+
+      '<p>Bát tự cho biết xu hướng bẩm sinh và điểm mạnh - yếu của vận số, nhưng <b>vận mệnh do chính bạn vun đắp</b>. Sống thuận Dụng thần, tu dưỡng đức độ, chọn đúng nghề - đúng người - đúng thời, kiên trì tích thiện thì đời sẽ ngày một hanh thông, "đức năng thắng số".</p></div></div>'+
+    '<p class="lg-note">Luận giải dựa trên học thuyết Tử Bình - Bát Tự cổ truyền, mang tính tham khảo và chiêm nghiệm; nên kết hợp với thực tế và nỗ lực bản thân. Ranh giới Tiết khí lấy xấp xỉ nên với ca sinh sát Tiết cần đối chiếu thêm.</p>'+
   '</div>';
 }
+
 /* paywall + PDF Bát Tự */
 function moPaywallBat(preview){ moPaywallSvc({ box:'batLuanFree', key:'bat', bookId:'battu-luan', bookTitle:'Luận giải Bát Tự', gia:99000, prefix:'bt', maPrefix:'BT', tenLuan:'Luận giải chi tiết lá số Bát Tự', getData:function(){return window.__battu;}, luanFull:luanBatTuFull }, preview); }
 function xuatPdfBatTu(){ var bt=window.__battu; if(!bt){ toast('Chưa có lá số.'); return; } try{ var html=pdfBatTuCombo(bt); if(inTaiLieuPDF(html)) toast('Đang mở hộp thoại in - chọn "Lưu dưới dạng PDF".'); }catch(e){ if(window.console)console.warn(e); toast('Lỗi tạo PDF: '+(e&&e.message?e.message:'')); } }
+function _H(x){ return _escH(x).replace(/&lt;b&gt;/g,"<b>").replace(/&lt;\/b&gt;/g,"</b>"); }
 function pdfBatTuCombo(bt){
-  var CAN=TV_CAN, CHI=TV_CHI; var a=btAspect(bt);
+  var CAN=TV_CAN, CHI=TV_CHI; var a=btAspect(bt); var ct=NH_CHITIET[bt.dmNH];
+  var dv=btDaiVan(bt); var tt=btThapThanCo(bt);
   var GT=bt.gt==='nam'?'Nam mệnh':'Nữ mệnh';
-  var trCells=bt.tru.map(function(t){ return '<td><div class="pk-tru-h">'+t.ten+'</div><div class="pk-can" style="color:'+NH_MAU[t.canNH]+'">'+CAN[t.can]+'</div><div class="pk-chi" style="color:'+NH_MAU[t.chiNH]+'">'+CHI[t.chi]+'</div><div class="pk-nh">'+t.canNH+' / '+t.chiNH+'</div><div class="pk-tt">'+t.tt+'</div></td>'; }).join('');
-  var page1='<div class="pk-head"><div class="pk-title">LÁ SỐ BÁT TỰ - TỨ TRỤ</div><div class="pk-name">'+_escH(bt.ten||'(Quý khách)')+'</div><div class="pk-cat">'+GT+' · Sinh '+bt.d+'/'+bt.m+'/'+bt.y+' giờ '+CHI[Math.floor(((bt.hour+1)%24)/2)]+'</div></div>'+
-    '<div class="pk-mid"><table class="pk-battu"><tr>'+trCells+'</tr></table>'+
-    '<div class="pk-ns">Nhật chủ: <b style="color:'+NH_MAU[bt.dmNH]+'">'+CAN[bt.dCan]+' - '+bt.dmNH+'</b> · '+bt.than+' · Dụng thần: <b>'+bt.dungThan.join(', ')+'</b></div>'+
-    '<table class="pk-nh2"><tr>'+['Mộc','Hỏa','Thổ','Kim','Thủy'].map(function(e){return '<td><b style="color:'+NH_MAU[e]+'">'+e+'</b><br>'+bt.dem[e]+'</td>';}).join('')+'</tr></table></div>';
-  function m(t,n){ return '<div class="lu-cung"><div class="lu-cung-h">'+t+'</div><div class="lu-cung-b">'+_escH(n).replace(/&lt;b&gt;/g,'<b>').replace(/&lt;\/b&gt;/g,'</b>')+'</div></div>'; }
-  var page2='<div class="lu-title"><div class="lu-orn">\u27e1 \u22c6 \u2756 \u22c6 \u27e1</div><h2>LUẬN GIẢI BÁT TỰ</h2><div class="lu-orn">\u2726 TỨ TRỤ \u2726</div></div>'+
-    '<div class="lu-who"><b>'+_escH(bt.ten||'(Quý khách)')+'</b> · '+GT+' · '+bt.d+'/'+bt.m+'/'+bt.y+' · Nhật chủ <b>'+CAN[bt.dCan]+' ('+bt.dmNH+')</b> · '+bt.than+'</div>'+
-    '<div class="lu-h">Tứ trụ &amp; Nhật chủ</div><div class="lu-lead">Bát tự: <b>'+bt.tru.map(function(t){return CAN[t.can]+' '+CHI[t.chi];}).join(' - ')+'</b>. Khí chất hành '+bt.dmNH+': '+_escH(BT_TINHCACH[bt.dmNH])+' Dụng thần: <b>'+bt.dungThan.join(', ')+'</b> · Kỵ thần: <b>'+bt.kyThan.join(', ')+'</b>.</div>'+
-    '<div class="lu-h">Luận giải theo phương diện</div>'+
-    '<div class="lu-grid">'+m('Công danh - Sự nghiệp',a.cn)+m('Tài lộc',a.tl)+m('Tình duyên - Gia đạo',a.td)+m('Sức khỏe',a.sk)+'</div>'+
+  var hexColor={'Mộc':'#2e7d46','Hỏa':'#b3402f','Thổ':'#9a6b1f','Kim':'#8a7a2a','Thủy':'#1f5a8a'};
+  function col(nh){ return hexColor[nh]||'#5a3a1a'; }
+  /* ---- TRANG 1 ---- */
+  var trCells=bt.tru.map(function(t){ return '<td><div class="pk-tru-h">Trụ '+t.ten+'</div><div class="pk-can" style="color:'+col(t.canNH)+'">'+CAN[t.can]+'</div><div class="pk-el">'+t.canNH+'</div><div class="pk-chi" style="color:'+col(t.chiNH)+'">'+CHI[t.chi]+'</div><div class="pk-el">'+t.chiNH+'</div><div class="pk-tt">'+t.tt+'</div></td>'; }).join('');
+  var maxDem=Math.max(1,bt.dem['Mộc'],bt.dem['Hỏa'],bt.dem['Thổ'],bt.dem['Kim'],bt.dem['Thủy']);
+  var nhRows=['Mộc','Hỏa','Thổ','Kim','Thủy'].map(function(e){ return '<tr><td class="nhb-l">'+e+'</td><td class="nhb-t"><span class="nhb-f" style="width:'+Math.round(bt.dem[e]/maxDem*100)+'%;background:'+col(e)+'"></span></td><td class="nhb-n">'+bt.dem[e]+'</td></tr>'; }).join('');
+  var ttStr=Object.keys(tt).map(function(k){return k+' ('+tt[k]+')';}).join(' · ')||'chủ yếu Tỷ/Kiếp (tự lập)';
+  var dvCells=dv.list.map(function(d){ return '<td><div class="dv-age">'+d.age+'-'+(d.age+9)+'</div><div class="dv-cc">'+CAN[d.can]+' '+CHI[d.chi]+'</div><div class="dv-dg" style="color:'+d.color+'">'+d.danhgia+'</div></td>'; }).join('');
+  var page1='<div class="pk-head"><div class="pk-orn">\u273b \u2042 \u273b</div><div class="pk-title">LÁ SỐ BÁT TỰ - TỨ TRỤ</div><div class="pk-name">'+_escH(bt.ten||'(Quý khách)')+'</div><div class="pk-cat">'+GT+' \u00b7 Sinh ngày '+bt.d+'/'+bt.m+'/'+bt.y+' \u00b7 giờ '+CHI[Math.floor(((bt.hour+1)%24)/2)]+'</div></div>'+
+    '<div class="pk-sec-h">Tứ Trụ Can Chi</div>'+
+    '<table class="pk-battu"><tr>'+trCells+'</tr></table>'+
+    '<div class="pk-ns">Nhật chủ: <b style="color:'+col(bt.dmNH)+'">'+CAN[bt.dCan]+' - hành '+bt.dmNH+'</b> \u00b7 <b>'+bt.than+'</b> \u00b7 Dụng thần: <b style="color:#2e7d46">'+bt.dungThan.join(', ')+'</b> \u00b7 Kỵ thần: <b style="color:#b3402f">'+bt.kyThan.join(', ')+'</b></div>'+
+    '<div class="pk-2col"><div class="pk-box"><div class="pk-box-h">Phân bố Ngũ hành</div><table class="nhb">'+nhRows+'</table></div>'+
+    '<div class="pk-box"><div class="pk-box-h">Thập thần</div><div class="pk-tt2">'+ttStr+'</div><div class="pk-box-h" style="margin-top:6px">Phong thủy bản mệnh</div><div class="pk-fs">Màu: <b>'+ct.mau+'</b><br>Hướng: <b>'+ct.huong+'</b> \u00b7 Số: <b>'+ct.so+'</b></div></div></div>'+
+    '<div class="pk-sec-h">Đại vận (chiều '+(dv.thuan?'thuận':'nghịch')+')</div>'+
+    '<table class="dv-strip"><tr>'+dvCells+'</tr></table>'+
+    '<div class="pk-tinhcach"><b>Khí chất Nhật chủ ('+bt.dmNH+'):</b> '+_escH(ct.tc)+'. <b>Ưu:</b> '+_escH(ct.uu)+'. <b>Cần khắc phục:</b> '+_escH(ct.nhuoc)+'.</div>';
+  /* ---- TRANG 2 ---- */
+  function m(t,n){ return '<div class="lu-cung"><div class="lu-cung-h">'+t+'</div><div class="lu-cung-b">'+_H(n)+'</div></div>'; }
+  var page2='<div class="lu-title"><div class="lu-orn">\u27e1 \u22c6 \u2756 \u22c6 \u27e1</div><h2>LUẬN ĐOÁN VẬN MỆNH</h2><div class="lu-orn">\u2726 BÁT TỰ - TỨ TRỤ \u2726</div></div>'+
+    '<div class="lu-who"><b>'+_escH(bt.ten||'(Quý khách)')+'</b> \u00b7 '+GT+' \u00b7 '+bt.d+'/'+bt.m+'/'+bt.y+' \u00b7 Nhật chủ <b>'+CAN[bt.dCan]+' ('+bt.dmNH+')</b> \u00b7 '+bt.than+'</div>'+
+    '<div class="lu-h">Tổng luận Nhật chủ &amp; Ngũ hành</div>'+
+    '<div class="lu-lead">Nhật chủ <b>'+CAN[bt.dCan]+'</b> hành <b>'+bt.dmNH+'</b>, '+bt.than+'. '+_H(ct.tc)+'. '+
+      (bt.manh?'Thân vượng - ưa tiết khắc, nên dùng hành '+bt.dungThan.join(', ')+' để cân bằng, phát tiết cái mạnh thành tài năng và của cải.':'Thân nhược - ưa sinh phù, cần bồi hành '+bt.dungThan.join(', ')+' và nương quý nhân để thêm vững vàng.')+'</div>'+
+    '<div class="lu-h">Dụng thần - Kỵ thần &amp; Phong thủy</div>'+
+    '<div class="lu-grid">'+
+      '<div class="lu-cung"><div class="lu-cung-h">Dụng thần (nên bồi)</div><div class="lu-cung-b">'+bt.dungThan.join(', ')+' - mang lại may mắn, nên ưu tiên trong nghề nghiệp, màu sắc, phương hướng.</div></div>'+
+      '<div class="lu-cung"><div class="lu-cung-h">Kỵ thần (nên tiết chế)</div><div class="lu-cung-b">'+bt.kyThan.join(', ')+' - dễ gây trở ngại, nên hạn chế.</div></div>'+
+      '<div class="lu-cung"><div class="lu-cung-h">Màu &amp; Hướng &amp; Số</div><div class="lu-cung-b">Màu '+_H(ct.mau)+' \u00b7 Hướng '+_H(ct.huong)+' \u00b7 Số '+_H(ct.so)+'</div></div>'+
+      '<div class="lu-cung"><div class="lu-cung-h">Ngành nghề hợp</div><div class="lu-cung-b">'+_H(ct.nghe)+'</div></div>'+
+    '</div>'+
+    '<div class="lu-h">Luận theo phương diện</div>'+
+    '<div class="lu-grid">'+m('Công danh - Sự nghiệp',a.cn)+m('Tài lộc - Kinh doanh',a.tl)+m('Tình duyên - Hôn nhân',a.td)+m('Sức khỏe',a.sk)+'</div>'+
+    '<div class="lu-cung" style="margin-top:6px"><div class="lu-cung-h">Quý nhân - Học vấn</div><div class="lu-cung-b">'+_H(a.qn)+'</div></div>'+
     '<div class="lu-h">Lời khuyên hoàn thiện</div>'+
-    '<div class="lu-lk"><span class="lu-lkt">\ud83d\udc9b Đúc kết</span>'+_escH(a.kn).replace(/&lt;b&gt;/g,'<b>').replace(/&lt;\/b&gt;/g,'</b>')+' Bát tự cho biết xu hướng bẩm sinh, nhưng vận mệnh do chính bạn vun đắp - sống thuận Dụng thần, tu dưỡng đức độ và kiên trì thì đời ngày một hanh thông.</div>';
-  var css='.pk-head{text-align:center;border-bottom:2px solid #b8912a;padding-bottom:8px;margin-bottom:10px}.pk-title{font-size:19px;font-weight:800;color:#7a1f1f;letter-spacing:2px}.pk-name{font-size:24px;font-weight:800;color:#5a3a1a;margin:4px 0}.pk-cat{font-size:12px;color:#a8701a}'+
-    '.pk-mid{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}'+
-    '.pk-battu{border-collapse:collapse}.pk-battu td{border:1px solid #d9c489;padding:8px 14px;text-align:center;background:#fffdf7;vertical-align:top}'+
-    '.pk-tru-h{font-size:11px;color:#8a6a1f;font-weight:700;margin-bottom:3px}.pk-can{font-size:26px;font-weight:800;line-height:1.1}.pk-chi{font-size:26px;font-weight:800;line-height:1.1}.pk-nh{font-size:9px;color:#7a6a45;margin-top:2px}.pk-tt{font-size:10px;color:#5a3a1a;margin-top:2px}'+
-    '.pk-ns{font-size:12.5px;color:#2f2a1e;text-align:center;background:#faf6ea;border:1px solid #e6d9b0;border-radius:6px;padding:7px 12px}'+
-    '.pk-nh2{border-collapse:collapse}.pk-nh2 td{border:1px solid #e6d9b0;padding:5px 16px;text-align:center;font-size:12px;background:#fffdf7}'+
-    '.pgLuan .inner{font-size:10px;line-height:1.42}';
-  return pdfFrameDoc({ title:'Bát Tự - '+(bt.ten||''), sub:'THƯ VIỆN SÁCH CÁ NHÂN · TỨ TRỤ BÁT TỰ', wm:'\u58ec', page1:page1, page2:page2, css:css });
+    '<div class="lu-lk"><span class="lu-lkt">\ud83d\udc9b Đúc kết</span>'+_H(a.kn)+' Bát tự cho biết xu hướng bẩm sinh; vận mệnh do chính bạn vun đắp - sống thuận Dụng thần, tu dưỡng đức độ, chọn đúng nghề - đúng người - đúng thời, kiên trì tích thiện thì "đức năng thắng số", đời ngày một hanh thông.</div>'+
+    '<div class="lu-foot">Luận theo Tử Bình - Bát Tự cổ truyền \u00b7 mang tính tham khảo, chiêm nghiệm.</div>';
+  var css='.pk-head{text-align:center;border-bottom:2px solid #b8912a;padding-bottom:7px;margin-bottom:8px}.pk-orn{color:#b8912a;font-size:11px;letter-spacing:4px}.pk-title{font-size:19px;font-weight:800;color:#7a1f1f;letter-spacing:2px;margin-top:2px}.pk-name{font-size:23px;font-weight:800;color:#5a3a1a;margin:3px 0}.pk-cat{font-size:11.5px;color:#a8701a}'+
+    '.pk-sec-h{font-size:12px;font-weight:800;color:#7a1f1f;text-align:center;margin:10px 0 6px;letter-spacing:1px}.pk-sec-h::before,.pk-sec-h::after{content:"\u2748";color:#b8912a;margin:0 8px;font-size:9px}'+
+    '.pk-battu{border-collapse:collapse;width:100%}.pk-battu td{border:1px solid #d9c489;padding:7px 6px;text-align:center;background:#fffdf7;width:25%}'+
+    '.pk-tru-h{font-size:10.5px;color:#8a6a1f;font-weight:700}.pk-can{font-size:27px;font-weight:800;line-height:1.05}.pk-chi{font-size:27px;font-weight:800;line-height:1.05;margin-top:2px}.pk-el{font-size:9px;color:#7a6a45}.pk-tt{font-size:10px;color:#7a1f1f;font-weight:600;margin-top:3px;border-top:1px dotted #e0d3af;padding-top:2px}'+
+    '.pk-ns{font-size:11.5px;color:#2f2a1e;text-align:center;background:#faf6ea;border:1px solid #e6d9b0;border-radius:6px;padding:7px 10px;margin-top:8px}'+
+    '.pk-2col{display:flex;gap:8px;margin-top:8px}.pk-box{flex:1;border:1px solid #e6d9b0;border-radius:6px;padding:7px 10px;background:#fffdf7}.pk-box-h{font-size:10.5px;font-weight:800;color:#7a1f1f;margin-bottom:4px}'+
+    '.nhb{width:100%;border-collapse:collapse}.nhb td{padding:2px 3px;font-size:10px}.nhb-l{width:34px;color:#5a3a1a;font-weight:600}.nhb-t{width:auto}.nhb-f{display:block;height:9px;border-radius:5px}.nhb-n{width:16px;text-align:right;font-weight:700}'+
+    '.pk-tt2{font-size:9.6px;color:#3a3020;line-height:1.5}.pk-fs{font-size:9.6px;color:#3a3020;line-height:1.5}'+
+    '.dv-strip{border-collapse:collapse;width:100%}.dv-strip td{border:1px solid #e0d3af;padding:5px 3px;text-align:center;background:#fffdf7;width:16.6%}.dv-age{font-size:9px;color:#8a6a1f}.dv-cc{font-size:11px;font-weight:700;color:#5a3a1a}.dv-dg{font-size:9.5px;font-weight:700}'+
+    '.pk-tinhcach{margin-top:8px;font-size:10px;line-height:1.5;color:#2f2a1e;background:#faf6ea;border-left:3px solid #b8912a;border-radius:4px;padding:7px 10px}'+
+    '.pgLuan .inner{font-size:9.6px;line-height:1.4}.lu-foot{margin-top:6px;text-align:center;font-size:8.6px;color:#9a8a5a;font-style:italic}';
+  return pdfFrameDoc({ title:'Bát Tự - '+(bt.ten||''), sub:'THƯ VIỆN SÁCH CÁ NHÂN \u00b7 TỨ TRỤ BÁT TỰ', wm:'\u58ec', page1:page1, page2:page2, css:css });
 }
+
 function xemLaSoBatTu(){
   var nd=el('batDate'); if(!nd||!nd.value){ (window.toast||alert)('Hãy chọn ngày sinh.'); return; }
   var p=nd.value.split('-').map(function(n){return parseInt(n,10);});
@@ -8137,68 +8237,119 @@ function renderLucHaoFree(lh){
   return h;
 }
 function lhTimHao(lh, than){ for(var i=0;i<6;i++){ if(lh.lines[i].than===than) return lh.lines[i]; } return null; }
+var LUC_THAN_Y={
+ 'Huynh Đệ':'anh em - bạn bè - đồng nghiệp, sự cạnh tranh; chủ hao tài, tranh giành, nhưng cũng là trợ lực khi cần đồng lòng',
+ 'Tử Tôn':'con cái - phúc thần - sự bình an; chủ vui vẻ, hóa giải hung hiểm, thuận lợi, là "thần giữ của" và giải trừ tai ương',
+ 'Phụ Mẫu':'cha mẹ - bề trên - giấy tờ, văn bằng, nhà cửa, xe cộ; chủ sự che chở nhưng cũng là vất vả, lo toan',
+ 'Thê Tài':'tiền bạc - tài sản - hưởng thụ; với nam còn là vợ / người phụ nữ; chủ tài lộc, cơ hội làm ăn',
+ 'Quan Quỷ':'công danh - chức vị - quyền uy; với nữ là chồng; cũng chủ bệnh tật, kiện tụng, lo lắng nếu vượng quá'
+};
+var LUC_THAN_GOD={
+ 'Thanh Long':'cát thần: vui mừng, hỷ sự, tài lộc, quý nhân - điềm lành',
+ 'Chu Tước':'văn thư, tin tức, nhưng dễ có thị phi - miệng tiếng, tranh cãi',
+ 'Câu Trần':'ruộng đất, nhà cửa; chủ sự trì trệ, dây dưa, chậm trễ',
+ 'Đằng Xà':'điều quái dị, lo sợ, mộng mị, biến động bất ngờ khó lường',
+ 'Bạch Hổ':'tang thương, bệnh tật, tai nạn, tranh đấu - song cũng chủ uy quyền, quyết liệt',
+ 'Huyền Vũ':'ám muội, trộm cắp, lừa dối, tình cảm vụng trộm - việc âm thầm'
+};
 function luanLucHaoFull(lh){
-  var hx=KD_HEX[lh.num]||{}; var pd=KD_PD[hx.cat!=null?hx.cat:1];
+  var hx=KD_HEX[lh.num]||{}; var pd=KD_PD[hx.cat!=null?hx.cat:1]; var CHI=TV_CHI, CAN=TV_CAN;
   var theHao=lh.lines[lh.theLine-1], ungHao=lh.lines[lh.ungLine-1];
-  var tai=lhTimHao(lh,'Thê Tài'), quan=lhTimHao(lh,'Quan Quỷ'), tu=lhTimHao(lh,'Tử Tôn'), phu=lhTimHao(lh,'Phụ Mẫu');
+  var nhatNH=BT_CANNH[lh.dCan];
+  function tacDong(el2){ if(NH_SINH[nhatNH]===el2) return {t:'được Nhật thần sinh phù → vượng',c:'#1c9c4a'}; if(NH_KHAC[nhatNH]===el2) return {t:'bị Nhật thần khắc → suy',c:'#E05C4A'}; if(nhatNH===el2) return {t:'được Nhật thần trợ (đồng khí) → vượng',c:'#1c9c4a'}; if(NH_SINH[el2]===nhatNH) return {t:'phải sinh Nhật thần (tiết khí) → hơi hao',c:'#C9A227'}; return {t:'bình hòa với Nhật thần',c:'#C9A227'}; }
+  var theTD=tacDong(theHao.nh);
+  var tai=lhTimHao(lh,'Thê Tài'), quan=lhTimHao(lh,'Quan Quỷ'), tu=lhTimHao(lh,'Tử Tôn'), phu=lhTimHao(lh,'Phụ Mẫu'), huynh=lhTimHao(lh,'Huynh Đệ');
+  var theUngRel = (NH_SINH[ungHao.nh]===theHao.nh?'Ứng sinh Thế - hoàn cảnh/đối phương trợ giúp mình, việc dễ thành.':(NH_KHAC[ungHao.nh]===theHao.nh?'Ứng khắc Thế - gặp trở lực từ bên ngoài, cần thận trọng và nhẫn nại.':(NH_SINH[theHao.nh]===ungHao.nh?'Thế sinh Ứng - mình phải bỏ nhiều công sức cho việc/người khác.':(NH_KHAC[theHao.nh]===ungHao.nh?'Thế khắc Ứng - mình nắm thế chủ động, chi phối được cục diện.':'Thế Ứng tương hòa - hai bên cân bằng, tùy nỗ lực mà thành.'))));
+  function lucThanDetail(){
+    var arr=[];
+    [['Thê Tài',tai],['Quan Quỷ',quan],['Tử Tôn',tu],['Phụ Mẫu',phu],['Huynh Đệ',huynh]].forEach(function(x){
+      if(x[1]){ var td=tacDong(x[1].nh); arr.push('<li><b>'+x[0]+'</b> (hào '+x[1].idx+' - '+CHI[x[1].chi]+' '+x[1].nh+', '+x[1].god+'): '+LUC_THAN_Y[x[0]]+'. Trạng thái: <span style="color:'+td.c+'">'+td.t+'</span>.</li>'); }
+      else arr.push('<li><b>'+x[0]+'</b>: <i>không hiện trong quẻ (phục thần)</i> - '+LUC_THAN_Y[x[0]].split(';')[0]+' chưa lộ rõ, cần xét kỹ hoặc chờ thời.</li>');
+    });
+    return arr.join('');
+  }
+  var godNote=lh.lines.filter(function(L){return L.the||L.ung||L.bien;}).map(function(L){ return '<li>Hào '+L.idx+(L.the?' (Thế)':(L.ung?' (Ứng)':''))+(L.bien?' [động]':'')+' - <b>'+L.god+'</b>: '+LUC_THAN_GOD[L.god]+'</li>'; }).join('');
+  var bienTxt=lh.soBien?('Quẻ có <b>'+lh.soBien+' hào động</b>, biến sang <b>Quẻ '+lh.bienNum+' - '+((KD_HEX[lh.bienNum]||{}).ten||'')+'</b>. Hào động là điểm mấu chốt đang chuyển biến; biến quẻ cho biết <b>kết cục về sau</b>: '+((KD_HEX[lh.bienNum]||{}).y||'')+' Nên xem hào động thuộc Lục Thân nào để biết việc gì biến đổi.'):'Quẻ <b>tĩnh</b> (không hào động) - sự việc ổn định, ít đổi thay đột ngột; luận theo chính quẻ và hào Thế.';
   function muc(t,n){ return '<div class="lg-cung"><div class="lg-cung-h"><b>'+t+'</b></div><p>'+n+'</p></div>'; }
-  var theUng='Hào Thế (bản thân/việc mình) ở hào '+lh.theLine+' - <b>'+theHao.than+' '+TV_CHI[theHao.chi]+' ('+theHao.nh+')</b>; Hào Ứng (đối phương/hoàn cảnh) ở hào '+lh.ungLine+' - <b>'+ungHao.than+' '+TV_CHI[ungHao.chi]+' ('+ungHao.nh+')</b>. '+
-    (NH_SINH[ungHao.nh]===theHao.nh?'Ứng sinh Thế - hoàn cảnh/đối phương trợ giúp mình, thuận lợi.':(NH_KHAC[ungHao.nh]===theHao.nh?'Ứng khắc Thế - gặp trở lực từ bên ngoài, cần thận trọng.':(NH_SINH[theHao.nh]===ungHao.nh?'Thế sinh Ứng - mình phải bỏ công sức cho việc/người khác.':'Thế Ứng tương hòa - hai bên cân bằng, tùy nỗ lực mà thành.')));
-  var bienTxt=lh.soBien?('Có '+lh.soBien+' hào động, biến sang Quẻ '+lh.bienNum+' - '+((KD_HEX[lh.bienNum]||{}).ten||'')+'. Hào động cho biết yếu tố đang biến chuyển; biến quẻ chỉ chiều hướng kết cục: '+((KD_HEX[lh.bienNum]||{}).y||'')):'Quẻ tĩnh (không hào động) - sự việc ổn định, xem theo chính quẻ và hào Thế.';
   return '<div class="lg-doc">'+
-    '<div class="lg-toolbar"><button class="btn btn-gold" id="lucLuanPdf">\ud83d\udcc4 Lưu quẻ &amp; luận giải ra PDF</button></div>'+
-    '<div class="lg-sec"><h4>\u2756 Quẻ &amp; Thế - Ứng</h4><p>Quẻ <b>'+lh.num+'/64 - '+escapeHtml(hx.ten||'')+'</b> (cung '+lh.palEl+'). '+escapeHtml(hx.y||'')+'</p><p>'+theUng+'</p></div>'+
-    '<div class="lg-sec"><h4>\u2756 Các hào dụng thần</h4><p>'+
-      (tai?'<b>Thê Tài</b> ('+TV_CHI[tai.chi]+' '+tai.nh+') chủ tiền bạc'+(lh.gt==='nam'?', hôn nhân (vợ)':'')+'. ':'Quẻ khuyết Thê Tài - việc tiền bạc cần xét kỹ ngoại ứng. ')+
-      (quan?'<b>Quan Quỷ</b> ('+TV_CHI[quan.chi]+' '+quan.nh+') chủ công danh, chức vụ'+(lh.gt==='nu'?', hôn nhân (chồng)':'')+'. ':'Quẻ khuyết Quan Quỷ - công danh chưa rõ, chờ thời. ')+
-      (tu?'<b>Tử Tôn</b> ('+TV_CHI[tu.chi]+' '+tu.nh+') chủ bình an, hóa giải, con cái. ':'')+
-      (phu?'<b>Phụ Mẫu</b> ('+TV_CHI[phu.chi]+' '+phu.nh+') chủ giấy tờ, học hành, che chở. ':'')+'</p></div>'+
-    '<div class="lg-sec"><h4>\u2756 Luận theo phương diện</h4>'+
-      muc('Tổng quan', pd.tq)+muc('Công danh - Sự nghiệp', pd.cn+(quan?'':' (thiếu Quan Quỷ nên khó thấy rõ chức vị).'))+
-      muc('Tài lộc', pd.tl+(tai?'':' (thiếu Thê Tài nên tài chưa hiện).'))+
-      muc('Tình duyên - Gia đạo', pd.td)+muc('Cầu sự - Xuất hành', pd.xh)+'</div>'+
-    '<div class="lg-sec"><h4>\u2756 Hào động &amp; chiều hướng</h4><p>'+bienTxt+'</p></div>'+
-    '<div class="lg-sec lg-ketluan"><h4>\u2756 Lời khuyên</h4><div class="lg-loikhuyen"><div class="lg-lk-t">\ud83d\udc9b Đúc kết</div><p>'+escapeHtml(hx.khuyen||'')+'</p><p>Lục hào trọng ở việc xem <b>dụng thần vượng hay suy</b> và Thế - Ứng sinh khắc. Quẻ chỉ ra xu thế; <b>thành bại vẫn do tâm và sức của bạn</b>. Hãy giữ chính, tùy thời mà tiến thoái.</p></div></div>'+
-    '<p class="lg-note">Luận giải theo phép Lục Hào (Nạp Giáp - Kinh Phòng) cổ truyền, mang tính tham khảo - chiêm nghiệm.</p>'+
+    '<div class="lg-toolbar"><button class="btn btn-gold" id="lucLuanPdf">\ud83d\udcc4 Lưu quẻ &amp; luận giải ra PDF (2 trang)</button></div>'+
+    '<div class="lg-sec"><h4>\u2756 I. Quẻ chủ &amp; ý nghĩa</h4><p>Quẻ <b>'+lh.num+'/64 - '+escapeHtml(hx.ten||'')+'</b>, thuộc cung <b>'+lh.palEl+'</b>. '+escapeHtml(hx.y||'')+' Ngày gieo (Nhật thần): <b>'+CAN[lh.dCan]+' '+CHI[lh.dChi]+'</b> - hành '+nhatNH+', là "thước đo" vượng suy của các hào.</p></div>'+
+    '<div class="lg-sec"><h4>\u2756 II. Thế - Ứng (mình và người/việc)</h4>'+
+      '<p>Hào <b>Thế</b> (bản thân/việc mình) ở hào '+lh.theLine+' - <b>'+theHao.than+' '+CHI[theHao.chi]+' ('+theHao.nh+')</b>, '+theHao.god+'; trạng thái: <span style="color:'+theTD.c+'">'+theTD.t+'</span>. '+
+      'Hào <b>Ứng</b> (đối phương/hoàn cảnh) ở hào '+lh.ungLine+' - <b>'+ungHao.than+' '+CHI[ungHao.chi]+' ('+ungHao.nh+')</b>.</p><p>'+theUngRel+'</p></div>'+
+    '<div class="lg-sec"><h4>\u2756 III. Lục Thân trong quẻ</h4><ul class="lg-list">'+lucThanDetail()+'</ul></div>'+
+    '<div class="lg-sec"><h4>\u2756 IV. Lục Thần (6 thần) trên các hào trọng yếu</h4><ul class="lg-list">'+(godNote||'<li>Các hào bình thường, không có động biến đặc biệt.</li>')+'</ul></div>'+
+    '<div class="lg-sec"><h4>\u2756 V. Dụng thần theo loại việc</h4><p>'+
+      'Cầu <b>tài lộc, kinh doanh</b> → xem <b>Thê Tài</b>'+(tai?' ('+CHI[tai.chi]+' '+tai.nh+', '+tacDong(tai.nh).t+')':' (khuyết - tài chưa hiện, nên chờ hoặc nhờ ngoại lực)')+'. '+
+      'Cầu <b>công danh, chức vị, kiện tụng</b> → xem <b>Quan Quỷ</b>'+(quan?' ('+CHI[quan.chi]+' '+quan.nh+', '+tacDong(quan.nh).t+')':' (khuyết - công danh chưa rõ)')+'. '+
+      'Cầu <b>bình an, giải hạn, con cái</b> → xem <b>Tử Tôn</b>'+(tu?' ('+CHI[tu.chi]+' '+tu.nh+')':' (khuyết)')+'. '+
+      'Cầu <b>giấy tờ, học hành, nhà xe</b> → xem <b>Phụ Mẫu</b>'+(phu?' ('+CHI[phu.chi]+' '+phu.nh+')':' (khuyết)')+'.</p></div>'+
+    '<div class="lg-sec"><h4>\u2756 VI. Luận theo phương diện</h4>'+
+      muc('Tổng quan cát hung', pd.tq)+
+      muc('Công danh - Sự nghiệp', pd.cn+(quan?' Quan Quỷ hiện, việc chức vị có cơ sở.':' Thiếu Quan Quỷ nên khó thấy rõ chức vị, chờ thời.'))+
+      muc('Tài lộc - Kinh doanh', pd.tl+(tai?' Thê Tài hiện, tài có gốc.':' Thiếu Thê Tài nên tài chưa hiện rõ.'))+
+      muc('Tình duyên - Gia đạo', pd.td+(lh.gt==='nam'?(tai?' (nam xem Thê Tài - có dấu hiệu về người bạn đời).':''):(quan?' (nữ xem Quan Quỷ - có dấu hiệu về người bạn đời).':'')))+
+      muc('Cầu sự - Xuất hành', pd.xh)+
+      muc('Sức khỏe - Bình an', (tu?'Có Tử Tôn trấn giữ, dễ gặp dữ hóa lành.':'Thiếu Tử Tôn, việc giải hạn cần chủ động hơn.')+' '+(quan&&hx.cat===0?'Quan Quỷ vượng ở quẻ hung nên lưu ý bệnh tật, thị phi.':'Giữ tâm an, sinh hoạt điều độ là hơn cả.'))+'</div>'+
+    '<div class="lg-sec"><h4>\u2756 VII. Hào động &amp; chiều hướng (biến quẻ)</h4><p>'+bienTxt+'</p></div>'+
+    '<div class="lg-sec lg-ketluan"><h4>\u2756 VIII. Lời khuyên</h4><div class="lg-loikhuyen"><div class="lg-lk-t">\ud83d\udc9b Đúc kết</div><p>'+escapeHtml(hx.khuyen||'')+'</p><p>Phép Lục Hào trọng ở việc xem <b>dụng thần vượng hay suy</b> (nhờ Nhật thần, động hào sinh khắc) và quan hệ <b>Thế - Ứng</b>. Quẻ chỉ ra xu thế; <b>thành bại vẫn do tâm và sức của chính bạn</b>. Hãy giữ lòng ngay chính, tùy thời mà tiến thoái, gặp cát chớ chủ quan, gặp hung chớ nản.</p></div></div>'+
+    '<p class="lg-note">Luận theo phép Lục Hào (Nạp Giáp - Kinh Phòng) cổ truyền, mang tính tham khảo và chiêm nghiệm.</p>'+
   '</div>';
 }
+
 function moPaywallLuc(preview){ moPaywallSvc({ box:'lucLuanFree', key:'luchao', bookId:'luchao-luan', bookTitle:'Luận giải Lục Hào - Quẻ '+((window.__luchao||{}).num||''), gia:TV_GIA_LUC, prefix:'lh', maPrefix:'LH', tenLuan:'Luận giải chi tiết quẻ Lục Hào', getData:function(){return window.__luchao;}, luanFull:luanLucHaoFull }, preview); }
 function xuatPdfLucHao(){ var lh=window.__luchao; if(!lh){ toast('Chưa có quẻ.'); return; } try{ var html=pdfLucHaoCombo(lh); if(inTaiLieuPDF(html)) toast('Đang mở hộp thoại in - chọn "Lưu dưới dạng PDF".'); }catch(e){ if(window.console)console.warn(e); toast('Lỗi tạo PDF: '+(e&&e.message?e.message:'')); } }
 function pdfLucHaoCombo(lh){
-  var CHI=TV_CHI; var hx=KD_HEX[lh.num]||{}; var pd=KD_PD[hx.cat!=null?hx.cat:1];
+  var CHI=TV_CHI, CAN=TV_CAN; var hx=KD_HEX[lh.num]||{}; var pd=KD_PD[hx.cat!=null?hx.cat:1];
   var catLbl=['QUẺ HUNG','QUẺ BÌNH HÒA','QUẺ CÁT'][hx.cat!=null?hx.cat:1];
+  var catCol=['#b3402f','#9a6b1f','#2e7d46'][hx.cat!=null?hx.cat:1];
+  var nhatNH=BT_CANNH[lh.dCan];
+  function tacDong(el2){ if(NH_SINH[nhatNH]===el2||nhatNH===el2) return 'vượng'; if(NH_KHAC[nhatNH]===el2) return 'suy'; return 'bình'; }
+  var theHao=lh.lines[lh.theLine-1], ungHao=lh.lines[lh.ungLine-1];
+  var tai=lhTimHao(lh,'Thê Tài'), quan=lhTimHao(lh,'Quan Quỷ'), tu=lhTimHao(lh,'Tử Tôn'), phu=lhTimHao(lh,'Phụ Mẫu');
+  /* ---- TRANG 1 ---- */
   var rows='';
   for(var i=5;i>=0;i--){ var L=lh.lines[i]; var draw=L.duong?'<span class="pl-yang"></span>':'<span class="pl-yin"></span><span class="pl-yin"></span>';
-    rows+='<tr><td>'+L.god+'</td><td>'+L.than+'</td><td class="pl-draw">'+draw+(L.bien?' '+(L.duong?'\u25cb':'\u2715'):'')+'</td><td style="color:'+NH_MAU[L.nh]+'"><b>'+CHI[L.chi]+'</b> '+L.nh+'</td><td>'+(L.the?'Thế':(L.ung?'Ứng':''))+'</td></tr>'; }
-  var page1='<div class="pk-head"><div class="pk-title">QUẺ LỤC HÀO SỐ '+lh.num+'/64</div><div class="pk-name">'+_escH(hx.ten||'')+'</div><div class="pk-cat">'+catLbl+' · Cung '+lh.palEl+'</div></div>'+
-    '<div class="pk-mid"><table class="pl-tbl"><tr><th>Lục Thần</th><th>Lục Thân</th><th>Hào</th><th>Địa chi</th><th></th></tr>'+rows+'</table>'+
-    '<table class="pk-info2"><tr><td>Điều hỏi</td><td><b>'+_escH(lh.hoi||'-')+'</b></td></tr>'+(lh.ten?'<tr><td>Người xem</td><td><b>'+_escH(lh.ten)+'</b></td></tr>':'')+
-    '<tr><td>Ngày gieo</td><td>'+_escH(lh.ngay)+' (nhật thần '+TV_CAN[lh.dCan]+' '+CHI[lh.dChi]+')</td></tr>'+
-    '<tr><td>Hào động</td><td>'+(lh.soBien?(lh.soBien+' hào → biến Quẻ '+lh.bienNum+' - '+_escH((KD_HEX[lh.bienNum]||{}).ten||'')):'Không (quẻ tĩnh)')+'</td></tr></table></div>'+
-    '<div class="pk-y2">'+_escH(hx.y||'')+'</div>';
+    var mk=L.the?'<b style="color:#b3402f">Thế</b>':(L.ung?'<b style="color:#1f5a8a">Ứng</b>':'');
+    rows+='<tr'+(L.the?' class="pl-the"':'')+'><td>'+L.god+'</td><td><b>'+L.than+'</b></td><td class="pl-draw">'+draw+(L.bien?' <span class="pl-dong">'+(L.duong?'\u25cb':'\u2715')+'</span>':'')+'</td><td><b>'+CHI[L.chi]+'</b> '+L.nh+'</td><td>'+mk+'</td></tr>'; }
+  var page1='<div class="pk-head"><div class="pk-orn">\u273b \u2042 \u273b</div><div class="pk-title">QUẺ LỤC HÀO SỐ '+lh.num+' / 64</div><div class="pk-name">'+_escH(hx.ten||'')+'</div><div class="pk-cat" style="color:'+catCol+'">'+catLbl+' \u00b7 Cung '+lh.palEl+'</div></div>'+
+    '<div class="pk-sec-h">An quẻ - Nạp Giáp</div>'+
+    '<table class="pl-tbl"><tr><th>Lục Thần</th><th>Lục Thân</th><th>Hào</th><th>Địa chi</th><th>Thế/Ứng</th></tr>'+rows+'</table>'+
+    '<table class="pk-info2"><tr><td>Điều hỏi</td><td><b>'+_escH(lh.hoi||'-')+'</b></td></tr>'+(lh.ten?'<tr><td>Người xem</td><td><b>'+_escH(lh.ten)+'</b> ('+(lh.gt==='nam'?'Nam':'Nữ')+')</td></tr>':'')+
+    '<tr><td>Ngày gieo</td><td>'+_escH(lh.ngay)+' \u00b7 Nhật thần <b>'+CAN[lh.dCan]+' '+CHI[lh.dChi]+'</b> (hành '+nhatNH+')</td></tr>'+
+    '<tr><td>Hào động</td><td>'+(lh.soBien?('<b>'+lh.soBien+' hào</b> → biến Quẻ '+lh.bienNum+' - '+_escH((KD_HEX[lh.bienNum]||{}).ten||'')):'Không (quẻ tĩnh)')+'</td></tr></table>'+
+    '<div class="pk-sec-h">Ý nghĩa quẻ</div><div class="pk-y2">'+_escH(hx.y||'')+'</div>'+
+    '<div class="pk-2col"><div class="pk-box"><div class="pk-box-h">Thế - Ứng</div><div class="pk-mini">Thế: hào '+lh.theLine+' <b>'+theHao.than+'</b> ('+CHI[theHao.chi]+' '+theHao.nh+', '+tacDong(theHao.nh)+')<br>Ứng: hào '+lh.ungLine+' <b>'+ungHao.than+'</b> ('+CHI[ungHao.chi]+' '+ungHao.nh+')</div></div>'+
+    '<div class="pk-box"><div class="pk-box-h">Dụng thần chính</div><div class="pk-mini">Tài: '+(tai?CHI[tai.chi]+' '+tai.nh+' ('+tacDong(tai.nh)+')':'khuyết')+'<br>Quan: '+(quan?CHI[quan.chi]+' '+quan.nh+' ('+tacDong(quan.nh)+')':'khuyết')+'<br>Tử Tôn: '+(tu?CHI[tu.chi]+' '+tu.nh:'khuyết')+' \u00b7 Phụ Mẫu: '+(phu?CHI[phu.chi]+' '+phu.nh:'khuyết')+'</div></div></div>';
+  /* ---- TRANG 2 ---- */
   function m(t,n){ return '<div class="lu-cung"><div class="lu-cung-h">'+t+'</div><div class="lu-cung-b">'+_escH(n)+'</div></div>'; }
-  var theHao=lh.lines[lh.theLine-1], ungHao=lh.lines[lh.ungLine-1];
-  var page2='<div class="lu-title"><div class="lu-orn">\u27e1 \u22c6 \u2756 \u22c6 \u27e1</div><h2>LUẬN GIẢI LỤC HÀO</h2><div class="lu-orn">\u2726 QUẺ '+lh.num+' - '+_escH(hx.ten||'')+' \u2726</div></div>'+
-    '<div class="lu-who">'+(lh.ten?'<b>'+_escH(lh.ten)+'</b> · ':'')+(lh.hoi?'Hỏi: <b>'+_escH(lh.hoi)+'</b> · ':'')+'Cung '+lh.palEl+' · Thế hào '+lh.theLine+' ('+theHao.than+') · Ứng hào '+lh.ungLine+' ('+ungHao.than+')</div>'+
-    '<div class="lu-h">Quẻ &amp; ý nghĩa</div><div class="lu-lead">'+_escH(hx.y||'')+'</div>'+
+  var theUngRel=(NH_SINH[ungHao.nh]===theHao.nh?'Ứng sinh Thế - ngoại cảnh trợ giúp, dễ thành.':(NH_KHAC[ungHao.nh]===theHao.nh?'Ứng khắc Thế - có trở lực bên ngoài, cần thận trọng.':(NH_KHAC[theHao.nh]===ungHao.nh?'Thế khắc Ứng - mình chủ động, chi phối cục diện.':'Thế Ứng tương hòa - tùy nỗ lực mà thành.')));
+  var page2='<div class="lu-title"><div class="lu-orn">\u27e1 \u22c6 \u2756 \u22c6 \u27e1</div><h2>LUẬN ĐOÁN CÁT HUNG</h2><div class="lu-orn">\u2726 QUẺ '+lh.num+' - '+_escH(hx.ten||'')+' \u2726</div></div>'+
+    '<div class="lu-who">'+(lh.ten?'<b>'+_escH(lh.ten)+'</b> \u00b7 ':'')+(lh.hoi?'Hỏi: <b>'+_escH(lh.hoi)+'</b> \u00b7 ':'')+'Cung '+lh.palEl+' \u00b7 Nhật thần '+CAN[lh.dCan]+' '+CHI[lh.dChi]+'</div>'+
+    '<div class="lu-h">Thế - Ứng (mình &amp; người/việc)</div>'+
+    '<div class="lu-lead">Thế ở hào '+lh.theLine+' (<b>'+theHao.than+' '+CHI[theHao.chi]+' '+theHao.nh+'</b>, '+tacDong(theHao.nh)+' theo Nhật thần), Ứng ở hào '+lh.ungLine+' (<b>'+ungHao.than+' '+CHI[ungHao.chi]+' '+ungHao.nh+'</b>). '+theUngRel+'</div>'+
+    '<div class="lu-h">Dụng thần theo loại việc</div>'+
+    '<div class="lu-grid">'+
+      m('Tài lộc (Thê Tài)', tai?(CHI[tai.chi]+' '+tai.nh+' - '+tacDong(tai.nh)+'; tài có gốc, xem hào này vượng suy để đoán được mất.'):'khuyết Thê Tài - tài chưa hiện, nên chờ hoặc nhờ ngoại lực.')+
+      m('Công danh (Quan Quỷ)', quan?(CHI[quan.chi]+' '+quan.nh+' - '+tacDong(quan.nh)+'; chức vị/kiện tụng có cơ sở.'):'khuyết Quan Quỷ - công danh chưa rõ, chờ thời.')+
+      m('Bình an (Tử Tôn)', tu?(CHI[tu.chi]+' '+tu.nh+' - phúc thần trấn giữ, dữ hóa lành.'):'khuyết Tử Tôn - việc giải hạn cần chủ động hơn.')+
+      m('Giấy tờ - Học hành (Phụ Mẫu)', phu?(CHI[phu.chi]+' '+phu.nh+' - có chỗ nương tựa, giấy tờ thuận.'):'khuyết Phụ Mẫu - thủ tục cần lưu tâm.')+
+    '</div>'+
     '<div class="lu-h">Luận theo phương diện</div>'+
-    '<div class="lu-grid">'+m('Tổng quan',pd.tq)+m('Công danh - Sự nghiệp',pd.cn)+m('Tài lộc',pd.tl)+m('Tình duyên - Gia đạo',pd.td)+m('Cầu sự - Xuất hành',pd.xh)+m('Hào động',lh.soBien?(lh.soBien+' hào động, biến Quẻ '+lh.bienNum):'Quẻ tĩnh')+'</div>'+
+    '<div class="lu-grid">'+m('Tổng quan',pd.tq)+m('Công danh',pd.cn)+m('Tài lộc',pd.tl)+m('Tình duyên - Gia đạo',pd.td)+m('Cầu sự - Xuất hành',pd.xh)+m('Hào động',lh.soBien?(lh.soBien+' hào động → biến Quẻ '+lh.bienNum+' - '+((KD_HEX[lh.bienNum]||{}).ten||'')+'; xem chiều kết cục.'):'Quẻ tĩnh - tình thế ổn định.')+'</div>'+
     '<div class="lu-h">Lời khuyên</div>'+
-    '<div class="lu-lk"><span class="lu-lkt">\ud83d\udc9b Đúc kết</span>'+_escH(hx.khuyen||'')+' Lục hào trọng ở dụng thần vượng suy và Thế Ứng sinh khắc; quẻ chỉ xu thế, thành bại do tâm và sức của chính bạn. Giữ chính, tùy thời tiến thoái.</div>';
-  var css='.pk-head{text-align:center;border-bottom:2px solid #b8912a;padding-bottom:8px;margin-bottom:10px}.pk-title{font-size:19px;font-weight:800;color:#7a1f1f;letter-spacing:2px}.pk-name{font-size:24px;font-weight:800;color:#5a3a1a;margin:4px 0}.pk-cat{font-size:12px;color:#a8701a}'+
-    '.pk-mid{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}'+
-    '.pl-tbl{border-collapse:collapse;font-size:11px;min-width:150mm}.pl-tbl th{background:#f0e6c8;color:#7a1f1f;padding:4px 8px;border:1px solid #d9c489}.pl-tbl td{border:1px solid #e0d3af;padding:4px 8px;text-align:center}.pl-draw .pl-yang{display:inline-block;width:34mm;height:3.4mm;background:#7a1f1f;border-radius:2px}.pl-draw .pl-yin{display:inline-block;width:15mm;height:3.4mm;background:#7a1f1f;border-radius:2px;margin:0 1mm}'+
-    '.pk-info2{border-collapse:collapse;font-size:11px;min-width:150mm}.pk-info2 td{padding:4px 10px;border-bottom:1px dotted #e0d3af}.pk-info2 td:first-child{color:#8a6a1f;width:30%}'+
-    '.pk-y2{margin-top:6px;background:#faf6ea;border:1px solid #e6d9b0;border-left:3px solid #b8912a;border-radius:6px;padding:8px 12px;font-size:11.5px;line-height:1.55;color:#2f2a1e}'+
-    '.pgLuan .inner{font-size:10px;line-height:1.42}';
-  return pdfFrameDoc({ title:'Lục Hào - Quẻ '+lh.num, sub:'THƯ VIỆN SÁCH CÁ NHÂN · LỤC HÀO', wm:'\u262f', page1:page1, page2:page2, css:css });
+    '<div class="lu-lk"><span class="lu-lkt">\ud83d\udc9b Đúc kết</span>'+_escH(hx.khuyen||'')+' Lục hào trọng ở dụng thần vượng suy (nhờ Nhật thần, động hào) và Thế - Ứng sinh khắc; quẻ chỉ xu thế, thành bại do tâm và sức của chính bạn. Giữ lòng ngay chính, tùy thời tiến thoái - gặp cát chớ chủ quan, gặp hung chớ nản.</div>'+
+    '<div class="lu-foot">Luận theo phép Lục Hào (Nạp Giáp - Kinh Phòng) cổ truyền \u00b7 tham khảo, chiêm nghiệm.</div>';
+  var css='.pk-head{text-align:center;border-bottom:2px solid #b8912a;padding-bottom:7px;margin-bottom:8px}.pk-orn{color:#b8912a;font-size:11px;letter-spacing:4px}.pk-title{font-size:18px;font-weight:800;color:#7a1f1f;letter-spacing:2px;margin-top:2px}.pk-name{font-size:23px;font-weight:800;color:#5a3a1a;margin:3px 0}.pk-cat{font-size:12px;font-weight:700}'+
+    '.pk-sec-h{font-size:12px;font-weight:800;color:#7a1f1f;text-align:center;margin:9px 0 5px;letter-spacing:1px}.pk-sec-h::before,.pk-sec-h::after{content:"\u2748";color:#b8912a;margin:0 8px;font-size:9px}'+
+    '.pl-tbl{border-collapse:collapse;width:100%;font-size:11px}.pl-tbl th{background:#f0e6c8;color:#7a1f1f;padding:5px 6px;border:1px solid #d9c489;font-size:10px}.pl-tbl td{border:1px solid #e0d3af;padding:5px 6px;text-align:center;background:#fffdf7}.pl-tbl .pl-the td{background:#fbf3e6}'+
+    '.pl-draw{min-width:44mm}.pl-yang{display:inline-block;width:38mm;height:3.4mm;background:#7a1f1f;border-radius:2px;vertical-align:middle}.pl-yin{display:inline-block;width:17mm;height:3.4mm;background:#7a1f1f;border-radius:2px;margin:0 1.2mm;vertical-align:middle}.pl-dong{color:#c0392b;font-weight:700}'+
+    '.pk-info2{border-collapse:collapse;width:100%;font-size:11px;margin-top:8px}.pk-info2 td{padding:4px 10px;border-bottom:1px dotted #e0d3af}.pk-info2 td:first-child{color:#8a6a1f;width:26%;font-weight:600}'+
+    '.pk-y2{background:#faf6ea;border:1px solid #e6d9b0;border-left:3px solid #b8912a;border-radius:6px;padding:8px 12px;font-size:11px;line-height:1.55;color:#2f2a1e}'+
+    '.pk-2col{display:flex;gap:8px;margin-top:8px}.pk-box{flex:1;border:1px solid #e6d9b0;border-radius:6px;padding:7px 10px;background:#fffdf7}.pk-box-h{font-size:10.5px;font-weight:800;color:#7a1f1f;margin-bottom:4px}.pk-mini{font-size:9.6px;line-height:1.5;color:#3a3020}'+
+    '.pgLuan .inner{font-size:9.6px;line-height:1.4}.lu-foot{margin-top:6px;text-align:center;font-size:8.6px;color:#9a8a5a;font-style:italic}';
+  return pdfFrameDoc({ title:'Lục Hào - Quẻ '+lh.num, sub:'THƯ VIỆN SÁCH CÁ NHÂN \u00b7 LỤC HÀO', wm:'\u262f', page1:page1, page2:page2, css:css });
 }
-
-
-
-
-
-
 
 </script>
 
