@@ -91,26 +91,27 @@ header{
 .logo-kk{width:60px;height:60px;flex-shrink:0;filter:drop-shadow(0 2px 8px rgba(201,162,39,.28))}
 /* dải phân cách mảnh giữa logo và chữ cho bố cục cân đối, tinh tế */
 .brand-text{
-  display:flex;flex-direction:column;justify-content:center;gap:2px;
-  padding-left:16px;border-left:1px solid rgba(201,162,39,.28);
+  display:flex;flex-direction:column;justify-content:center;gap:3px;
+  padding-left:15px;border-left:1px solid rgba(201,162,39,.3);text-align:center;
 }
 .brand-text .brand-name{
-  font-family:var(--font-display);font-weight:900;font-size:1.34rem;
-  color:var(--gold-bright);letter-spacing:.16em;line-height:1.05;
+  font-family:var(--font-display);font-weight:800;font-size:1.18rem;
+  color:var(--gold-bright);letter-spacing:.16em;line-height:1.08;
   white-space:nowrap;text-transform:uppercase;
 }
 .brand-text .brand-name2{
-  font-size:1.16rem;letter-spacing:.42em;color:var(--gold);
-  padding-left:.06em;
+  font-size:1.18rem;letter-spacing:.66em;color:var(--gold-bright);
+  padding-left:.66em;
 }
 @media(max-width:560px){
   .brand{gap:10px}
   .brand-text{padding-left:11px}
-  .brand-text .brand-name{font-size:1rem;letter-spacing:.1em}
-  .brand-text .brand-name2{font-size:.86rem;letter-spacing:.3em}
+  .brand-text .brand-name{font-size:.98rem;letter-spacing:.12em}
+  .brand-text .brand-name2{font-size:.98rem;letter-spacing:.5em;padding-left:.5em}
   .logo-kk{width:48px;height:48px}
 }
-.header-tools{margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:flex-end}
+.header-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 /* ===== MENU 3 CHỨC NĂNG ===== */
 .main-nav{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .nav-item{
@@ -122,7 +123,7 @@ header{
 .nav-item:hover{background:rgba(201,162,39,.12);border-color:rgba(201,162,39,.35);color:var(--gold-bright)}
 .nav-item.active{background:rgba(201,162,39,.18);border-color:var(--gold);color:var(--gold-bright)}
 @media(max-width:900px){
-  .main-nav{order:3;width:100%;justify-content:center;margin-top:4px;border-top:1px solid rgba(201,162,39,.15);padding-top:8px}
+  .header-right{width:100%;justify-content:center;margin-left:0;margin-top:6px;border-top:1px solid rgba(201,162,39,.15);padding-top:8px}
 }
 @media(max-width:560px){
   .nav-item{padding:7px 11px;font-size:.82rem}
@@ -391,8 +392,8 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
   border:1px solid rgba(201,162,39,.2);
   border-radius:28px;
   background:
-    radial-gradient(120% 80% at 50% 0%, rgba(201,162,39,.05), transparent 62%),
-    rgba(255,255,255,.014);
+    radial-gradient(120% 80% at 50% 0%, rgba(201,162,39,.08), transparent 62%),
+    rgba(255,255,255,.03);
 }
 .grp-box.pos-1{grid-column:1;grid-row:1}
 .grp-box.pos-2{grid-column:3;grid-row:1}
@@ -407,25 +408,25 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
   display:flex;flex-direction:column;
   padding:15px 14px 14px;
   border-radius:22px;                        /* bo tròn góc */
-  background:linear-gradient(165deg, rgba(255,255,255,.05), rgba(0,0,0,.26));
-  border:1.5px solid color-mix(in srgb, var(--gc) 40%, transparent);
-  box-shadow:0 12px 34px rgba(0,0,0,.36), inset 0 1px 0 rgba(255,255,255,.06);
+  background:linear-gradient(165deg, color-mix(in srgb, var(--gc) 22%, rgba(255,255,255,.07)), color-mix(in srgb, var(--gc) 9%, rgba(17,28,52,.55)));
+  border:1.5px solid color-mix(in srgb, var(--gc) 58%, transparent);
+  box-shadow:0 12px 30px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.1);
   transition:border-color .25s, box-shadow .25s, transform .25s;
   overflow:hidden;
 }
 .grp-box::before{
   content:'';position:absolute;top:0;left:0;right:0;height:3px;
   background:linear-gradient(90deg, transparent, var(--gc), transparent);
-  opacity:.9;
+  opacity:1;
 }
 .grp-box::after{
   content:'';position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(110% 65% at 50% 0%, var(--gc), transparent 58%);
-  opacity:.07;
+  background:radial-gradient(110% 65% at 50% 0%, var(--gc), transparent 60%);
+  opacity:.16;
 }
 .grp-box:hover{
   border-color:var(--gc);transform:translateY(-3px);
-  box-shadow:0 18px 46px rgba(0,0,0,.48), inset 0 1px 0 rgba(255,255,255,.08);
+  box-shadow:0 18px 46px rgba(0,0,0,.42), 0 0 22px color-mix(in srgb, var(--gc) 35%, transparent), inset 0 1px 0 rgba(255,255,255,.12);
 }
 
 /* ---- tiêu đề gọn, 1 khối, nằm trọn trong hộp ---- */
@@ -511,36 +512,36 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
   padding:8px 6px;
   border-radius:14px;                          /* bo tròn góc */
-  background:linear-gradient(160deg, rgba(255,255,255,.05), rgba(0,0,0,.2));
-  border:1px solid color-mix(in srgb, var(--cc) 34%, transparent);
+  background:linear-gradient(160deg, color-mix(in srgb, var(--cc) 24%, rgba(255,255,255,.08)), color-mix(in srgb, var(--cc) 9%, rgba(15,24,44,.5)));
+  border:1px solid color-mix(in srgb, var(--cc) 52%, transparent);
   color:var(--cream);cursor:pointer;overflow:hidden;
   transition:border-color .2s, transform .2s, box-shadow .2s, background .2s;
 }
 .cat-tile::before{
   content:'';position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(90% 60% at 50% 0%, var(--cc), transparent 62%);
-  opacity:.09;transition:opacity .2s;
+  opacity:.18;transition:opacity .2s;
 }
 .cat-tile:hover{
   border-color:var(--cc);transform:translateY(-2px);
-  box-shadow:0 8px 20px rgba(0,0,0,.4);
+  box-shadow:0 8px 22px rgba(0,0,0,.34), 0 0 16px color-mix(in srgb, var(--cc) 35%, transparent);
 }
-.cat-tile:hover::before{opacity:.18}
+.cat-tile:hover::before{opacity:.3}
 .cat-tile.active{
   border-color:var(--cc);
-  box-shadow:0 0 0 1.5px var(--cc), 0 8px 22px rgba(0,0,0,.45);
+  box-shadow:0 0 0 1.5px var(--cc), 0 8px 22px rgba(0,0,0,.4);
 }
-.cat-tile.active::before{opacity:.24}
+.cat-tile.active::before{opacity:.36}
 .cat-ico{
   position:relative;z-index:1;flex-shrink:0;
   width:34px;height:34px;border-radius:10px;
   display:flex;align-items:center;justify-content:center;
-  background:color-mix(in srgb, var(--cc) 15%, transparent);
-  border:1px solid color-mix(in srgb, var(--cc) 34%, transparent);
+  background:color-mix(in srgb, var(--cc) 30%, transparent);
+  border:1px solid color-mix(in srgb, var(--cc) 60%, transparent);
 }
 .cat-ico svg{
   width:18px;height:18px;
-  stroke:var(--cc);fill:none;stroke-width:1.7;
+  stroke:color-mix(in srgb, var(--cc) 82%, #ffffff);fill:none;stroke-width:1.9;
   stroke-linecap:round;stroke-linejoin:round;
 }
 .cat-label{
@@ -1785,6 +1786,7 @@ footer{
         <div class="brand-name brand-name2">CÁ NHÂN</div>
       </div>
     </div>
+    <div class="header-right">
     <nav class="main-nav" id="mainNav">
       <div class="nav-dd" id="navBookDD">
         <button class="nav-item nav-dd-btn" id="navBook"><span class="nav-ic">📚</span>KK-BOOK<span class="dd-caret">▾</span></button>
@@ -1812,6 +1814,7 @@ footer{
       </button>
       <button class="btn btn-ghost btn-account" id="accountBtn" data-i18n="joinBtn" style="display:none">Đăng ký</button>
       <button class="btn btn-ghost" id="adminBtn" data-i18n="admin" style="position:relative">Quản trị<span class="admin-badge" id="adminBadge" style="display:none">0</span></button>
+    </div>
     </div>
   </div>
 </header>
@@ -1854,6 +1857,7 @@ footer{
     <text class="bin b1" x="8" y="90" font-family="monospace" font-size="9" fill="#00C2A8">10110</text>
     <text class="bin b2" x="8" y="520" font-family="monospace" font-size="9" fill="#4F8DF7">01001</text>
     <text class="bin b3" x="70" y="200" font-family="monospace" font-size="9" fill="#C9A227">1101</text>
+    <text x="60" y="612" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="11.5" fill="#9aa3b8" text-anchor="middle" letter-spacing="0.5">www.kk-book.com</text>
   </svg>
 </div>
 
@@ -2001,7 +2005,7 @@ footer{
       </svg>
       <div>
         <div style="font-family:var(--font-display);font-weight:700;color:var(--gold-bright);font-size:1.05rem">KK-2026</div>
-        <div class="f-author">Tác giả : Nguyễn Duy Điển (KK-2026)</div>
+        <div class="f-author">Tác giả : Nguyễn Duy Điển</div>
       </div>
     </div>
 
@@ -2190,7 +2194,7 @@ footer{
     </div>
     <h2>Website đang bảo trì</h2>
     <p id="maintMsg">Thư viện tạm ngừng phục vụ để nâng cấp. Anh/chị vui lòng quay lại sau. Xin cảm ơn.</p>
-    <div class="maint-sign">Tác giả : Nguyễn Duy Điển (KK-2026)</div>
+    <div class="maint-sign">Tác giả : Nguyễn Duy Điển</div>
     <div class="maint-actions">
       <button class="btn btn-gold" id="maintAdminBtn">Mở bảng quản trị</button>
       <button class="btn btn-ghost" id="maintRetry">Tải lại trang</button>
@@ -2930,11 +2934,11 @@ const CATS = [
 ];
 /* 5 NHÓM TRI THỨC - bố cục 2 trên, 1 giữa, 2 dưới */
 const GROUPS = [
-  {id:'sci',  vi:'Khoa học & Công nghệ', sub:'Công nghệ, tự nhiên, vũ trụ',   c:'#4F8DF7'},
-  {id:'life', vi:'Y học & Đời sống',     sub:'Sức khỏe, tâm lý, thể thao',     c:'#3ECF7A'},
-  {id:'hum',  vi:'Lịch sử & Nhân văn',   sub:'Lịch sử, địa lý, văn hóa',       c:'#C98F3D'},
-  {id:'mgmt', vi:'Kinh tế & Quản trị',   sub:'Tài chính, lãnh đạo, pháp luật', c:'#E8C33C'},
-  {id:'edu',  vi:'Giáo dục & Tra cứu',   sub:'Đào tạo, bách khoa, ngoại ngữ',  c:'#F2A03D'}
+  {id:'sci',  vi:'Khoa học & Công nghệ', sub:'Công nghệ, tự nhiên, vũ trụ',   c:'#5B9CFF'},
+  {id:'life', vi:'Y học & Đời sống',     sub:'Sức khỏe, tâm lý, thể thao',     c:'#3FDD8E'},
+  {id:'hum',  vi:'Lịch sử & Nhân văn',   sub:'Lịch sử, địa lý, văn hóa',       c:'#E0A44A'},
+  {id:'mgmt', vi:'Kinh tế & Quản trị',   sub:'Tài chính, lãnh đạo, pháp luật', c:'#EFC84A'},
+  {id:'edu',  vi:'Giáo dục & Tra cứu',   sub:'Đào tạo, bách khoa, ngoại ngữ',  c:'#35C6D6'}
 ];
 /* sách cũ -> lĩnh vực mới, không mất sách nào */
 const CAT_MAP = { assist:'assist' };
@@ -7780,12 +7784,12 @@ function pdfKinhDichCombo(q){
       '<h4>Sứ mệnh</h4>' +
       '<p>Chúng tôi tin rằng tri thức cần được lan toả một cách đẹp đẽ và dễ tiếp cận. KK-BOOK mang đến trải nghiệm đọc mượt mà trên mọi thiết bị - máy tính, máy tính bảng hay điện thoại - với chất lượng hình ảnh sắc nét, khả năng đọc thành tiếng và giao diện được chăm chút tới từng chi tiết.</p>' +
       '<h4>Điều làm nên KK-BOOK</h4>' +
-      '<p><span class="about-hi">Nội dung nguyên bản:</span> Toàn bộ sách là tác phẩm gốc, sole-author, thuộc bản quyền của tác giả Nguyễn Duy Điển (KK-2026).<br>' +
+      '<p><span class="about-hi">Nội dung nguyên bản:</span> Toàn bộ sách là tác phẩm gốc, sole-author, thuộc bản quyền của tác giả Nguyễn Duy Điển.<br>' +
       '<span class="about-hi">Đọc thử miễn phí:</span> Mỗi cuốn đều cho đọc miễn phí những trang đầu để bạn cảm nhận trước khi quyết định.<br>' +
       '<span class="about-hi">Trải nghiệm hiện đại:</span> Tìm kiếm thông minh, đọc thành tiếng, trợ lý giải đáp, cùng nhiều dịch vụ mở rộng như lập lá số Tử Vi và trò chơi kiến thức.</p>' +
       '<h4>Lời cảm ơn</h4>' +
       '<p>Cảm ơn bạn đã ghé thăm và đồng hành. Mỗi trang sách bạn mở ra là một sự trân trọng dành cho tri thức và cho tâm huyết của người viết. Chúc bạn có những giờ phút đọc sách thật ý nghĩa.</p>' +
-      '<p style="text-align:right;color:var(--gold);font-style:italic;margin-top:18px">Tác giả : Nguyễn Duy Điển (KK-2026)</p>';
+      '<p style="text-align:right;color:var(--gold);font-style:italic;margin-top:18px">Tác giả : Nguyễn Duy Điển</p>';
   }
 
   /* ---------- HƯỚNG DẪN SỬ DỤNG ---------- */
@@ -7825,7 +7829,7 @@ function pdfKinhDichCombo(q){
       '<h4>💬 6. Cần hỗ trợ?</h4>' +
       '<p>Mọi thắc mắc, góp ý hoặc đề nghị hợp tác, xin phép sử dụng nội dung, vui lòng liên hệ tác giả qua email <span class="about-hi">nguyenduydien75@gmail.com</span>, hoặc dùng nút <span class="about-hi">Góp ý cho tác giả</span> ngay trên web. Bạn cũng có thể hỏi nhanh <span class="about-hi">Trợ lý KK-2026</span> ở góc màn hình.</p>' +
 
-      '<p style="text-align:right;color:var(--gold);font-style:italic;margin-top:20px">Chúc bạn có những giờ đọc sách thật ý nghĩa!<br>Tác giả : Nguyễn Duy Điển (KK-2026)</p>';
+      '<p style="text-align:right;color:var(--gold);font-style:italic;margin-top:20px">Chúc bạn có những giờ đọc sách thật ý nghĩa!<br>Tác giả : Nguyễn Duy Điển</p>';
   }
 
   /* ---------- DỊCH VỤ: danh sách <-> Tử Vi ---------- */
