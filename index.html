@@ -3580,9 +3580,25 @@ async function gLoadCatalog(){
   }catch(e){ console.error('catalog', e); return false; }
 }
 async function gFetchPdf(driveId){
-  const r = await fetch(`https://www.googleapis.com/drive/v3/files/${driveId}?alt=media&key=${GDRIVE.apiKey}`);
-  if(!r.ok) throw new Error('Drive HTTP '+r.status);
-  return new Uint8Array(await r.arrayBuffer());
+  const key = GDRIVE.apiKey;
+  const urls = [
+    `https://www.googleapis.com/drive/v3/files/${driveId}?alt=media&key=${key}`,
+    `https://www.googleapis.com/drive/v3/files/${driveId}?alt=media&supportsAllDrives=true&key=${key}`
+  ];
+  let lastErr = null;
+  for(let i=0;i<urls.length;i++){
+    try{
+      const r = await fetch(urls[i], { cache:'no-store', redirect:'follow' });
+      if(!r.ok){ lastErr = new Error('Drive HTTP '+r.status); if(r.status===404||r.status===403||r.status===401){ throw lastErr; } continue; }
+      const buf = await r.arrayBuffer();
+      if(!buf || buf.byteLength < 100){ lastErr = new Error('File rỗng hoặc không hợp lệ'); continue; }
+      return new Uint8Array(buf);
+    }catch(e){
+      lastErr = e;
+      if(/HTTP 40[134]/.test(e && e.message || '')) throw e;   /* lỗi quyền/không tồn tại: dừng, không thử tiếp */
+    }
+  }
+  throw lastErr || new Error('Không tải được file từ Google Drive');
 }
 function updateDriveUI(){
   const st = $('#driveStatus'); if(!st) return;
@@ -4371,6 +4387,8 @@ async function openReader(book){
       toast('Cuốn sách này tạm thời chưa đọc được. Chúng tôi sẽ sớm khắc phục. Xin lỗi vì sự bất tiện.');
     } else if(la403){
       toast('Không tải được file từ Google Drive (lỗi quyền / hạn mức API - 403). ' + (toiLaChuTrang()?'Hãy kiểm tra API key và đảm bảo file được chia sẻ "Bất kỳ ai có liên kết".':'Vui lòng thử lại sau ít phút.'));
+    } else if(/Failed to fetch|NetworkError|Load failed|ERR_/i.test(msg)){
+      toast('Không kết nối được tới Google Drive để tải sách. ' + (toiLaChuTrang()?'Nguyên nhân thường gặp: (1) file CHƯA chia sẻ "Bất kỳ ai có liên kết"; (2) API key hết/không đủ hạn mức; (3) file bị Google tạm khoá do vượt lượt tải trong ngày; (4) mạng/tường lửa chặn googleapis.com. Hãy kiểm tra lần lượt các mục này.':'Có thể do mạng hoặc file tạm thời chưa tải được. Vui lòng thử lại sau ít phút.'));
     } else {
       toast('Không mở được sách: ' + String(e && e.message ? e.message : e).slice(0,90) + '. Hãy tải lại trang (Ctrl+F5) rồi thử lại.');
     }
