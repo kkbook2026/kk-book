@@ -2929,7 +2929,30 @@ footer{
 ===================================================================== */
 'use strict';
 
+/* pdf.js worker: KHÔNG dùng trực tiếp URL từ CDN khác nguồn, vì trình duyệt CHẶN
+   new Worker() cross-origin -> hậu quả là MỌI file PDF không mở được trên tên miền thật.
+   Giải pháp chuẩn: tải mã worker về rồi tạo Blob CÙNG NGUỒN (thử nhiều CDN dự phòng). */
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+var __pdfWorkerReady = (function(){
+  var CDNS = [
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js',
+    'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js',
+    'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js'
+  ];
+  function tryOne(i){
+    if(i>=CDNS.length) return Promise.resolve(false);
+    return fetch(CDNS[i]).then(function(r){ if(!r.ok) throw new Error('http'); return r.text(); })
+      .then(function(code){
+        try{
+          var b = new Blob([code], {type:'text/javascript'});
+          pdfjsLib.GlobalWorkerOptions.workerSrc = URL.createObjectURL(b);
+          return true;
+        }catch(e){ return tryOne(i+1); }
+      })
+      .catch(function(){ return tryOne(i+1); });
+  }
+  return tryOne(0).catch(function(){ return false; });
+})();
 
 /* =====================================================================
    CẤU HÌNH GOOGLE DRIVE - ĐÃ CẤU HÌNH SẴN, KHÔNG CẦN SỬA
@@ -4322,12 +4345,15 @@ async function openReader(book){
   $('#socialBox').classList.remove('open'); $('#socialFab').style.display='flex';
   loadSocial(rBookId);
   try{
+    /* Chờ worker (Blob cùng nguồn) sẵn sàng để tránh lỗi cross-origin làm PDF không mở được */
+    try{ if(typeof __pdfWorkerReady!=='undefined') await __pdfWorkerReady; }catch(e){}
     const bytes = book.driveId ? await gFetchPdf(book.driveId) : await loadPdf(book.id, book.chunks);
-    if(!bytes || !bytes.length){ throw new Error('PDF rỗng hoặc chưa tải được dữ liệu.'); }
-    /* Dùng BẢN SAO của dữ liệu: pdf.js chuyển (transfer) ArrayBuffer sang worker và làm
-       "tách rời" (detach) mảng gốc; nếu dữ liệu được cache/tái sử dụng, lần mở sau sẽ rỗng.
-       Sao chép giúp mở đi mở lại luôn đọc được từ trang đầu. */
-    var buf = new Uint8Array(bytes.length); buf.set(bytes);
+    /* Chuẩn hoá về Uint8Array (dữ liệu có thể là ArrayBuffer hoặc Uint8Array) */
+    var src = (bytes instanceof Uint8Array) ? bytes : (bytes ? new Uint8Array(bytes) : null);
+    if(!src || !src.length){ throw new Error('PDF rỗng hoặc chưa tải được dữ liệu.'); }
+    /* Dùng BẢN SAO: pdf.js "tách rời" (detach) mảng gốc khi chuyển sang worker,
+       sao chép giúp mở đi mở lại luôn đọc được từ trang đầu. */
+    var buf = new Uint8Array(src.length); buf.set(src);
     rDoc = await pdfjsLib.getDocument({ data: buf }).promise;
     if(!rDoc || !rDoc.numPages){ throw new Error('Không đọc được nội dung PDF.'); }
     rPage = 1;
@@ -4338,12 +4364,15 @@ async function openReader(book){
   }catch(e){
     console.error('Lỗi mở sách:', e);
     const la404 = /404/.test(e.message || '');
+    const la403 = /403|401/.test(e.message || '');
     if(la404 && toiLaChuTrang()){
       toast('Sách "' + book.title + '" không còn file trên Google Drive (đã bị xoá/mất quyền). Hãy tải lại cuốn này.');
     } else if(la404){
       toast('Cuốn sách này tạm thời chưa đọc được. Chúng tôi sẽ sớm khắc phục. Xin lỗi vì sự bất tiện.');
+    } else if(la403){
+      toast('Không tải được file từ Google Drive (lỗi quyền / hạn mức API - 403). ' + (toiLaChuTrang()?'Hãy kiểm tra API key và đảm bảo file được chia sẻ "Bất kỳ ai có liên kết".':'Vui lòng thử lại sau ít phút.'));
     } else {
-      toast('Không mở được sách. Hãy kiểm tra kết nối mạng và thử lại.');
+      toast('Không mở được sách: ' + String(e && e.message ? e.message : e).slice(0,90) + '. Hãy tải lại trang (Ctrl+F5) rồi thử lại.');
     }
     closeReader();
   }
