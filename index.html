@@ -8215,7 +8215,7 @@ function pdfDocPro(o){
     '.cover::before{content:"";position:absolute;top:5mm;left:5mm;right:5mm;bottom:5mm;border:1.4px solid rgba(201,162,39,.55)}'+
     '.cover::after{content:"";position:absolute;top:6.4mm;left:6.4mm;right:6.4mm;bottom:6.4mm;border:.5px solid rgba(201,162,39,.32)}'+
     '.cv-in{position:relative;z-index:1;display:flex;flex-direction:column;flex:1;text-align:center}'+
-    '.cv-imprint{font-size:10px;letter-spacing:5px;color:#c9a227;font-weight:700;padding-top:3mm}'+
+    '.cv-imprint{font-size:16px;letter-spacing:6px;color:#e6c052;font-weight:700;padding-top:4mm;white-space:nowrap;text-transform:uppercase}.cv-imprint .cv-orn{color:#c9a227;font-size:12px;margin:0 10px;letter-spacing:0;vertical-align:middle}.cv-imprint::after{content:"";display:block;width:44mm;height:1px;background:linear-gradient(90deg,transparent,#c9a227,transparent);margin:3.5mm auto 0}'+
     '.cv-emblem{width:22mm;height:22mm;margin:auto auto 4mm;border:1.6px solid #c9a227;border-radius:4mm;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#e0b93f,#8a6d16)}'+
     '.cv-emblem span{font-family:Georgia,serif;font-weight:900;font-size:34px;color:#0f1d38;letter-spacing:-3px}'+
     '.cv-title{font-size:38px;font-weight:800;letter-spacing:5px;color:#f3e9ce;line-height:1.08}'+
@@ -8238,7 +8238,7 @@ function pdfDocPro(o){
     (o.css||'');
   return '<!DOCTYPE html><html lang="vi"><head><meta charset="utf-8"><title>'+_escH(o.title2||o.title||'')+'</title><style>'+css+'</style></head><body>'+
     '<div class="cover"><div class="cv-in">'+
-      '<div class="cv-imprint">'+(o.imprint||'CỔ HỌC PHƯƠNG ĐÔNG')+'</div>'+
+      '<div class="cv-imprint"><span class="cv-orn">\u2756</span>'+(o.imprint||'CỔ HỌC PHƯƠNG ĐÔNG')+'<span class="cv-orn">\u2756</span></div>'+
       '<div class="cv-emblem"><span>KK</span></div>'+
       '<div class="cv-title">'+_escH(o.title||'')+'</div>'+
       '<div class="cv-sub1">'+(o.sub1||'LUẬN GIẢI CHI TIẾT')+'</div>'+
