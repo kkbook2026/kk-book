@@ -1808,16 +1808,17 @@ footer{
 }
 /* KK-QUIZ */
 .quiz-intro{font-size:.95rem;color:var(--cream-dim);line-height:1.6;margin-bottom:18px}
-.quiz-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.quiz-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:11px}
 .quiz-card{
-  text-align:left;padding:20px;border-radius:16px;cursor:pointer;
-  background:var(--navy-800);border:1px solid rgba(201,162,39,.28);transition:all .18s;
-  color:var(--cream);font-family:var(--font-body);
+  text-align:center;padding:14px 10px 12px;border-radius:14px;cursor:pointer;
+  background:linear-gradient(165deg,var(--navy-800),rgba(16,26,48,.6));border:1px solid rgba(201,162,39,.28);transition:all .16s;
+  color:var(--cream);font-family:var(--font-body);display:flex;flex-direction:column;align-items:center;
 }
-.quiz-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 12px 30px rgba(0,0,0,.4)}
-.quiz-card .qc-ico{font-size:1.8rem;margin-bottom:8px}
-.quiz-card .qc-name{font-family:var(--font-display);font-weight:700;color:var(--gold-bright);font-size:1.05rem;margin-bottom:5px}
-.quiz-card .qc-meta{font-size:.8rem;color:var(--cream-dim)}
+.quiz-card:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:0 10px 26px rgba(0,0,0,.4);background:linear-gradient(165deg,var(--navy-700),rgba(20,32,60,.7))}
+.quiz-card .qc-ico{font-size:1.7rem;margin-bottom:6px;line-height:1}
+.quiz-card .qc-name{font-family:var(--font-display);font-weight:700;color:var(--gold-bright);font-size:.92rem;margin-bottom:4px;line-height:1.2}
+.quiz-card .qc-meta{font-size:.7rem;color:var(--cream-dim);line-height:1.35}
+.quiz-card .qc-badge{margin-top:7px;font-size:.62rem;font-weight:700;letter-spacing:.04em;color:var(--navy-950);background:var(--gold);border-radius:99px;padding:2px 9px}
 .quiz-q{margin-bottom:8px}
 .quiz-prog{font-size:.82rem;color:var(--gold);margin-bottom:6px;font-weight:600}
 .quiz-qtext{font-family:var(--font-display);font-size:1.2rem;color:var(--cream);margin-bottom:18px;line-height:1.5}
@@ -8753,20 +8754,27 @@ function pdfLucHaoCombo(lh){
     if(!b || b.dataset.done) return;
     b.dataset.done = '1';
     b.innerHTML =
-      '<p class="about-lead">Chào mừng bạn đến với <span class="about-hi">THƯ VIỆN SÁCH CÁ NHÂN - KK-2026</span>, không gian đọc sách trực tuyến do tác giả <span class="about-hi">Nguyễn Duy Điển</span> xây dựng và biên soạn.</p>' +
+      '<p class="about-lead">Chào mừng bạn đến với <span class="about-hi">KK-BOOK</span> - Thư viện Sách &amp; Tri thức Khoa học cá nhân do tác giả <span class="about-hi">Nguyễn Duy Điển</span> xây dựng và biên soạn.</p>' +
       '<h4>KK-BOOK là gì?</h4>' +
-      '<p>KK-BOOK (kk-book.com) là thư viện sách điện tử cá nhân, nơi tập hợp những đầu sách chuyên khảo do chính tác giả Nguyễn Duy Điển sáng tác và biên soạn trong nhiều năm. Từ lịch sử, văn hoá, khoa học, công nghệ, quản trị cho tới nghệ thuật sống, mỗi cuốn sách là một công trình được đầu tư nghiêm túc về nội dung và hình thức.</p>' +
-      '<h4>Sứ mệnh</h4>' +
-      '<p>Chúng tôi tin rằng tri thức cần được lan toả một cách đẹp đẽ và dễ tiếp cận. KK-BOOK mang đến trải nghiệm đọc mượt mà trên mọi thiết bị - máy tính, máy tính bảng hay điện thoại - với chất lượng hình ảnh sắc nét, khả năng đọc thành tiếng và giao diện được chăm chút tới từng chi tiết.</p>' +
-      '<h4>Điều làm nên KK-BOOK</h4>' +
-      '<p><span class="about-hi">Nội dung nguyên bản:</span> Toàn bộ sách là tác phẩm gốc, sole-author, thuộc bản quyền của tác giả Nguyễn Duy Điển.<br>' +
-      '<span class="about-hi">Đọc thử miễn phí:</span> Mỗi cuốn đều cho đọc miễn phí những trang đầu để bạn cảm nhận trước khi quyết định.<br>' +
-      '<span class="about-hi">Trải nghiệm hiện đại:</span> Tìm kiếm thông minh, đọc thành tiếng, trợ lý giải đáp, cùng nhiều dịch vụ mở rộng như lập lá số Tử Vi và trò chơi kiến thức.</p>' +
+      '<p>KK-BOOK (kk-book.com) là một <span class="about-hi">thư viện tri thức số toàn diện</span>: vừa là nơi lưu trữ - trình bày những đầu sách chuyên khảo nguyên bản, vừa tích hợp nhiều công cụ học tập và tra cứu. Nội dung trải rộng từ khoa học - công nghệ, lịch sử - địa lý, y học - đời sống, kinh tế - quản trị đến giáo dục và văn hóa phương Đông. Mục tiêu là giúp bạn <b>tiếp cận tri thức một cách chính xác, có hệ thống và dễ chịu</b> trên mọi thiết bị.</p>' +
+      '<h4>Bốn nhóm chức năng chính</h4>' +
+      '<ul class="gd-list">' +
+      '<li><b>📚 Tủ sách chuyên khảo:</b> hàng trăm đầu sách được sắp xếp theo lĩnh vực; đọc thử miễn phí, mở khóa để đọc trọn cuốn.</li>' +
+      '<li><b>🎯 KK-QUIZ:</b> hệ thống câu hỏi kiến thức nhiều chủ đề, chấm điểm tức thì và bảng xếp hạng cộng đồng - học mà chơi, chơi mà học.</li>' +
+      '<li><b>☯ Khoa học Á Đông:</b> bộ công cụ cổ học được số hóa - Lá số Tử Vi, Xem Ngày Tốt, Rút Quẻ Kinh Dịch, Tứ Trụ - Bát Tự và Kỳ Môn / Lục Hào, đều có luận giải chi tiết và xuất PDF.</li>' +
+      '<li><b>🤖 Tiện ích thông minh:</b> tìm kiếm nhanh (gõ không dấu cũng ra), đọc thành tiếng, và Trợ lý ảo giải đáp thắc mắc.</li>' +
+      '</ul>' +
+      '<h4>Giá trị cốt lõi</h4>' +
+      '<p><span class="about-hi">Nguyên bản &amp; bản quyền:</span> toàn bộ sách là tác phẩm gốc, do một tay tác giả biên soạn, thuộc bản quyền của Nguyễn Duy Điển.<br>' +
+      '<span class="about-hi">Chuẩn mực &amp; khoa học:</span> nội dung được biên soạn nghiêm túc, trình bày rõ ràng, mạch lạc.<br>' +
+      '<span class="about-hi">Lành mạnh &amp; trung lập:</span> tri thức phổ quát, phi chính trị, phù hợp mọi lứa tuổi.<br>' +
+      '<span class="about-hi">Tôn trọng người đọc:</span> giao diện tối giản, không quảng cáo gây phiền, tối ưu cho cả máy tính, máy tính bảng và điện thoại.</p>' +
       '<h4>Lời cảm ơn</h4>' +
-      '<p>Cảm ơn bạn đã ghé thăm và đồng hành. Mỗi trang sách bạn mở ra là một sự trân trọng dành cho tri thức và cho tâm huyết của người viết. Chúc bạn có những giờ phút đọc sách thật ý nghĩa.</p>' +
+      '<p>Cảm ơn bạn đã ghé thăm và đồng hành. Mỗi trang sách bạn mở ra là một sự trân trọng dành cho tri thức và cho tâm huyết của người viết. Chúc bạn có những giờ phút học hỏi thật ý nghĩa.</p>' +
       '<p style="text-align:right;color:var(--gold);font-style:italic;margin-top:18px">Tác giả : Nguyễn Duy Điển</p>';
   }
 
+  
   /* ---------- HƯỚNG DẪN SỬ DỤNG ---------- */
   function renderGuide(){
     var b = el('guideBody');
@@ -8774,39 +8782,47 @@ function pdfLucHaoCombo(lh){
     b.dataset.done = '1';
     function step(n,t,d){ return '<div class="gd-step"><div class="gd-num">'+n+'</div><div><div class="gd-t">'+t+'</div><div class="gd-d">'+d+'</div></div></div>'; }
     b.innerHTML =
-      '<p class="about-lead">Chỉ vài thao tác đơn giản để bạn đọc sách, mở khoá trọn cuốn, tham gia cộng đồng và chơi <span class="about-hi">KK-QUIZ</span>. Dưới đây là hướng dẫn đầy đủ.</p>' +
+      '<p class="about-lead">Chỉ vài thao tác đơn giản để bạn đọc sách, mở khóa trọn cuốn, chơi <span class="about-hi">KK-QUIZ</span> và dùng bộ công cụ <span class="about-hi">Khoa học Á Đông</span>. Dưới đây là hướng dẫn đầy đủ theo từng chức năng.</p>' +
 
-      '<h4>📖 1. Đọc sách &amp; đọc thử miễn phí</h4>' +
-      '<p>Bấm vào bìa sách bất kỳ trong thư viện để mở trình đọc. Mỗi cuốn đều cho <span class="about-hi">đọc thử miễn phí những trang đầu</span>. Trong trình đọc bạn có thể phóng to/thu nhỏ, lật trang, bật <span class="about-hi">Đọc thành tiếng</span> và <span class="about-hi">Tự động lật trang</span>. Dùng ô <span class="about-hi">Tìm kiếm</span> ở đầu trang để tìm nhanh theo tên sách (không dấu cũng ra).</p>' +
+      '<h4>📚 1. Đọc sách &amp; đọc thử miễn phí</h4>' +
+      '<p>Bấm vào bìa sách bất kỳ trong thư viện để mở trình đọc. Mỗi cuốn đều cho <span class="about-hi">đọc thử miễn phí những trang đầu</span>. Trong trình đọc bạn có thể phóng to/thu nhỏ, lật trang, bật <span class="about-hi">Đọc thành tiếng</span> và <span class="about-hi">Tự động lật trang</span>. Dùng ô <span class="about-hi">Tìm kiếm</span> ở đầu trang để tìm nhanh theo tên sách (gõ không dấu cũng ra).</p>' +
 
-      '<h4>🔓 2. Mở khoá để đọc trọn cuốn</h4>' +
-      '<p>Khi đọc hết phần miễn phí, hệ thống hiện màn hình mở khoá. Có 2 cách:</p>' +
-      step('A','Quét mã QR chuyển khoản','Quét mã QR bằng app ngân hàng (đúng số tài khoản, đúng số tiền, đúng nội dung hiển thị), nhập Email/SĐT để nhận mã, rồi bấm "Tôi đã chuyển khoản". Tác giả xác nhận và gửi mã mở khoá cho bạn.') +
-      step('B','Nhập mã mở khoá','Nếu đã có mã (được tặng hoặc mua trực tiếp), nhập vào ô "Nhập mã mở khoá" là đọc được trọn cuốn ngay. Mỗi mã dùng cho đúng 1 cuốn và dùng 1 lần.') +
-      '<div class="gd-tip"><b>Mẹo:</b> Hãy <span class="about-hi">Đăng nhập thành viên trước khi mở khoá</span>. Khi đó cuốn sách đã mua sẽ được <span class="about-hi">bảo lưu vĩnh viễn</span> vào tài khoản của bạn - đăng nhập ở bất kỳ máy nào cũng đọc lại được, không lo mất mã.</div>' +
+      '<h4>🔓 2. Mở khóa để đọc trọn cuốn</h4>' +
+      '<p>Khi đọc hết phần miễn phí, hệ thống hiện màn hình mở khóa. Có 2 cách:</p>' +
+      step('A','Quét mã QR chuyển khoản','Quét mã QR bằng app ngân hàng (đúng số tài khoản, đúng số tiền, đúng nội dung hiển thị), nhập Email/SĐT để nhận mã, rồi bấm "Tôi đã chuyển khoản". Tác giả xác nhận và gửi mã mở khóa cho bạn.') +
+      step('B','Nhập mã mở khóa','Nếu đã có mã, nhập vào ô "Nhập mã mở khóa" là đọc được trọn cuốn ngay. Mỗi mã dùng cho đúng 1 cuốn và dùng 1 lần.') +
+      '<div class="gd-tip"><b>Mẹo:</b> Hãy <span class="about-hi">Đăng nhập thành viên trước khi mở khóa</span>. Khi đó cuốn sách đã mua được <span class="about-hi">bảo lưu vĩnh viễn</span> vào tài khoản - đăng nhập ở bất kỳ máy nào cũng đọc lại được, không lo mất mã.</div>' +
 
       '<h4>👤 3. Đăng ký thành viên (miễn phí) &amp; quyền lợi</h4>' +
-      '<p>Bấm nút <span class="about-hi">Đăng ký / Đăng nhập</span> ở góc phải trên. Chỉ cần <span class="about-hi">email và mật khẩu</span> - nếu chưa có tài khoản hệ thống tự tạo mới cho bạn. Quyền lợi khi là thành viên:</p>' +
+      '<p>Bấm nút <span class="about-hi">Đăng ký / Đăng nhập</span> ở góc phải trên, chỉ cần <span class="about-hi">email và mật khẩu</span>. Quyền lợi thành viên:</p>' +
       '<ul class="gd-list">' +
-      '<li><b>Bảo lưu sách đã mua vĩnh viễn:</b> mọi cuốn bạn đã mở khoá được lưu vào tài khoản, đọc lại mọi lúc, mọi thiết bị.</li>' +
-      '<li><b>Ghi danh &amp; xếp hạng KK-QUIZ:</b> điểm chơi được lưu lên bảng xếp hạng chung.</li>' +
-      '<li><b>Nhận bản tin:</b> cập nhật sách mới, ưu đãi và nội dung đặc biệt qua email.</li>' +
-      '<li><b>Tương tác cộng đồng:</b> bình luận, yêu thích và gửi góp ý riêng cho tác giả.</li>' +
+      '<li><b>Bảo lưu sách đã mua vĩnh viễn:</b> đọc lại mọi lúc, mọi thiết bị.</li>' +
+      '<li><b>Ghi danh &amp; xếp hạng KK-QUIZ:</b> điểm cao được đưa lên bảng xếp hạng chung.</li>' +
+      '<li><b>Nhận bản tin &amp; tương tác:</b> cập nhật sách mới; bình luận, yêu thích, gửi góp ý cho tác giả.</li>' +
       '</ul>' +
-      '<p class="gd-note">Sau khi đăng ký, hãy mở email và bấm liên kết xác thực để kích hoạt đầy đủ quyền lợi (có thể bấm "Gửi lại thư xác thực" trong mục Tài khoản nếu chưa nhận được).</p>' +
+      '<p class="gd-note">Sau khi đăng ký, hãy mở email và bấm liên kết xác thực để kích hoạt đầy đủ quyền lợi.</p>' +
 
       '<h4>🎯 4. Chơi KK-QUIZ &amp; bảng xếp hạng</h4>' +
-      '<p>Vào menu <span class="about-hi">KK-QUIZ</span>, chọn một bộ câu hỏi và bắt đầu chơi. Hệ thống chấm điểm ngay sau mỗi câu. Khi bạn <span class="about-hi">đăng nhập thành viên</span>, điểm cao nhất của bạn ở mỗi bộ sẽ được <span class="about-hi">ghi lên Bảng xếp hạng</span> để so tài cùng mọi người. Cùng cố gắng lọt top nhé!</p>' +
+      '<p>Vào menu <span class="about-hi">KK-QUIZ</span>, màn hình bày sẵn <span class="about-hi">nhiều bộ câu hỏi nâng cao</span> theo chủ đề (lịch sử, khoa học, thiên văn, văn học, công nghệ...). Bấm một bộ để bắt đầu; mỗi câu <b>trộn ngẫu nhiên đáp án</b> và <span class="about-hi">chấm điểm ngay</span>. Khi đăng nhập, điểm cao nhất của bạn ở mỗi bộ sẽ được <span class="about-hi">cộng dồn lên Bảng xếp hạng Top 20</span> - chơi càng nhiều bộ, thứ hạng càng cao.</p>' +
 
-      '<h4>☯ 5. KHOA HỌC Á ĐÔNG - Tử Vi, Ngày Tốt, Kinh Dịch</h4>' +
-      '<p>Vào menu <span class="about-hi">KHOA HỌC Á ĐÔNG</span> để dùng: <span class="about-hi">Lập lá số Tử Vi</span> (an sao, xuất PDF miễn phí, luận giải chi tiết theo yêu cầu), <span class="about-hi">Xem Ngày Tốt</span> (ngày giờ hoàng đạo cho việc trọng đại), và <span class="about-hi">Rút Quẻ Kinh Dịch</span> (gieo quẻ, luận giải vận sự, xuất PDF).</p>' +
+      '<h4>☯ 5. Khoa học Á Đông - 5 công cụ cổ học</h4>' +
+      '<p>Vào menu <span class="about-hi">KHOA HỌC Á ĐÔNG</span> để dùng:</p>' +
+      '<ul class="gd-list">' +
+      '<li><b>Lập lá số Tử Vi:</b> an sao trên lá số 12 cung, luận giải chi tiết, xuất PDF.</li>' +
+      '<li><b>Xem Ngày Tốt:</b> tra ngày giờ hoàng đạo cho việc trọng đại (miễn phí).</li>' +
+      '<li><b>Rút Quẻ Kinh Dịch:</b> gieo quẻ 64 quẻ, luận giải vận sự.</li>' +
+      '<li><b>Tứ Trụ - Bát Tự:</b> lập lá số 4 trụ, phân tích Ngũ hành - Thập thần - Dụng thần, luận vận mệnh.</li>' +
+      '<li><b>Kỳ Môn / Lục Hào:</b> gieo quẻ Nạp Giáp, an Lục Thân - Thế Ứng - Lục Thần, luận cát hung.</li>' +
+      '</ul>' +
+      '<p class="gd-note">Mỗi công cụ đều có bản <b>luận giải chi tiết xuất PDF nhiều trang</b>. Đây là tri thức cổ học mang tính tham khảo - chiêm nghiệm, không thay thế quyết định thực tế.</p>' +
 
-      '<h4>💬 6. Cần hỗ trợ?</h4>' +
-      '<p>Mọi thắc mắc, góp ý hoặc đề nghị hợp tác, xin phép sử dụng nội dung, vui lòng liên hệ tác giả qua email <span class="about-hi">nguyenduydien75@gmail.com</span>, hoặc dùng nút <span class="about-hi">Góp ý cho tác giả</span> ngay trên web. Bạn cũng có thể hỏi nhanh <span class="about-hi">Trợ lý KK-2026</span> ở góc màn hình.</p>' +
+      '<h4>💬 6. Trợ lý ảo &amp; hỗ trợ</h4>' +
+      '<p>Bấm biểu tượng trò chuyện ở góc màn hình để hỏi nhanh <span class="about-hi">Trợ lý ảo</span> về cách đọc sách, thanh toán, mở khóa... Mọi thắc mắc, góp ý hoặc đề nghị hợp tác, xin phép sử dụng nội dung, vui lòng liên hệ tác giả qua email <span class="about-hi">nguyenduydien75@gmail.com</span> hoặc nút <span class="about-hi">Góp ý cho tác giả</span> trên web.</p>' +
 
-      '<p style="text-align:right;color:var(--gold);font-style:italic;margin-top:20px">Chúc bạn có những giờ đọc sách thật ý nghĩa!<br>Tác giả : Nguyễn Duy Điển</p>';
+      '<p style="text-align:right;color:var(--gold);font-style:italic;margin-top:20px">Chúc bạn có những giờ học hỏi thật ý nghĩa!<br>Tác giả : Nguyễn Duy Điển</p>';
   }
 
+  
   /* ---------- DỊCH VỤ: danh sách <-> Tử Vi ---------- */
   function showSvcHome(){ ['svcGrid','tuviWrap','ngayWrap','dichWrap','batWrap','lucWrap'].forEach(function(id,i){ var el2=el(id); if(el2) el2.style.display = (i===0?'grid':'none'); }); }
   function _hideSvc(){ ['svcGrid','tuviWrap','ngayWrap','dichWrap','batWrap','lucWrap'].forEach(function(id){ var e=el(id); if(e) e.style.display='none'; }); }
@@ -8859,40 +8875,117 @@ function pdfLucHaoCombo(lh){
 
   /* ---------- GAMES QUIZ ---------- */
   var DEFAULT_QUIZZES = [
-    { id:'lichsu', ico:'🏛️', name:'Lịch sử Việt Nam', desc:'10 câu về lịch sử dân tộc',
+    { id:'lichsu-vn', ico:'🏛️', name:'Lịch sử Việt Nam', desc:'Nâng cao',
       cauhoi:[
-        {q:'Ai là người lãnh đạo cuộc khởi nghĩa Lam Sơn?', o:['Lê Lợi','Quang Trung','Trần Hưng Đạo','Lý Thường Kiệt'], d:0},
-        {q:'Chiến thắng Bạch Đằng năm 938 gắn với tên tuổi ai?', o:['Ngô Quyền','Đinh Bộ Lĩnh','Lê Hoàn','Lý Công Uẩn'], d:0},
-        {q:'Nhà Lý dời đô về Thăng Long vào năm nào?', o:['1010','938','1288','1400'], d:0},
-        {q:'Ai được xưng tụng là "Bình Tây Đại Nguyên Soái"?', o:['Trương Định','Nguyễn Trung Trực','Phan Đình Phùng','Hoàng Hoa Thám'], d:0},
-        {q:'Triều đại nào tồn tại lâu nhất trong lịch sử Việt Nam?', o:['Nhà Lê (Hậu Lê)','Nhà Lý','Nhà Trần','Nhà Nguyễn'], d:0},
-        {q:'Chiến thắng Điện Biên Phủ diễn ra năm nào?', o:['1954','1945','1975','1968'], d:0},
-        {q:'Ai là tác giả "Bình Ngô Đại Cáo"?', o:['Nguyễn Trãi','Nguyễn Du','Chu Văn An','Lê Quý Đôn'], d:0},
-        {q:'Vị vua nào có công thống nhất đất nước, lập nhà Đinh?', o:['Đinh Bộ Lĩnh','Ngô Quyền','Lê Hoàn','Lý Thái Tổ'], d:0},
-        {q:'Ba lần đánh thắng quân Nguyên Mông là công của triều đại nào?', o:['Nhà Trần','Nhà Lý','Nhà Lê','Nhà Hồ'], d:0},
-        {q:'Kinh đô của nhà Nguyễn đặt ở đâu?', o:['Huế','Thăng Long','Hoa Lư','Gia Định'], d:0}
+        {q:'Lý Công Uẩn lên ngôi, lập nhà Lý vào năm nào?', o:['1009','1010','968','1054'], d:0},
+        {q:'Nhà Hồ do Hồ Quý Ly lập đã đổi quốc hiệu nước ta thành gì?', o:['Đại Ngu','Đại Cồ Việt','Đại Việt','Vạn Xuân'], d:0},
+        {q:'Nhà nước Vạn Xuân gắn với tên tuổi ai?', o:['Lý Bí (Lý Nam Đế)','Triệu Quang Phục','Mai Thúc Loan','Phùng Hưng'], d:0},
+        {q:'"Hịch tướng sĩ" là tác phẩm của ai?', o:['Trần Quốc Tuấn','Nguyễn Trãi','Lý Thường Kiệt','Trần Quang Khải'], d:0},
+        {q:'Chiến thắng Chi Lăng - Xương Giang (1427) thuộc cuộc khởi nghĩa nào?', o:['Lam Sơn chống Minh','Chống Nguyên Mông','Chống quân Thanh','Chống quân Tống'], d:0},
+        {q:'Phong trào Cần Vương gắn với vị vua nào?', o:['Hàm Nghi','Duy Tân','Thành Thái','Tự Đức'], d:0},
+        {q:'Triều đại nào tồn tại lâu nhất trong lịch sử Việt Nam?', o:['Hậu Lê','Nhà Lý','Nhà Trần','Nhà Nguyễn'], d:0},
+        {q:'Nguyễn Huệ đại phá quân Thanh trong dịp nào?', o:['Tết Kỷ Dậu 1789','Tết Mậu Thân 1968','Xuân 1975','Thu 1945'], d:0},
+        {q:'Ai chỉ huy chiến dịch Điện Biên Phủ (1954)?', o:['Võ Nguyên Giáp','Văn Tiến Dũng','Hoàng Văn Thái','Nguyễn Chí Thanh'], d:0},
+        {q:'"Bình Ngô đại cáo" do ai soạn thảo?', o:['Nguyễn Trãi','Nguyễn Du','Chu Văn An','Lê Quý Đôn'], d:0}
       ] },
-    { id:'khoahoc', ico:'🔬', name:'Khoa học thường thức', desc:'8 câu kiến thức khoa học',
+    { id:'lichsu-tg', ico:'🌍', name:'Lịch sử thế giới', desc:'Nâng cao',
       cauhoi:[
-        {q:'Hành tinh nào gần Mặt Trời nhất?', o:['Sao Thuỷ','Sao Kim','Trái Đất','Sao Hoả'], d:0},
-        {q:'Nước sôi ở nhiệt độ bao nhiêu (ở mực nước biển)?', o:['100°C','90°C','120°C','80°C'], d:0},
-        {q:'Khí nào chiếm tỉ lệ lớn nhất trong không khí?', o:['Ni-tơ','Ô-xy','CO2','Hydro'], d:0},
-        {q:'Tốc độ ánh sáng xấp xỉ bao nhiêu?', o:['300.000 km/s','30.000 km/s','1.000 km/s','3 triệu km/s'], d:0},
-        {q:'Cơ quan nào bơm máu đi khắp cơ thể?', o:['Tim','Gan','Phổi','Thận'], d:0},
-        {q:'Nguyên tố hoá học có ký hiệu O là gì?', o:['Ô-xy','Vàng','Sắt','Bạc'], d:0},
-        {q:'Loài vật nào lớn nhất từng tồn tại trên Trái Đất?', o:['Cá voi xanh','Voi','Khủng long bạo chúa','Hươu cao cổ'], d:0},
-        {q:'Ánh sáng Mặt Trời đến Trái Đất mất khoảng bao lâu?', o:['8 phút','1 giây','1 giờ','1 ngày'], d:0}
+        {q:'Đế quốc Tây La Mã sụp đổ vào năm nào?', o:['476','1453','395','800'], d:0},
+        {q:'Cách mạng Pháp bùng nổ năm nào?', o:['1789','1776','1848','1815'], d:0},
+        {q:'Ai là hoàng đế đầu tiên thống nhất Trung Hoa?', o:['Tần Thủy Hoàng','Hán Cao Tổ','Đường Thái Tông','Hốt Tất Liệt'], d:0},
+        {q:'Chiến tranh thế giới thứ nhất bắt đầu năm nào?', o:['1914','1939','1918','1905'], d:0},
+        {q:'Bức tường Berlin sụp đổ năm nào?', o:['1989','1991','1961','1945'], d:0},
+        {q:'Đế quốc Mông Cổ do ai sáng lập?', o:['Thành Cát Tư Hãn','Hốt Tất Liệt','Oa Khoát Đài','Đại Hãn'], d:0},
+        {q:'Cách mạng công nghiệp lần thứ nhất khởi đầu ở quốc gia nào?', o:['Anh','Pháp','Đức','Mỹ'], d:0},
+        {q:'Constantinople thất thủ (kết thúc Đông La Mã) vào năm nào?', o:['1453','476','1204','1099'], d:0}
       ] },
-    { id:'diali', ico:'🌏', name:'Địa lý thế giới', desc:'8 câu về địa lý',
+    { id:'dialy', ico:'🗺️', name:'Địa lý thế giới', desc:'Nâng cao',
       cauhoi:[
-        {q:'Sông nào dài nhất thế giới?', o:['Sông Nin','Sông Amazon','Sông Trường Giang','Sông Mê Kông'], d:0},
-        {q:'Thủ đô của Nhật Bản là?', o:['Tokyo','Osaka','Kyoto','Seoul'], d:0},
-        {q:'Ngọn núi cao nhất thế giới?', o:['Everest','Phú Sĩ','Fansipan','K2'], d:0},
-        {q:'Châu lục nào lớn nhất?', o:['Châu Á','Châu Phi','Châu Mỹ','Châu Âu'], d:0},
-        {q:'Đại dương nào lớn nhất?', o:['Thái Bình Dương','Đại Tây Dương','Ấn Độ Dương','Bắc Băng Dương'], d:0},
-        {q:'Sa mạc lớn nhất thế giới?', o:['Sahara','Gobi','Kalahari','Atacama'], d:0},
-        {q:'Việt Nam giáp biển nào?', o:['Biển Đông','Biển Đỏ','Địa Trung Hải','Biển Đen'], d:0},
-        {q:'Quốc gia nào đông dân nhất thế giới hiện nay?', o:['Ấn Độ','Trung Quốc','Hoa Kỳ','Indonesia'], d:0}
+        {q:'Thủ đô của Australia là?', o:['Canberra','Sydney','Melbourne','Perth'], d:0},
+        {q:'Quốc gia có diện tích lớn nhất thế giới?', o:['Nga','Canada','Trung Quốc','Hoa Kỳ'], d:0},
+        {q:'Kênh đào nào nối Địa Trung Hải với Biển Đỏ?', o:['Kênh Suez','Kênh Panama','Kênh Kiel','Kênh Corinth'], d:0},
+        {q:'Đỉnh núi cao nhất châu Phi?', o:['Kilimanjaro','Núi Kenya','Dãy Atlas','Núi Cameroon'], d:0},
+        {q:'Hồ nước ngọt sâu nhất thế giới?', o:['Hồ Baikal','Hồ Tanganyika','Hồ Superior','Hồ Victoria'], d:0},
+        {q:'Thủ đô của Canada?', o:['Ottawa','Toronto','Vancouver','Montreal'], d:0},
+        {q:'Dãy núi dài nhất thế giới (trên đất liền)?', o:['Andes','Himalaya','Rocky','Alps'], d:0},
+        {q:'Sa mạc lớn nhất thế giới (kể cả sa mạc lạnh)?', o:['Nam Cực','Sahara','Gobi','Kalahari'], d:0}
+      ] },
+    { id:'vatly-hoa', ico:'⚛️', name:'Vật lý & Hóa học', desc:'Nâng cao',
+      cauhoi:[
+        {q:'Đơn vị đo cường độ dòng điện?', o:['Ampe','Vôn','Ôm','Oát'], d:0},
+        {q:'Nguyên tố có số hiệu nguyên tử bằng 1?', o:['Hydro','Heli','Oxy','Cacbon'], d:0},
+        {q:'Định luật vạn vật hấp dẫn do ai phát biểu?', o:['Isaac Newton','Albert Einstein','Galileo','Kepler'], d:0},
+        {q:'Công thức hóa học của muối ăn?', o:['NaCl','H2O','CO2','CaCO3'], d:0},
+        {q:'Đơn vị SI của lực?', o:['Newton','Jun','Oát','Pascal'], d:0},
+        {q:'Kim loại nào ở thể lỏng tại nhiệt độ phòng?', o:['Thủy ngân','Chì','Sắt','Nhôm'], d:0},
+        {q:'Thuyết tương đối do ai đề xuất?', o:['Albert Einstein','Isaac Newton','Niels Bohr','Max Planck'], d:0},
+        {q:'pH của dung dịch trung tính (ở 25°C) bằng?', o:['7','0','14','1'], d:0}
+      ] },
+    { id:'sinhhoc', ico:'🧬', name:'Sinh học & Cơ thể người', desc:'Nâng cao',
+      cauhoi:[
+        {q:'Đơn vị cơ bản cấu tạo nên sự sống?', o:['Tế bào','Nguyên tử','Phân tử','Mô'], d:0},
+        {q:'Cơ quan nào lọc máu và tạo nước tiểu?', o:['Thận','Gan','Phổi','Tim'], d:0},
+        {q:'ADN nằm chủ yếu ở đâu trong tế bào?', o:['Nhân tế bào','Ti thể','Màng tế bào','Ribosome'], d:0},
+        {q:'Quá trình cây xanh tạo chất hữu cơ nhờ ánh sáng gọi là?', o:['Quang hợp','Hô hấp','Thoát hơi nước','Lên men'], d:0},
+        {q:'Nhóm máu nào là "cho vạn năng"?', o:['O','AB','A','B'], d:0},
+        {q:'Số nhiễm sắc thể trong tế bào người bình thường?', o:['46','23','48','44'], d:0},
+        {q:'Vitamin nào được da tổng hợp khi tiếp xúc ánh nắng?', o:['Vitamin D','Vitamin C','Vitamin A','Vitamin B12'], d:0},
+        {q:'Hồng cầu vận chuyển oxy nhờ chất nào?', o:['Hemoglobin','Insulin','Adrenaline','Collagen'], d:0}
+      ] },
+    { id:'thienvan', ico:'🔭', name:'Vũ trụ & Thiên văn', desc:'Nâng cao',
+      cauhoi:[
+        {q:'Hành tinh lớn nhất Hệ Mặt Trời?', o:['Sao Mộc','Sao Thổ','Sao Hải Vương','Trái Đất'], d:0},
+        {q:'Ngôi sao gần Trái Đất nhất (ngoài Mặt Trời)?', o:['Proxima Centauri','Sirius','Betelgeuse','Sao Bắc Cực'], d:0},
+        {q:'Thiên hà chứa Hệ Mặt Trời tên là?', o:['Ngân Hà','Tiên Nữ','Tam Giác','Xoáy Nước'], d:0},
+        {q:'Hành tinh nào được gọi là "hành tinh đỏ"?', o:['Sao Hỏa','Sao Kim','Sao Thủy','Sao Mộc'], d:0},
+        {q:'Nhật thực xảy ra khi nào?', o:['Mặt Trăng che Mặt Trời','Trái Đất che Mặt Trăng','Mặt Trời che Trái Đất','Sao chổi bay qua'], d:0},
+        {q:'Đơn vị đo khoảng cách giữa các ngôi sao?', o:['Năm ánh sáng','Kilômét','Hải lý','Dặm'], d:0},
+        {q:'Hành tinh nào có hệ vành đai rõ nhất?', o:['Sao Thổ','Sao Mộc','Sao Thiên Vương','Sao Hỏa'], d:0},
+        {q:'Lực nào giữ các hành tinh quay quanh Mặt Trời?', o:['Lực hấp dẫn','Lực điện từ','Lực ly tâm','Lực đàn hồi'], d:0}
+      ] },
+    { id:'vanhoc', ico:'📖', name:'Văn học Việt Nam', desc:'Nâng cao',
+      cauhoi:[
+        {q:'"Truyện Kiều" là của tác giả nào?', o:['Nguyễn Du','Nguyễn Trãi','Hồ Xuân Hương','Nguyễn Đình Chiểu'], d:0},
+        {q:'"Nhật ký trong tù" là của ai?', o:['Hồ Chí Minh','Tố Hữu','Xuân Diệu','Chế Lan Viên'], d:0},
+        {q:'Tiểu thuyết "Tắt đèn" là của?', o:['Ngô Tất Tố','Nam Cao','Vũ Trọng Phụng','Nguyễn Công Hoan'], d:0},
+        {q:'Nhân vật Chí Phèo trong truyện của ai?', o:['Nam Cao','Ngô Tất Tố','Kim Lân','Thạch Lam'], d:0},
+        {q:'Tiểu thuyết trào phúng "Số đỏ" là của?', o:['Vũ Trọng Phụng','Nam Cao','Nhất Linh','Khái Hưng'], d:0},
+        {q:'Ai được mệnh danh "Bà chúa thơ Nôm"?', o:['Hồ Xuân Hương','Đoàn Thị Điểm','Bà Huyện Thanh Quan','Sương Nguyệt Anh'], d:0},
+        {q:'"Lục Vân Tiên" là của tác giả?', o:['Nguyễn Đình Chiểu','Nguyễn Du','Nguyễn Khuyến','Tú Xương'], d:0},
+        {q:'"Nhật ký trong tù" được viết bằng loại chữ nào?', o:['Chữ Hán','Chữ Nôm','Chữ Quốc ngữ','Tiếng Pháp'], d:0}
+      ] },
+    { id:'toan-logic', ico:'🔢', name:'Toán học & Suy luận', desc:'Nâng cao',
+      cauhoi:[
+        {q:'Số Pi (π) xấp xỉ bằng?', o:['3,14','2,71','1,61','3,41'], d:0},
+        {q:'Tổng các góc trong một tam giác bằng?', o:['180°','360°','90°','270°'], d:0},
+        {q:'Số nguyên tố nhỏ nhất là?', o:['2','1','3','0'], d:0},
+        {q:'Căn bậc hai của 144 bằng?', o:['12','14','24','16'], d:0},
+        {q:'Một số chia hết cho 9 khi?', o:['Tổng các chữ số chia hết cho 9','Chữ số cuối là 9','Là số chẵn','Chữ số đầu chia hết cho 9'], d:0},
+        {q:'Hằng số e (Euler) xấp xỉ bằng?', o:['2,718','3,141','1,414','1,618'], d:0},
+        {q:'Đa giác có 8 cạnh gọi là?', o:['Bát giác','Lục giác','Ngũ giác','Thất giác'], d:0},
+        {q:'Dãy Fibonacci: 1, 1, 2, 3, 5, 8, ... số tiếp theo là?', o:['13','11','12','15'], d:0}
+      ] },
+    { id:'congnghe', ico:'💻', name:'Công nghệ & Tin học', desc:'Nâng cao',
+      cauhoi:[
+        {q:'CPU là viết tắt của cụm từ nào?', o:['Central Processing Unit','Computer Personal Unit','Central Program Unit','Control Process Unit'], d:0},
+        {q:'Ngôn ngữ dùng để tạo cấu trúc trang web?', o:['HTML','Python','SQL','Java'], d:0},
+        {q:'1 byte bằng bao nhiêu bit?', o:['8','16','4','1024'], d:0},
+        {q:'Người đồng sáng lập Microsoft?', o:['Bill Gates','Steve Jobs','Mark Zuckerberg','Elon Musk'], d:0},
+        {q:'Giao thức truyền trang web có mã hóa bảo mật?', o:['HTTPS','FTP','SMTP','POP3'], d:0},
+        {q:'AI là viết tắt của?', o:['Artificial Intelligence','Automated Interface','Advanced Internet','Applied Integration'], d:0},
+        {q:'Hệ đếm nhị phân dùng mấy chữ số?', o:['2','10','8','16'], d:0},
+        {q:'Công ty phát triển hệ điều hành Android?', o:['Google','Apple','Microsoft','Nokia'], d:0}
+      ] },
+    { id:'danhnhan', ico:'💡', name:'Danh nhân & Phát minh', desc:'Nâng cao',
+      cauhoi:[
+        {q:'Ai thương mại hóa thành công bóng đèn sợi đốt?', o:['Thomas Edison','Nikola Tesla','Alexander Bell','James Watt'], d:0},
+        {q:'Ai được ghi nhận phát minh điện thoại?', o:['Alexander Graham Bell','Thomas Edison','Guglielmo Marconi','Samuel Morse'], d:0},
+        {q:'Nhà bác học nữ hai lần đoạt giải Nobel?', o:['Marie Curie','Rosalind Franklin','Ada Lovelace','Lise Meitner'], d:0},
+        {q:'Ai đề xuất thuyết tiến hóa bằng chọn lọc tự nhiên?', o:['Charles Darwin','Gregor Mendel','Louis Pasteur','Carl Linnaeus'], d:0},
+        {q:'Ai phát minh máy in kiểu chữ rời ở châu Âu?', o:['Johannes Gutenberg','Benjamin Franklin','Leonardo da Vinci','Isaac Newton'], d:0},
+        {q:'Cha đẻ của thuyết phân tâm học?', o:['Sigmund Freud','Carl Jung','Ivan Pavlov','B.F. Skinner'], d:0},
+        {q:'Ai vẽ bức "Mona Lisa"?', o:['Leonardo da Vinci','Michelangelo','Raphael','Vincent van Gogh'], d:0},
+        {q:'Người đầu tiên đặt chân lên Mặt Trăng?', o:['Neil Armstrong','Buzz Aldrin','Yuri Gagarin','Michael Collins'], d:0}
       ] }
   ];
   var quizCur=null, quizIdx=0, quizScore=0;
@@ -9175,9 +9268,9 @@ function pdfLucHaoCombo(lh){
     home.innerHTML = adminBar + ghiDanh +
       '<div class="quiz-layout">' +
         '<div class="quiz-main">' +
-          '<p class="quiz-intro">Chọn một bộ câu hỏi để bắt đầu. '+(laAdmin?'Với quyền quản trị, bạn có thể tạo, sửa, xoá và xuất/nhập bộ câu hỏi ngay tại đây.':'Chúc bạn chơi vui và chinh phục ngôi đầu bảng xếp hạng!')+'</p>' +
+          '<p class="quiz-intro">Có <b>'+QUIZZES.length+' bộ câu hỏi nâng cao</b> - chọn ngay một chủ đề bên dưới để bắt đầu. '+(laAdmin?'Với quyền quản trị, bạn có thể tạo, sửa, xoá và xuất/nhập bộ câu hỏi ngay tại đây.':'Chúc bạn chơi vui và chinh phục ngôi đầu bảng xếp hạng!')+'</p>' +
           '<div class="quiz-list">' +
-          QUIZZES.map(function(q){ return '<button class="quiz-card" data-qid="'+q.id+'"><div class="qc-ico">'+q.ico+'</div><div class="qc-name">'+escHtml(q.name)+'</div><div class="qc-meta">'+escHtml(q.desc)+' · '+q.cauhoi.length+' câu</div></button>'; }).join('') +
+          QUIZZES.map(function(q){ return '<button class="quiz-card" data-qid="'+q.id+'"><div class="qc-ico">'+q.ico+'</div><div class="qc-name">'+escHtml(q.name)+'</div><div class="qc-meta">'+escHtml(q.desc||'')+'</div><div class="qc-badge">'+q.cauhoi.length+' câu</div></button>'; }).join('') +
           '</div>' +
         '</div>' +
         '<aside class="quiz-side"><div class="qb-head">🏆 Top 20 KK-QUIZ</div><div class="qb-sub">20 người điểm cao nhất</div><ol id="quizLeaderboard" class="qb-list"><li class="qb-loading">Đang tải...</li></ol>' +
