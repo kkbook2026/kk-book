@@ -1865,6 +1865,116 @@ footer{
   .quiz-layout{flex-direction:column}
   .quiz-side{width:100%;position:static}
 }
+
+/* ============================================================
+   TỐI ƯU GIAO DIỆN ĐIỆN THOẠI (thoải mái - dễ đọc - dễ chạm)
+   ============================================================ */
+@media(max-width:600px){
+  html{-webkit-text-size-adjust:100%}
+  /* --- HEADER gọn gàng, thoáng --- */
+  .header-inner{padding:9px 12px;gap:10px}
+  .brand-logo{padding:0}
+  .logo-kk{width:52px;height:52px}
+  .header-main{gap:8px;min-width:0}
+  .brand-text{align-self:center}
+  .brand-text .brand-name{font-size:.9rem;letter-spacing:.08em;white-space:normal;text-align:center}
+  .header-right{gap:8px;justify-content:center;width:100%}
+  .header-tools{gap:8px;width:100%;justify-content:center;margin-left:0}
+  .search-box{flex:1 1 100%;min-width:0;order:5}
+  .search-box input,.search-box input:focus{width:100%}
+  .nav-item{padding:9px 13px;font-size:.85rem}
+  .header-tools .btn{min-height:40px;padding:9px 13px}
+
+  /* --- BANNER + CÂU ĐỐI --- */
+  .hero-slim .hero-inner{padding:11px 14px 10px}
+  .hero-motto{font-size:.66rem;letter-spacing:.1em}
+
+  /* --- 3 THẺ THỐNG KÊ: 1 hàng gọn --- */
+  .lib-head{margin-bottom:16px;gap:10px}
+  .lib-stats-hero{gap:8px;width:100%;flex-wrap:nowrap}
+  .lstat{flex:1;min-width:0;width:auto;padding:10px 4px 8px}
+  .lstat-n{font-size:1.45rem}.lstat-ic{font-size:.95rem}
+  .lstat-t{font-size:.55rem;letter-spacing:.03em}
+  .lib-head #collapseAll{width:auto}
+
+  /* --- LƯỚI NHÓM: 1 cột, ô gọn, chữ TO - RÕ hơn --- */
+  .cat-grid{padding:12px;gap:12px;border-radius:20px}
+  .grp-box{max-width:none;padding:13px 12px;border-radius:18px}
+  .grp-title{font-size:.94rem}.grp-sub{font-size:.66rem}
+  .grp-idx{width:26px;height:26px;font-size:.82rem}
+  .grp-items{gap:8px}
+  .cat-tile{padding:9px 6px;gap:5px;border-radius:13px}
+  .cat-ico{width:34px;height:34px}
+  .cat-ico svg{width:18px;height:18px}
+  .cat-label{font-size:.76rem;line-height:1.2;-webkit-line-clamp:3}
+  .cat-n{font-size:.64rem;padding:1px 8px;min-width:22px}
+  .all-bar .cat-label{font-size:.9rem}
+
+  /* --- MODAL thoải mái --- */
+  .modal{padding:18px 15px;border-radius:16px;max-height:94vh}
+  .modal h3{font-size:1.18rem}
+  .modal-page{max-height:96vh;border-radius:16px}
+  .page-body{padding:16px}
+  .field input,.field select{padding:12px 14px;font-size:.95rem}
+
+  /* --- DỊCH VỤ Á ĐÔNG --- */
+  .svc-grid{grid-template-columns:1fr;gap:12px}
+  .tuvi-wrap{padding:2px}
+  .tuvi-title{font-size:1.14rem;line-height:1.3}
+  .tuvi-sub{font-size:.88rem;line-height:1.7}
+  .dich-form,.ngay-form,.tuvi-form{grid-template-columns:1fr;gap:11px}
+  .dich-form label,.ngay-form label,.tuvi-form label,.dich-form input,.dich-form select,.ngay-form input,.ngay-form select{font-size:.95rem}
+  .dich-form input,.dich-form select,.ngay-form input,.ngay-form select{padding:12px 13px}
+  .tv-actions .btn,.tuvi-wrap>.btn{width:100%;min-height:46px}
+
+  /* --- BẢNG KẾT QUẢ vừa khít, không tràn --- */
+  .bt-top{padding:12px;gap:12px;flex-direction:column;align-items:stretch}
+  .bt-tru{min-width:0;width:100%}
+  .bt-tru th{padding:5px 3px;font-size:.68rem}
+  .bt-tru td{padding:6px 3px}
+  .bt-tru .bt-can b,.bt-tru .bt-chi b{font-size:1.35rem}
+  .bt-tru small{font-size:.62rem}
+  .bt-sum{min-width:0;width:100%;text-align:center}
+  .nh-lb{width:38px;font-size:.8rem}
+  .lh-top{padding:12px}
+  .lh-tbl{font-size:.74rem}
+  .lh-tbl th,.lh-tbl td{padding:6px 3px}
+  .lh-tbl th{font-size:.66rem}
+  .lh-draw{min-width:78px}
+  .lh-yang{width:62px;height:10px}.lh-yin{width:26px;height:10px;margin:0 2px}
+  .lh-chi small{font-size:.62rem}
+
+  /* --- LUẬN GIẢI dễ đọc --- */
+  .lg-doc{font-size:.95rem}
+  .lg-sec h4{font-size:1rem}
+  .lg-cung{padding:10px 12px}
+  .lg-cung-h{font-size:.92rem}
+  .lg-list li{font-size:.9rem;padding:8px 10px 8px 22px;line-height:1.65}
+  .dv-tbl{font-size:.82rem}
+  .dv-tbl th,.dv-tbl td{padding:6px 6px}
+  .kd-top,.lh-top{flex-direction:column}
+  .kd-hexbox{align-self:center}
+  .nd-grid{grid-template-columns:1fr}
+  .nd-head{flex-direction:column;text-align:center;gap:10px}
+
+  /* --- KK-QUIZ + SÁCH --- */
+  .book-grid{grid-template-columns:repeat(2,1fr);gap:12px}
+  .quiz-opt{padding:14px 16px;font-size:.95rem}
+
+  /* --- QUẢN TRỊ --- */
+  .svc-pay-grid{grid-template-columns:1fr}
+  .stat-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:380px){
+  .logo-kk{width:46px;height:46px}
+  .brand-text .brand-name{font-size:.8rem;letter-spacing:.04em}
+  .lstat-n{font-size:1.25rem}.lstat-t{font-size:.5rem}
+  .cat-label{font-size:.72rem}
+  .book-grid{grid-template-columns:1fr}
+  .lh-tbl{font-size:.68rem}
+  .lh-yang{width:52px}.lh-yin{width:22px}
+  .bt-tru .bt-can b,.bt-tru .bt-chi b{font-size:1.2rem}
+}
 </style>
 </head>
 <body>
