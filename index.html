@@ -3541,7 +3541,14 @@ async function gLoadCatalog(){
     if(!r.ok) return false;
     const cat = await r.json();
     const localOnly = books.filter(b=>!b.driveId);
-    books = (cat.books||[]).concat(localOnly);
+    var _merged = (cat.books||[]).concat(localOnly);
+    /* KHỬ TRÙNG theo id (rồi driveId) để số lượng đầu sách luôn ổn định, không lúc 105 lúc 109 */
+    var _seen = {}; books = _merged.filter(function(b){
+      if(!b) return false;
+      var k = b.id || b.driveId || b.title;
+      if(k==null) return true;
+      if(_seen[k]) return false; _seen[k]=1; return true;
+    });
     if(cat.settings){
       if(cat.settings.wmText) settings.wmText = cat.settings.wmText;
       if(cat.settings.wmOpacity) settings.wmOpacity = cat.settings.wmOpacity;
@@ -4316,8 +4323,18 @@ async function openReader(book){
   loadSocial(rBookId);
   try{
     const bytes = book.driveId ? await gFetchPdf(book.driveId) : await loadPdf(book.id, book.chunks);
-    rDoc = await pdfjsLib.getDocument({data: bytes}).promise;
+    if(!bytes || !bytes.length){ throw new Error('PDF rỗng hoặc chưa tải được dữ liệu.'); }
+    /* Dùng BẢN SAO của dữ liệu: pdf.js chuyển (transfer) ArrayBuffer sang worker và làm
+       "tách rời" (detach) mảng gốc; nếu dữ liệu được cache/tái sử dụng, lần mở sau sẽ rỗng.
+       Sao chép giúp mở đi mở lại luôn đọc được từ trang đầu. */
+    var buf = new Uint8Array(bytes.length); buf.set(bytes);
+    rDoc = await pdfjsLib.getDocument({ data: buf }).promise;
+    if(!rDoc || !rDoc.numPages){ throw new Error('Không đọc được nội dung PDF.'); }
+    rPage = 1;
+    /* Render ngay, rồi render lại sau khi bố cục trình đọc ổn định (kích thước đúng, nét). */
     renderPage();
+    requestAnimationFrame(function(){ if(rDoc) renderPage(); });
+    setTimeout(function(){ if(rDoc) renderPage(); }, 120);
   }catch(e){
     console.error('Lỗi mở sách:', e);
     const la404 = /404/.test(e.message || '');
@@ -4409,7 +4426,12 @@ async function renderPage(){
     $('#prevPage').disabled = rPage<=1;
     $('#nextPage').disabled = rPage>=rDoc.numPages;
     $('#zoomInd') && ($('#zoomInd').textContent = Math.round(rZoom*100) + '%');
-  }catch(e){ console.error('renderPage', e); }
+  }catch(e){
+    console.error('renderPage', e);
+    /* Lỗi tạm thời ở lần đầu (worker/layout chưa sẵn sàng): thử lại đúng 1 lần */
+    if(!renderPage._retry){ renderPage._retry = true; rendering=false; setTimeout(function(){ if(rDoc) renderPage(); }, 200); return; }
+  }
+  renderPage._retry = false;
   rendering = false;
   if(pendingPage!==null){ pendingPage=null; renderPage(); }
 }
@@ -6268,8 +6290,8 @@ const CHATBOT_QA = [
     dap: 'Rất xin lỗi vì sự bất tiện! Bạn thử <b>tải lại trang (Ctrl+F5)</b> và mở lại. Nếu vẫn lỗi, có thể cuốn đó đang được cập nhật, bạn quay lại sau ít phút giúp mình nhé.'
   },
   {
-    hoi: 'KK-2026 là gì?',
-    dap: 'KK-2026 (Tủ sách Tri thức KK-2026) là thư viện sách của tác giả <b>Nguyễn Duy Điển</b>, gồm nhiều đầu sách về lịch sử, văn hóa, quản trị, khoa học... Tất cả là tác phẩm gốc do tác giả biên soạn.'
+    hoi: 'KK-BOOK là gì?',
+    dap: 'KK-BOOK là thư viện Sách &amp; Tri thức Khoa học của tác giả <b>Nguyễn Duy Điển</b>, gồm nhiều đầu sách về lịch sử, văn hóa, quản trị, khoa học... cùng KK-QUIZ và bộ công cụ Khoa học Á Đông. Tất cả là tác phẩm gốc do tác giả biên soạn.'
   },
   {
     hoi: 'Làm sao tìm sách theo chủ đề?',
@@ -6310,6 +6332,46 @@ const CHATBOT_QA = [
   {
     hoi: 'Tôi có cần tạo tài khoản để đọc không?',
     dap: 'Không bắt buộc! Bạn có thể <b>đọc thử phần miễn phí và mở khoá bằng mã mà không cần đăng nhập</b>. Việc tạo tài khoản chỉ cần nếu bạn muốn bình luận, thích sách hoặc đồng bộ giữa nhiều thiết bị.'
+  },
+  {
+    hoi: 'Trang web này có những chức năng gì?',
+    dap: 'KK-BOOK có 4 nhóm chính: <b>Tủ sách chuyên khảo</b> (đọc thử + mở khoá), <b>KK-QUIZ</b> (trò chơi kiến thức), <b>Khoa học Á Đông</b> (Tử Vi, Ngày Tốt, Kinh Dịch, Bát Tự, Lục Hào) và <b>tiện ích thông minh</b> (tìm kiếm, đọc thành tiếng, trợ lý ảo). Bạn cứ hỏi mình về bất kỳ mục nào nhé!'
+  },
+  {
+    hoi: 'KK-QUIZ là gì, chơi thế nào?',
+    dap: 'KK-QUIZ là trò chơi kiến thức với <b>nhiều bộ câu hỏi nâng cao</b> (Lịch sử, Khoa học, Thiên văn, Văn học, Công nghệ...). Vào menu <b>KK-QUIZ</b>, chọn một bộ là chơi ngay; mỗi câu <b>trộn ngẫu nhiên đáp án</b> và chấm điểm tức thì.'
+  },
+  {
+    hoi: 'Bảng xếp hạng KK-QUIZ tính điểm ra sao?',
+    dap: 'Mỗi câu đúng được <b>1 điểm</b>. Hệ thống lưu <b>điểm cao nhất của bạn ở mỗi bộ</b>; tổng điểm xếp hạng = cộng dồn điểm cao nhất của tất cả các bộ đã chơi. Cần <b>đăng nhập</b> để được ghi danh lên Top 20.'
+  },
+  {
+    hoi: 'Mục Khoa học Á Đông có những gì?',
+    dap: 'Menu <b>KHOA HỌC Á ĐÔNG</b> có 5 công cụ cổ học: <b>Lá số Tử Vi</b>, <b>Xem Ngày Tốt</b>, <b>Rút Quẻ Kinh Dịch</b>, <b>Tứ Trụ - Bát Tự</b> và <b>Kỳ Môn / Lục Hào</b>. Mỗi công cụ đều có luận giải chi tiết và xuất file PDF.'
+  },
+  {
+    hoi: 'Lập lá số Tử Vi thế nào?',
+    dap: 'Vào <b>KHOA HỌC Á ĐÔNG → Lập lá số Tử Vi</b>, nhập ngày giờ sinh để hệ thống an sao trên lá số 12 cung. Bạn xem lá số miễn phí; bản <b>luận giải chi tiết</b> (tính cách, công danh, tài lộc, đại vận...) có thể xuất ra <b>PDF nhiều trang</b>.'
+  },
+  {
+    hoi: 'Tứ Trụ - Bát Tự là gì?',
+    dap: 'Bát Tự (Tứ Trụ) lập lá số theo <b>4 trụ Can Chi</b> từ ngày giờ sinh, phân tích <b>Ngũ hành, Thập thần, Nhật chủ vượng/nhược và Dụng thần</b> để luận vận mệnh: công danh, tài lộc, tình duyên, sức khỏe, đại vận. Có bản luận giải xuất PDF.'
+  },
+  {
+    hoi: 'Kỳ Môn / Lục Hào dùng để làm gì?',
+    dap: 'Đây là phép <b>gieo quẻ Lục Hào (Nạp Giáp)</b>: bạn nghĩ về điều muốn hỏi rồi gieo quẻ, hệ thống an <b>Địa chi, Lục Thân, Thế - Ứng, Lục Thần</b> theo ngày gieo và luận đoán cát hung cho từng việc. Có bản luận giải xuất PDF.'
+  },
+  {
+    hoi: 'Xem Ngày Tốt có mất phí không?',
+    dap: 'Không, <b>Xem Ngày Tốt hoàn toàn miễn phí</b>. Vào <b>KHOA HỌC Á ĐÔNG → Xem Ngày Tốt</b>, chọn ngày để biết ngày giờ hoàng đạo, giờ tốt cho việc trọng đại như cưới hỏi, khai trương, xuất hành.'
+  },
+  {
+    hoi: 'Làm sao lưu bản luận giải ra PDF?',
+    dap: 'Ở màn hình luận giải (Tử Vi, Kinh Dịch, Bát Tự, Lục Hào), bấm nút <b>"Lưu ... ra PDF"</b>, rồi trong hộp thoại in chọn <b>"Lưu dưới dạng PDF"</b>. Bạn sẽ có tài liệu nhiều trang, trình bày trang trọng để lưu giữ hoặc in ra.'
+  },
+  {
+    hoi: 'Đăng nhập thành viên có lợi ích gì?',
+    dap: 'Khi đăng nhập (chỉ cần email và mật khẩu), bạn được: <b>bảo lưu sách đã mua vĩnh viễn</b> (đọc lại ở mọi thiết bị), <b>ghi danh &amp; lên bảng xếp hạng KK-QUIZ</b>, và <b>bình luận, yêu thích, góp ý</b> cho tác giả.'
   }
 ];
 
