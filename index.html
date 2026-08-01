@@ -3733,10 +3733,12 @@ function animStat(sel, target){
 function renderLibrary(){
   const grid = $('#catGrid');
   if(!grid) return;
-  animStat('#statBooks', books.length);
-  animStat('#statCats', CATS.length);
-  animStat('#statGroups', GROUPS.length);
-  { const _bc=$('#bookCount'); if(_bc) _bc.textContent = books.length + ' đầu sách'; }
+  try{
+    animStat('#statBooks', books.length);
+    animStat('#statCats', CATS.length);
+    animStat('#statGroups', GROUPS.length);
+    const _bc=$('#bookCount'); if(_bc) _bc.textContent = books.length + ' đầu sách';
+  }catch(e){ if(window.console) console.warn('stat:', e); }
 
   /* Dựng 5 hộp MỘT LẦN. Nếu đã dựng rồi thì chỉ cập nhật nhãn số + trạng thái active */
   if(!grid.dataset.built){
@@ -3879,6 +3881,7 @@ async function loadAll(){
     const m = await Store.get('kk-books');   if(m) books = JSON.parse(m);
     const s = await Store.get('kk-settings');if(s) settings = Object.assign(settings, JSON.parse(s));
   }catch(e){ console.error(e); }
+  try{ applyI18n(); }catch(e){ if(window.console) console.warn(e); }  /* cập nhật số lượng từ dữ liệu đã lưu, không chờ mạng */
   await gLoadCatalog(); /* khách truy cập: tải danh mục công khai từ Google Drive */
   $('#wmText').value = settings.wmText;
   $('#wmOpacity').value = settings.wmOpacity;
@@ -6173,6 +6176,9 @@ async function initVisitCounter(){
 }
 
 /* ---------------- init ---------------- */
+/* VẼ NGAY lưới lĩnh vực + icon (dữ liệu tĩnh, không phụ thuộc mạng) để trang chủ
+   không bao giờ bị trống icon trong lúc chờ tải danh mục. */
+try{ renderLibrary(); }catch(e){ if(window.console) console.error('renderLibrary init:', e); }
 loadAll().then(openSharedBook);
 initViewToggle();
 
