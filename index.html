@@ -764,10 +764,12 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
 .icon-btn:hover:not(:disabled){background:var(--navy-700);border-color:var(--gold)}
 .icon-btn:disabled{opacity:.3;cursor:default}
 .reader-stage{
-  flex:1;overflow:auto;display:flex;justify-content:center;align-items:center;padding:12px;
+  flex:1;overflow:auto;display:flex;align-items:flex-start;padding:12px;
   position:relative;-webkit-overflow-scrolling:touch;min-height:0;
 }
-.canvas-wrap{position:relative;box-shadow:0 24px 70px rgba(0,0,0,.7);border-radius:4px;overflow:hidden;background:#fff}
+/* margin:auto canh giữa khi trang VỪA khung, nhưng khi trang CAO/RỘNG hơn khung thì
+   tự canh từ trên/trái xuống -> luôn nhìn thấy đủ dòng đầu, cuộn để đọc tiếp (hết bị che). */
+.canvas-wrap{position:relative;margin:auto;box-shadow:0 24px 70px rgba(0,0,0,.7);border-radius:4px;overflow:hidden;background:#fff}
 .canvas-wrap canvas{display:block;max-width:100%;height:auto}
 /* chế độ tràn viền: sách chiếm trọn màn hình, không lề */
 .reader.bleed .reader-stage{padding:0;align-items:stretch}
@@ -4563,8 +4565,8 @@ function sangTrang(trangMoi){
   if(trangMoi < 1 || trangMoi > rDoc.numPages) return false;
   if(!chanTrang(trangMoi)) return false;      /* hết trang miễn phí -> chặn */
   rPage = trangMoi;
-  $('#readerStage').scrollTop = 0;
   renderPageSettle();
+  var st = $('#readerStage'); if(st){ st.scrollTop = 0; setTimeout(function(){ if(st) st.scrollTop = 0; }, 130); }
   return true;
 }
 $('#prevPage').addEventListener('click', ()=>{ if(sangTrang(rPage-1) && ttsOn) speakPage(); });
