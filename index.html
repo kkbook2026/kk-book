@@ -2928,6 +2928,7 @@ footer{
    Tác giả : Nguyễn Duy Điển (KK-2026)
 ===================================================================== */
 'use strict';
+try{ console.log('%cKK-BOOK · Trình đọc SIÊU NÉT v3 (render 3x + ổn định bố cục)','color:#c9a227;font-weight:bold;font-size:13px'); }catch(e){}
 
 /* pdf.js worker: KHÔNG dùng trực tiếp URL từ CDN khác nguồn, vì trình duyệt CHẶN
    new Worker() cross-origin -> hậu quả là MỌI file PDF không mở được trên tên miền thật.
@@ -4487,7 +4488,7 @@ async function renderPage(){
        không bị nội suy nửa điểm ảnh (nguyên nhân chính gây mờ chữ). */
     let dpr = window.devicePixelRatio || 1;
     dpr = Math.min(Math.max(dpr, 1), 4);          /* tới 4x trên màn Retina/4K */
-    if(dpr < 2) dpr = 3;                         /* màn thường: vẽ 3x cho chữ thật sắc nét, rõ từng nét */
+    if(dpr < 3) dpr = 3;                         /* ÉP tối thiểu 3x trên MỌI màn hình (kể cả Retina) -> chữ sắc nét tối đa */
 
     /* Safari giới hạn điểm ảnh mỗi canvas. iPad mạnh hơn iPhone nên cho ngưỡng cao hơn.
        (iPhone ~16,7 triệu; iPad có thể cao hơn; máy tính rất thoáng.) */
