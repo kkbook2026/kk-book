@@ -4303,14 +4303,8 @@ function paintWatermark(ctx, w, h, text, alpha){
     }
   }
   ctx.restore();
-  /* corner stamp - slightly stronger */
-  ctx.save();
-  ctx.globalAlpha = Math.min(alpha*2.2, .5);
-  ctx.fillStyle = '#5A5A5A';
-  ctx.font = `500 ${Math.max(10, Math.round(w/70))}px 'Be Vietnam Pro', sans-serif`;
-  ctx.textAlign = 'right';
-  ctx.fillText(text, w-14, h-12);
-  ctx.restore();
+  /* Chỉ giữ lớp chữ chạy chéo mờ; KHÔNG vẽ con dấu ở góc dưới nữa
+     (vì trùng với dòng "Tác giả : Nguyễn Duy Điển" đã in sẵn dưới mỗi trang PDF). */
 }
 
 /* ---------------- upload flow ---------------- */
