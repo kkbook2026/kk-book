@@ -4475,11 +4475,14 @@ async function renderPage(){
     const availH = Math.max(200, stage.clientHeight - padY - chua);
 
     /* Trang bìa (trang 1): vừa CẢ TRANG để thấy trọn bìa.
-       Các trang đọc (từ trang 2 trở đi): vừa CHIỀU RỘNG -> trang lấp đầy bề ngang, chữ TO và
-       SẮC NÉT sẵn (giống trạng thái khi zoom), cuộn dọc để đọc tiếp -> hết cảnh phải zoom mới nét. */
+       Các trang đọc (từ trang 2): CÂN BẰNG giữa "chữ đủ to, đọc rõ" và "thấy được nhiều nội dung":
+       phóng theo chiều cao ~1.3 lần trang (chữ to hơn hẳn kiểu vừa-cả-trang) nhưng KHÔNG vượt quá
+       bề rộng khung (khỏi phải cuộn ngang). Nhờ vậy mỗi màn thấy được khoảng 3/4 trang mà chữ vẫn rõ,
+       không phải zoom. Muốn khác đi anh chỉ cần đổi số 1.3 (nhỏ hơn = thấy nhiều hơn, chữ nhỏ hơn). */
     const fitW    = availW / base.width;
-    const fitPage = Math.min(fitW, availH / base.height);
-    const fitScale = (rPage <= 1) ? fitPage : fitW;
+    const fitH    = availH / base.height;
+    const fitPage = Math.min(fitW, fitH);
+    const fitScale = (rPage <= 1) ? fitPage : Math.min(fitH * 1.3, fitW);
     let cssScale = fitScale * rZoom;
 
     /* --- SIÊU NÉT ---
