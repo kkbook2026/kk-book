@@ -4478,8 +4478,12 @@ async function renderPage(){
     const availW = Math.max(200, stage.clientWidth  - padX - chua);
     const availH = Math.max(200, stage.clientHeight - padY - chua);
 
-    /* CÂN ĐỐI CẢ TRANG: lấy tỉ lệ NHỎ HƠN -> trang sách lọt trọn, không cắt xén */
-    const fitScale = Math.min(availW / base.width, availH / base.height);
+    /* Trang bìa (trang 1): vừa CẢ TRANG để thấy trọn bìa.
+       Các trang đọc (từ trang 2 trở đi): vừa CHIỀU RỘNG -> trang lấp đầy bề ngang, chữ TO và
+       SẮC NÉT sẵn (giống trạng thái khi zoom), cuộn dọc để đọc tiếp -> hết cảnh phải zoom mới nét. */
+    const fitW    = availW / base.width;
+    const fitPage = Math.min(fitW, availH / base.height);
+    const fitScale = (rPage <= 1) ? fitPage : fitW;
     let cssScale = fitScale * rZoom;
 
     /* --- SIÊU NÉT ---
@@ -4532,7 +4536,7 @@ async function renderPage(){
     paintWatermark(ctx, cssVp.width, cssVp.height, settings.wmText, settings.wmOpacity/100);
     ctx.restore();
 
-    $('#pageInd').textContent = rPage + ' / ' + rDoc.numPages + '  ✦v3';
+    $('#pageInd').textContent = rPage + ' / ' + rDoc.numPages;
     $('#prevPage').disabled = rPage<=1;
     $('#nextPage').disabled = rPage>=rDoc.numPages;
     $('#zoomInd') && ($('#zoomInd').textContent = Math.round(rZoom*100) + '%');
