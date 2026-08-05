@@ -4532,7 +4532,7 @@ async function renderPage(){
     paintWatermark(ctx, cssVp.width, cssVp.height, settings.wmText, settings.wmOpacity/100);
     ctx.restore();
 
-    $('#pageInd').textContent = rPage + ' / ' + rDoc.numPages;
+    $('#pageInd').textContent = rPage + ' / ' + rDoc.numPages + '  ✦v3';
     $('#prevPage').disabled = rPage<=1;
     $('#nextPage').disabled = rPage>=rDoc.numPages;
     $('#zoomInd') && ($('#zoomInd').textContent = Math.round(rZoom*100) + '%');
