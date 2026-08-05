@@ -2968,6 +2968,18 @@ const GDRIVE = {
   catalogFileId: '1no2ekPA7AyESPd-O_RvHIy1pOtRWnvzm'
 };
 
+/* ===== NGUỒN PHÁT PDF QUA GITHUB + jsDelivr (CDN, có CORS, KHÔNG bị hạn mức tải như Google Drive) =====
+   >>> ANH CHỈ CẦN ĐIỀN TÊN REPO GITHUB CHỨA CÁC FILE PDF VÀO 'repo' DƯỚI ĐÂY <<<
+   - Đặt tên file PDF trong repo theo id của sách:  {id sách}.pdf   (khuyến nghị, tự động khớp)
+     HOẶC thêm trường "gh" cho từng sách trong danh mục (đường dẫn file trong repo).
+   - Google Drive vẫn được GIỮ LÀM NGUỒN DỰ PHÒNG tự động: nếu jsDelivr chưa có file, web tự lấy từ Drive.
+   - Có thể đặt trong danh mục (catalog) qua khoá "ghRepo"/"ghBranch" để đổi mà không cần sửa code. */
+var GHUB = {
+  repo: '',          /* ví dụ: 'kkbook2026/kk-book-pdfs'   <-- ĐIỀN repo chứa PDF vào đây */
+  branch: 'main',    /* nhánh chứa file, thường là 'main' */
+  dir: 'pdfs'        /* thư mục con trong repo chứa các file PDF (script tạo sẵn thư mục này) */
+};
+
 /* Chỉ tài khoản Google này mới được vào quản trị. Đây là chốt chặn thật:
    khách lạ không bao giờ nhìn thấy ô tạo PIN. */
 const OWNER_EMAIL = 'nguyenduydien75@gmail.com';  /* tài khoản Google có Drive */
@@ -3575,6 +3587,9 @@ async function gLoadCatalog(){
     if(cat.settings){
       if(cat.settings.wmText) settings.wmText = cat.settings.wmText;
       if(cat.settings.wmOpacity) settings.wmOpacity = cat.settings.wmOpacity;
+      if(cat.settings.ghRepo) GHUB.repo = cat.settings.ghRepo;
+      if(cat.settings.ghBranch) GHUB.branch = cat.settings.ghBranch;
+      if(cat.settings.ghDir!=null) GHUB.dir = cat.settings.ghDir;
     }
     return true;
   }catch(e){ console.error('catalog', e); return false; }
@@ -3599,6 +3614,51 @@ async function gFetchPdf(driveId){
     }
   }
   throw lastErr || new Error('Không tải được file từ Google Drive');
+}
+/* ---- NGUỒN PHÁT PDF ĐA KÊNH: jsDelivr (GitHub) trước, Google Drive dự phòng tự động ---- */
+function ghRepoStr(){ return (GHUB && GHUB.repo ? String(GHUB.repo).replace(/^\/+|\/+$/g,'') : ''); }
+function ghEnabled(){ return !!ghRepoStr(); }
+function jsdUrl(path){
+  path = String(path||'').replace(/^\/+/,'');
+  var br = (GHUB && GHUB.branch) ? ('@'+GHUB.branch) : '';
+  return 'https://cdn.jsdelivr.net/gh/'+ghRepoStr()+br+'/'+path;
+}
+function bookGhPath(book){
+  if(book && book.gh) return String(book.gh);
+  if(book && (book.id!=null && book.id!=='')) return encodeURIComponent(String(book.id))+'.pdf';
+  return '';
+}
+function ghDir(){ var d = (GHUB && GHUB.dir) ? String(GHUB.dir).replace(/^\/+|\/+$/g,'') : ''; return d ? (d+'/') : ''; }
+function bookPdfSources(book){
+  var out = [];
+  if(book && book.url) out.push({url:String(book.url), src:'URL riêng'});
+  if(ghEnabled()){
+    if(book && book.gh){ out.push({url:jsdUrl(book.gh), src:'GitHub/jsDelivr'}); }
+    else {
+      if(book && book.id!=null && book.id!=='') out.push({url:jsdUrl(ghDir()+encodeURIComponent(String(book.id))+'.pdf'), src:'GitHub (theo id)'});
+      if(book && book.driveId) out.push({url:jsdUrl(ghDir()+String(book.driveId)+'.pdf'), src:'GitHub (theo driveId)'});
+    }
+  }
+  if(book && book.driveId){
+    out.push({url:'https://www.googleapis.com/drive/v3/files/'+book.driveId+'?alt=media&key='+GDRIVE.apiKey, src:'Google Drive'});
+    out.push({url:'https://www.googleapis.com/drive/v3/files/'+book.driveId+'?alt=media&supportsAllDrives=true&key='+GDRIVE.apiKey, src:'Google Drive'});
+  }
+  return out;
+}
+async function fetchBookPdf(book){
+  var sources = bookPdfSources(book);
+  if(!sources.length) throw new Error('Sách chưa cấu hình nguồn file (thiếu GitHub và Drive).');
+  var lastErr = null;
+  for(var i=0;i<sources.length;i++){
+    try{
+      var r = await fetch(sources[i].url, { cache:'no-store', redirect:'follow' });
+      if(!r.ok){ lastErr = new Error('HTTP '+r.status+' @ '+sources[i].src); continue; }
+      var ab = await r.arrayBuffer();
+      if(!ab || ab.byteLength < 100){ lastErr = new Error('File rỗng @ '+sources[i].src); continue; }
+      return new Uint8Array(ab);
+    }catch(e){ lastErr = (e && e.message) ? e : new Error('Lỗi tải @ '+sources[i].src); }
+  }
+  throw lastErr || new Error('Không tải được file từ mọi nguồn (GitHub &amp; Drive)');
 }
 function updateDriveUI(){
   const st = $('#driveStatus'); if(!st) return;
@@ -4363,7 +4423,11 @@ async function openReader(book){
   try{
     /* Chờ worker (Blob cùng nguồn) sẵn sàng để tránh lỗi cross-origin làm PDF không mở được */
     try{ if(typeof __pdfWorkerReady!=='undefined') await __pdfWorkerReady; }catch(e){}
-    const bytes = book.driveId ? await gFetchPdf(book.driveId) : await loadPdf(book.id, book.chunks);
+    const bytes = (book.driveId || book.gh || book.url)
+      ? await fetchBookPdf(book)
+      : (book.chunks && book.chunks.length)
+        ? await loadPdf(book.id, book.chunks)
+        : await fetchBookPdf(book);   /* không có dữ liệu local: thử GitHub theo id sách */
     /* Chuẩn hoá về Uint8Array (dữ liệu có thể là ArrayBuffer hoặc Uint8Array) */
     var src = (bytes instanceof Uint8Array) ? bytes : (bytes ? new Uint8Array(bytes) : null);
     if(!src || !src.length){ throw new Error('PDF rỗng hoặc chưa tải được dữ liệu.'); }
@@ -4373,22 +4437,20 @@ async function openReader(book){
     rDoc = await pdfjsLib.getDocument({ data: buf }).promise;
     if(!rDoc || !rDoc.numPages){ throw new Error('Không đọc được nội dung PDF.'); }
     rPage = 1;
-    /* Render ngay, rồi render lại sau khi bố cục trình đọc ổn định (kích thước đúng, nét). */
-    renderPage();
-    requestAnimationFrame(function(){ if(rDoc) renderPage(); });
-    setTimeout(function(){ if(rDoc) renderPage(); }, 120);
+    /* Vẽ trang bìa với ổn định bố cục (như mọi trang khác) */
+    renderPageSettle();
   }catch(e){
     console.error('Lỗi mở sách:', e);
     const la404 = /404/.test(e.message || '');
     const la403 = /403|401/.test(e.message || '');
     if(la404 && toiLaChuTrang()){
-      toast('Sách "' + book.title + '" không còn file trên Google Drive (đã bị xoá/mất quyền). Hãy tải lại cuốn này.');
+      toast('Sách "' + book.title + '" không còn file trên Google Drive (đã bị xoá/mất quyền). Hãy kiểm tra đã đẩy file lên GitHub (tên "'+(book.id!=null?book.id:'')+'.pdf") hoặc tải lại cuốn này.');
     } else if(la404){
       toast('Cuốn sách này tạm thời chưa đọc được. Chúng tôi sẽ sớm khắc phục. Xin lỗi vì sự bất tiện.');
     } else if(la403){
       toast('Không tải được file từ Google Drive (lỗi quyền / hạn mức API - 403). ' + (toiLaChuTrang()?'Hãy kiểm tra API key và đảm bảo file được chia sẻ "Bất kỳ ai có liên kết".':'Vui lòng thử lại sau ít phút.'));
     } else if(/Failed to fetch|NetworkError|Load failed|ERR_/i.test(msg)){
-      toast('Không kết nối được tới Google Drive để tải sách. ' + (toiLaChuTrang()?'Nguyên nhân thường gặp: (1) file CHƯA chia sẻ "Bất kỳ ai có liên kết"; (2) API key hết/không đủ hạn mức; (3) file bị Google tạm khoá do vượt lượt tải trong ngày; (4) mạng/tường lửa chặn googleapis.com. Hãy kiểm tra lần lượt các mục này.':'Có thể do mạng hoặc file tạm thời chưa tải được. Vui lòng thử lại sau ít phút.'));
+      toast('Không tải được file sách (lỗi mạng/kết nối). ' + (toiLaChuTrang()?'Web ưu tiên tải từ GitHub/jsDelivr rồi mới đến Drive. Kiểm tra: đã điền đúng repo GitHub, đã đẩy file lên repo, và mạng không chặn cdn.jsdelivr.net / googleapis.com.':'Có thể do mạng hoặc file tạm thời chưa sẵn sàng. Vui lòng thử lại sau ít phút.'));
     } else {
       toast('Không mở được sách: ' + String(e && e.message ? e.message : e).slice(0,90) + '. Hãy tải lại trang (Ctrl+F5) rồi thử lại.');
     }
@@ -4425,7 +4487,7 @@ async function renderPage(){
        không bị nội suy nửa điểm ảnh (nguyên nhân chính gây mờ chữ). */
     let dpr = window.devicePixelRatio || 1;
     dpr = Math.min(Math.max(dpr, 1), 4);          /* tới 4x trên màn Retina/4K */
-    if(dpr < 2) dpr = 2.5;                        /* màn thường: vẽ 2,5x cho chữ thật sắc nét */
+    if(dpr < 2) dpr = 3;                         /* màn thường: vẽ 3x cho chữ thật sắc nét, rõ từng nét */
 
     /* Safari giới hạn điểm ảnh mỗi canvas. iPad mạnh hơn iPhone nên cho ngưỡng cao hơn.
        (iPhone ~16,7 triệu; iPad có thể cao hơn; máy tính rất thoáng.) */
@@ -4482,24 +4544,32 @@ async function renderPage(){
   rendering = false;
   if(pendingPage!==null){ pendingPage=null; renderPage(); }
 }
+/* Vẽ trang với "ổn định bố cục": vẽ ngay, rồi vẽ lại sau khi trình duyệt dàn xong
+   (tránh trường hợp trang mới vẽ ở kích thước chưa ổn định -> mờ, phải zoom mới nét).
+   Đây chính là lý do trang bìa luôn nét; giờ áp dụng cho MỌI trang. */
+function renderPageSettle(){
+  renderPage();
+  requestAnimationFrame(function(){ if(rDoc) renderPage(); });
+  setTimeout(function(){ if(rDoc) renderPage(); }, 90);
+}
 /* LẬT TRANG - mọi đường đều đi qua đây, có chốt chặn thu phí */
 function sangTrang(trangMoi){
   if(!rDoc) return false;
   if(trangMoi < 1 || trangMoi > rDoc.numPages) return false;
   if(!chanTrang(trangMoi)) return false;      /* hết trang miễn phí -> chặn */
   rPage = trangMoi;
-  renderPage();
   $('#readerStage').scrollTop = 0;
+  renderPageSettle();
   return true;
 }
 $('#prevPage').addEventListener('click', ()=>{ if(sangTrang(rPage-1) && ttsOn) speakPage(); });
 $('#nextPage').addEventListener('click', ()=>{ if(sangTrang(rPage+1) && ttsOn) speakPage(); });
-$('#zoomIn').addEventListener('click', ()=>{ rZoom=Math.min(rZoom+.2, 3); renderPage(); });
-$('#zoomOut').addEventListener('click', ()=>{ rZoom=Math.max(rZoom-.2, .5); renderPage(); });
+$('#zoomIn').addEventListener('click', ()=>{ rZoom=Math.min(rZoom+.2, 3); renderPageSettle(); });
+$('#zoomOut').addEventListener('click', ()=>{ rZoom=Math.max(rZoom-.2, .5); renderPageSettle(); });
 $('#fitBtn').addEventListener('click', ()=>{
   $('#reader').classList.toggle('bleed');
   rZoom = 1;
-  renderPage();
+  renderPageSettle();
 });
 $('#closeReader').addEventListener('click', closeReader);
 function closeReader(){
