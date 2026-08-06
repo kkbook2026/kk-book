@@ -4702,9 +4702,9 @@ function loadVoices(){
   if(prev && list.some(v=>v.name===prev)) sel.value = prev;
   else if(vi.length) sel.value = vi[0].name;
   else {
-    /* Không có giọng Việt: chọn giọng TRUNG TÍNH (mặc định của máy, hoặc tiếng Anh),
-       tránh tự rơi vào giọng ngoại ngữ ngẫu nhiên như tiếng Đức. */
-    const fb = list.find(v=>v.default) || list.find(v=>/^en/i.test(v.lang)) || list[0];
+    /* Không có giọng Việt: ưu tiên giọng LUÔN PHÁT RA TIẾNG (trực tuyến/mặc định của máy),
+       tránh một số giọng cục bộ (offline) bỏ qua ký tự tiếng Việt khiến im lặng. */
+    const fb = list.find(v=>v.localService===false) || list.find(v=>v.default) || list[0];
     if(fb) sel.value = fb.name;
   }
 
