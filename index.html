@@ -18,6 +18,24 @@
 </script>
 <title>THƯ VIỆN SÁCH CÁ NHÂN</title>
 <meta name="robots" content="noarchive, noimageindex">
+<!-- ===== KK-BOOK App (PWA): cài được như ứng dụng, có icon riêng, chạy toàn màn hình ===== -->
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#17294c">
+<link rel="icon" href="./icons/kk-64.png" type="image/png">
+<link rel="apple-touch-icon" href="./icons/kk-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="KK-BOOK">
+<meta name="application-name" content="KK-BOOK">
+<script>
+  /* Đăng ký service worker để App cài được và mở lại khi mất mạng. An toàn: chỉ chạy nếu trình duyệt hỗ trợ. */
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('./sw.js').catch(function (e) { /* bỏ qua nếu lỗi */ });
+    });
+  }
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,600&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
