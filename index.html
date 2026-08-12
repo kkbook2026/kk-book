@@ -18,6 +18,48 @@
 </script>
 <title>THƯ VIỆN SÁCH CÁ NHÂN</title>
 <meta name="robots" content="noarchive, noimageindex">
+<!-- ===== KK-BOOK App (PWA): cài được như ứng dụng, có icon riêng, chạy toàn màn hình ===== -->
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#17294c">
+<link rel="icon" href="./icons/kk-64.png" type="image/png">
+<link rel="apple-touch-icon" href="./icons/kk-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="KK-BOOK">
+<meta name="application-name" content="KK-BOOK">
+<script>
+  /* Đăng ký service worker để App cài được và mở lại khi mất mạng. An toàn: chỉ chạy nếu trình duyệt hỗ trợ. */
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('./sw.js').catch(function (e) { /* bỏ qua nếu lỗi */ });
+    });
+  }
+  /* Nút "Cài đặt App KK-BOOK" hiện rõ khi trình duyệt cho phép cài (Chrome/Edge/Cốc Cốc trên Android & máy tính). */
+  var __kkPrompt = null;
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault();
+    __kkPrompt = e;
+    __kkShowInstall();
+  });
+  function __kkShowInstall() {
+    if (!document.body || document.getElementById('kkInstallBtn')) return;
+    var b = document.createElement('button');
+    b.id = 'kkInstallBtn';
+    b.innerHTML = '📲 Cài đặt App KK-BOOK';
+    b.style.cssText = 'position:fixed;left:16px;bottom:16px;z-index:99999;background:linear-gradient(135deg,#e0b93f,#c9a227);color:#0f1d38;font-weight:700;border:none;border-radius:99px;padding:12px 18px;box-shadow:0 8px 24px rgba(0,0,0,.45);cursor:pointer;font-family:sans-serif;font-size:14px';
+    b.onclick = function () {
+      if (!__kkPrompt) return;
+      __kkPrompt.prompt();
+      var p = __kkPrompt.userChoice; __kkPrompt = null;
+      if (p && p.finally) p.finally(function () { b.remove(); }); else b.remove();
+    };
+    document.body.appendChild(b);
+  }
+  window.addEventListener('appinstalled', function () {
+    var b = document.getElementById('kkInstallBtn'); if (b) b.remove();
+  });
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,600&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -30,7 +72,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <style>
 :root{
-  --navy-950:#0A1428; --navy-900:#0E1B36; --navy-800:#15264A; --navy-700:#1E3260;
+  --navy-950:#232C3E; --navy-900:#26324A; --navy-800:#2C3C5C; --navy-700:#354770;
   --gold:#C9A227; --gold-bright:#E4C158; --gold-dim:#8C7420;
   --cream:#F6F0E1; --cream-dim:#D9CFB6; --ink:#1A2233;
   --ok:#3FA66A; --danger:#C4514A;
@@ -66,7 +108,7 @@ canvas{image-rendering:auto}
 body{
   font-family:var(--font-body);
   -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;
-  background:linear-gradient(180deg,#12223f 0%,#0e1c37 55%,#0c1830 100%);
+  background:linear-gradient(180deg,#2A3852 0%,#26334B 55%,#242F45 100%);
   background-attachment:fixed;
   color:var(--cream);
   min-height:100vh;
@@ -493,14 +535,14 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
   color:var(--navy-950);background:var(--gc);
   box-shadow:0 0 11px color-mix(in srgb, var(--gc) 50%, transparent);
 }
-.grp-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.grp-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;align-items:center;text-align:center}
 .grp-title{
   font-family:var(--font-display);font-size:.88rem;font-weight:700;
-  color:var(--cream);line-height:1.2;
+  color:var(--cream);line-height:1.2;text-align:center;max-width:100%;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 .grp-sub{
-  font-style:normal;font-size:.63rem;color:var(--cream-dim);line-height:1.25;
+  font-style:normal;font-size:.63rem;color:var(--cream-dim);line-height:1.25;text-align:center;max-width:100%;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 .grp-total{
@@ -586,12 +628,13 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
   position:relative;z-index:1;flex-shrink:0;
   width:30px;height:30px;border-radius:9px;
   display:flex;align-items:center;justify-content:center;
-  background:color-mix(in srgb, var(--cc) 40%, transparent);
-  border:1px solid color-mix(in srgb, var(--cc) 68%, transparent);
+  background:color-mix(in srgb, var(--cc) 46%, transparent);
+  border:1px solid color-mix(in srgb, var(--cc) 78%, transparent);
+  filter:brightness(1.12) saturate(1.05);      /* sáng hơn ~12% cho icon lĩnh vực nổi bật */
 }
 .cat-ico svg{
   width:16px;height:16px;
-  stroke:color-mix(in srgb, var(--cc) 75%, #ffffff);fill:none;stroke-width:2;
+  stroke:color-mix(in srgb, var(--cc) 62%, #ffffff);fill:none;stroke-width:2;
   stroke-linecap:round;stroke-linejoin:round;
 }
 .cat-label{
@@ -1313,8 +1356,8 @@ body.desktop-view .hdr-inner{flex-wrap:nowrap}
 .welcome-title span{color:var(--gold-bright)}
 .welcome-lead{font-size:.94rem;color:var(--cream-dim);line-height:1.7;margin:0 auto 16px;max-width:440px}
 .welcome-lead b{color:var(--cream)}
-.welcome-stats{display:flex;justify-content:center;gap:10px;margin:0 0 18px;position:relative;z-index:1}
-.w-stat{flex:1;max-width:130px;background:rgba(255,255,255,.03);border:1px solid rgba(201,162,39,.22);border-radius:13px;padding:11px 6px}
+.welcome-stats{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:0 0 18px;position:relative;z-index:1}
+.w-stat{flex:1 1 90px;max-width:130px;background:rgba(255,255,255,.03);border:1px solid rgba(201,162,39,.22);border-radius:13px;padding:11px 6px}
 .w-stat b{display:block;font-family:var(--font-display);font-size:1.5rem;color:var(--gold-bright);line-height:1}
 .w-stat span{font-size:.72rem;color:var(--cream-dim);margin-top:3px;display:block}
 .welcome-perks{text-align:left;display:flex;flex-direction:column;gap:10px;margin-bottom:18px;position:relative;z-index:1}
@@ -1325,6 +1368,11 @@ body.desktop-view .hdr-inner{flex-wrap:nowrap}
 .w-p-tx small b{color:#FFE08A;display:inline}
 .welcome-note{position:relative;z-index:1;margin:0 0 16px;padding:12px 15px;border-radius:12px;background:linear-gradient(135deg,rgba(0,194,168,.09),rgba(201,162,39,.07));border:1px solid rgba(0,194,168,.22);font-size:.86rem;line-height:1.65;color:var(--cream-dim);text-align:center}
 .welcome-note b{color:var(--gold-bright)}
+.welcome-sec{position:relative;z-index:1;font-size:.72rem;letter-spacing:2px;color:var(--gold);font-weight:700;text-align:center;margin:4px 0 10px}
+.welcome-steps{text-align:left;display:flex;flex-direction:column;gap:9px;margin-bottom:18px;position:relative;z-index:1}
+.w-step{display:flex;gap:12px;align-items:flex-start;font-size:.88rem;color:var(--cream-dim);line-height:1.55}
+.w-step b{color:var(--cream)}
+.w-num{flex-shrink:0;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.9rem;color:var(--navy-950);background:linear-gradient(135deg,var(--gold-bright),var(--gold));box-shadow:0 3px 10px rgba(201,162,39,.35)}
 .welcome-cta{display:flex;gap:10px;flex-wrap:wrap;position:relative;z-index:1}
 .welcome-cta .btn{flex:1;min-width:150px;justify-content:center;padding:13px 16px;font-size:.95rem}
 .welcome-off{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:14px;font-size:.8rem;color:var(--cream-dim);cursor:pointer}
@@ -2245,7 +2293,8 @@ footer{
       <span class="dock-title">Đọc thành tiếng</span>
       <button class="dock-close" id="ttsDockClose" title="Đóng">✕</button>
     </div>
-    <div class="dock-row" style="justify-content:center;gap:14px">
+    <div class="dock-row" style="justify-content:center;gap:12px">
+      <button class="icon-btn" id="ttsRestart" title="Đọc lại từ đầu trang">⏮</button>
       <button class="tts-play" id="ttsToggle">▶</button>
       <button class="icon-btn" id="ttsStop" title="Dừng hẳn">■</button>
     </div>
@@ -2398,21 +2447,30 @@ footer{
     <div class="welcome-glow"></div>
     <div class="welcome-top">
       <div class="welcome-emblem"><span>KK</span></div>
-      <div class="welcome-badge">✦ THƯ VIỆN TRI THỨC CÁ NHÂN ✦</div>
-      <h2 class="welcome-title">Chào mừng bạn đến với <span>KK-BOOK</span></h2>
-      <p class="welcome-lead">Không gian đọc sách mở cửa chào đón <b>tất cả mọi người</b> - nơi hội tụ một kho tri thức đồ sộ trải khắp các lĩnh vực: khoa học, lịch sử, công nghệ, kinh tế, văn hoá, đời sống và hơn thế nữa.</p>
+      <div class="welcome-badge">✦ TỦ SÁCH TRI THỨC · KHOA HỌC ✦</div>
+      <h2 class="welcome-title">Chào mừng đến với <span>KK-BOOK</span></h2>
+      <p class="welcome-lead">Một <b>kho tàng tri thức đồ sộ</b>, được tuyển chọn và biên soạn công phu bởi tác giả <b>Nguyễn Duy Điển</b> - trải khắp khoa học, lịch sử, công nghệ, kinh tế, văn hoá, đời sống và cổ học phương Đông. Nơi mỗi trang sách mở ra một chân trời, mỗi lĩnh vực là một hành trình khám phá.</p>
     </div>
     <div class="welcome-stats">
       <div class="w-stat"><b>100+</b><span>Đầu sách</span></div>
       <div class="w-stat"><b>20+</b><span>Lĩnh vực</span></div>
-      <div class="w-stat"><b>1000+</b><span>Câu hỏi Quiz</span></div>
+      <div class="w-stat"><b>10</b><span>Bộ Quiz</span></div>
+      <div class="w-stat"><b>5</b><span>Cổ học Á Đông</span></div>
     </div>
+    <div class="welcome-sec">✦ TẠI ĐÂY BẠN CÓ ✦</div>
     <div class="welcome-perks">
-      <div class="w-perk"><div class="w-p-ic">🎁</div><div class="w-p-tx"><b>10 NGÀY ĐỌC SÁCH MIỄN PHÍ</b><small>Thỏa sức đọc và trải nghiệm trọn vẹn tủ sách ngay khi ghé thăm - không rào cản.</small></div></div>
-      <div class="w-perk"><div class="w-p-ic">🎯</div><div class="w-p-tx"><b>KK-QUIZ - Chơi thả ga, không giới hạn</b><small>Thử tài với hàng loạt bộ câu hỏi khoa học vui. <b>Ghi danh để được vinh danh</b> trên Bảng Vàng Top 20!</small></div></div>
-      <div class="w-perk"><div class="w-p-ic">🧭</div><div class="w-p-tx"><b>Khoa học Á Đông</b><small>Lập lá số Tử Vi, Xem ngày tốt, Rút quẻ Kinh Dịch - khám phá đầy thú vị.</small></div></div>
+      <div class="w-perk"><div class="w-p-ic">📚</div><div class="w-p-tx"><b>Tủ sách chuyên khảo</b><small>Hàng trăm đầu sách nguyên bản trải khắp các lĩnh vực. <b>Đọc thử miễn phí</b>, mở khoá để đọc trọn cuốn.</small></div></div>
+      <div class="w-perk"><div class="w-p-ic">🎯</div><div class="w-p-tx"><b>KK-QUIZ - Đấu trí không giới hạn</b><small>10 bộ câu hỏi nâng cao đủ chủ đề. <b>Ghi danh để được vinh danh trên Bảng Vàng Top 20!</b></small></div></div>
+      <div class="w-perk"><div class="w-p-ic">☯</div><div class="w-p-tx"><b>Khoa học Á Đông</b><small>Lập lá số Tử Vi, Xem Ngày Tốt, Rút quẻ Kinh Dịch, Tứ Trụ - Bát Tự, Lục Hào - có luận giải chi tiết &amp; xuất PDF.</small></div></div>
+      <div class="w-perk"><div class="w-p-ic">📲</div><div class="w-p-tx"><b>App KK-BOOK</b><small>Cài về màn hình như một ứng dụng thật, đọc mọi lúc mọi nơi - <b>đọc được cả khi mất mạng</b>.</small></div></div>
     </div>
-    <div class="welcome-note">Chúng tôi rất mong nhận được <b>sự góp ý và ủng hộ của quý độc giả</b> để không ngừng nâng cao chất lượng sách và hoàn thiện website ngày một tốt hơn. Mỗi phản hồi của bạn là nguồn động viên quý giá trên hành trình lan tỏa tri thức. <b>Trân trọng cảm ơn!</b></div>
+    <div class="welcome-sec">✦ CHỈ 3 BƯỚC ĐỂ BẮT ĐẦU ✦</div>
+    <div class="welcome-steps">
+      <div class="w-step"><span class="w-num">1</span><div><b>Chạm vào bìa sách</b> bất kỳ để mở đọc - phần đầu luôn miễn phí cho tất cả mọi người.</div></div>
+      <div class="w-step"><span class="w-num">2</span><div><b>Đăng nhập</b> (chỉ cần email &amp; mật khẩu) để lưu sách vĩnh viễn và ghi danh xếp hạng KK-QUIZ.</div></div>
+      <div class="w-step"><span class="w-num">3</span><div>Bấm <b>"Cài đặt App"</b> để có KK-BOOK ngay trên màn hình điện thoại hoặc máy tính.</div></div>
+    </div>
+    <div class="welcome-note">Mỗi trang sách là tâm huyết của người viết. Rất mong nhận được <b>sự ủng hộ và góp ý</b> của quý độc giả để KK-BOOK ngày một hoàn thiện. <b>Trân trọng cảm ơn - chúc bạn những giờ đọc thật ý nghĩa!</b></div>
     <div class="welcome-cta">
       <button class="btn btn-gold" id="wGoBooks">📚 Khám phá tủ sách ngay</button>
       <button class="btn btn-ghost" id="wGoQuiz">🎯 Chơi KK-QUIZ</button>
@@ -2863,6 +2921,11 @@ footer{
     <div class="section-head" style="margin-top:26px;margin-bottom:4px">
       <h2 style="font-size:1.05rem" data-i18n="manageBooks">Quản lý sách</h2>
     </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
+      <button class="btn btn-gold btn-sm" id="rebuildDrive">🔄 Quét &amp; khôi phục sách từ Drive</button>
+      <button class="btn btn-ghost btn-sm" id="enrichBooks">✨ Khôi phục tên, lĩnh vực, bìa &amp; số trang</button>
+      <small style="color:var(--cream-dim);font-size:.76rem">Khôi phục: dò file PDF trên Drive, thêm lại cuốn thiếu. Cập nhật: đọc tên có dấu nhúng trong PDF, đoán lĩnh vực, lấy số trang &amp; tạo bìa.</small>
+    </div>
     <div class="admin-list" id="adminList"></div>
 
     <div class="section-head" style="margin-top:26px;margin-bottom:4px">
@@ -3058,7 +3121,7 @@ const I18N = {
     toastNotOwner:'Tài khoản Google này không có quyền quản trị', toastOwnerFail:'Không xác thực được tài khoản Google',
     ttsSpeed:'Tốc độ', ttsAuto:'Tự lật trang', ttsReading:'Đang đọc trang', ttsPaused:'Đã tạm dừng',
     ttsDone:'Đã đọc xong', ttsNoText:'Trang này là ảnh, không có chữ để đọc',
-    ttsNoVi:'Máy chưa có giọng tiếng Việt - hãy cài thêm giọng đọc trong cài đặt hệ điều hành',
+    ttsNoVi:'Máy chưa có giọng tiếng Việt. Cách nhanh nhất: mở web bằng Microsoft Edge hoặc Google Chrome (có sẵn giọng Việt trực tuyến). Hoặc cài thêm gói giọng tiếng Việt trong Cài đặt hệ điều hành.',
     ttsUnsupported:'Trình duyệt này không hỗ trợ đọc thành tiếng',
     tagline:'Tủ sách chuyên khảo · KK-2026',
     contactTitle:'Liên hệ', contactNote:'Góp ý, đề nghị hợp tác hoặc xin phép sử dụng nội dung, vui lòng gửi thư về địa chỉ trên.',
@@ -3140,7 +3203,7 @@ const I18N = {
     toastNotOwner:'This Google account has no admin rights', toastOwnerFail:'Could not verify the Google account',
     ttsSpeed:'Speed', ttsAuto:'Auto page turn', ttsReading:'Reading page', ttsPaused:'Paused',
     ttsDone:'Finished', ttsNoText:'This page is an image, no text to read',
-    ttsNoVi:'No Vietnamese voice installed - add one in your system settings',
+    ttsNoVi:'No Vietnamese voice found. Easiest fix: open the site in Microsoft Edge or Google Chrome (they include online Vietnamese voices). Or install a Vietnamese voice pack in your system settings.',
     ttsUnsupported:'This browser does not support speech',
     tagline:'Reference Library · KK-2026',
     contactTitle:'Contact', contactNote:'For feedback, partnership enquiries or permission to use content, please write to the address above.',
@@ -3563,14 +3626,61 @@ async function gMakePublic(id){
 }
 async function gPushCatalog(){
   if(!gConnected() || !gCatalogId) return;
+  const driveBooks = books.filter(b=>b.driveId);
+  /* ===== CHỐT AN TOÀN CHỐNG MẤT SÁCH =====
+     Trước khi ghi đè danh mục, đọc số sách hiện có trên Drive. Nếu sắp ghi ÍT hơn ĐÁNG KỂ
+     (mất >5 cuốn và >10%), rất có thể là do bộ nhớ chưa nạp đủ -> KHÔNG ghi, cảnh báo. */
+  try{
+    const curR = await fetch(`https://www.googleapis.com/drive/v3/files/${gCatalogId}?alt=media&key=${GDRIVE.apiKey}`, {cache:'no-store'});
+    if(curR.ok){
+      const cur = await curR.json();
+      const curCount = ((cur && cur.books) || []).length;
+      if(curCount - driveBooks.length > 5 && (curCount - driveBooks.length) > curCount * 0.1 && !window.__forcePush){
+        toast('⚠ ĐÃ CHẶN lưu danh mục để tránh MẤT SÁCH: Drive đang có ' + curCount + ' cuốn nhưng sắp ghi chỉ ' + driveBooks.length + '. Hãy TẢI LẠI TRANG (Ctrl+F5) để nạp đủ sách rồi thao tác lại.');
+        console.warn('gPushCatalog CHẶN ghi đè: Drive', curCount, '-> sắp ghi', driveBooks.length);
+        return;
+      }
+    }
+  }catch(e){ /* không đọc được thì vẫn cho ghi để không kẹt */ }
   const payload = JSON.stringify({
     v:1,
-    books: books.filter(b=>b.driveId),
-    settings: {wmText: settings.wmText, wmOpacity: settings.wmOpacity}
+    books: driveBooks,
+    settings: {wmText: settings.wmText, wmOpacity: settings.wmOpacity, ghRepo: GHUB.repo, ghBranch: GHUB.branch, ghDir: GHUB.dir}
   });
   await gApi(`https://www.googleapis.com/upload/drive/v3/files/${gCatalogId}?uploadType=media`,{
     method:'PATCH', headers:{'Content-Type':'application/json'}, body: payload
   });
+}
+/* ===== KHÔI PHỤC: quét toàn bộ file PDF trên Drive và thêm lại các cuốn bị thiếu trong danh mục ===== */
+async function gRebuildFromDrive(){
+  try{
+    if(!gConnected()){ const ok = await verifyOwner().catch(()=>false); if(!ok){ toast('Cần đăng nhập tài khoản Google chủ sở hữu để khôi phục.'); return; } }
+    await gEnsureSetup();
+    toast('Đang quét toàn bộ file PDF trên Drive...');
+    let files = [], pageToken = '';
+    const q = encodeURIComponent(`'${gFolderId}' in parents and mimeType='application/pdf' and trashed=false`);
+    let guard = 0;
+    do {
+      const url = `https://www.googleapis.com/drive/v3/files?q=${q}&fields=nextPageToken,files(id,name)&pageSize=1000` + (pageToken ? ('&pageToken=' + pageToken) : '');
+      const j = await (await gApi(url)).json();
+      files = files.concat(j.files || []);
+      pageToken = j.nextPageToken || '';
+    } while(pageToken && ++guard < 10);
+    const have = {}; books.forEach(b => { if(b.driveId) have[b.driveId] = 1; });
+    let added = 0;
+    files.forEach(f => {
+      if(have[f.id]) return;
+      const title = (f.name || '').replace(/\.pdf$/i, '').trim() || 'Sách chưa đặt tên';
+      books.push({ id: uid(), title: title, cat: 'general', driveId: f.id, pages: 0 });
+      added++;
+    });
+    window.__forcePush = true;                 /* cho phép ghi vì đây là thao tác THÊM sách */
+    await saveBooks();
+    if(gConnected()) await gPushCatalog();
+    window.__forcePush = false;
+    try{ renderAdminList(); renderCats(); renderBooks(); }catch(e){}
+    toast('Quét xong: có ' + files.length + ' file PDF trên Drive, khôi phục thêm ' + added + ' cuốn. Tổng danh mục: ' + books.filter(b=>b.driveId).length + '.');
+  }catch(e){ window.__forcePush = false; console.error(e); toast('Lỗi khi quét Drive: ' + (e && e.message ? e.message : e)); }
 }
 async function gLoadCatalog(){
   if(!GDRIVE.apiKey || !gCatalogId) return false;
@@ -3580,13 +3690,17 @@ async function gLoadCatalog(){
     const cat = await r.json();
     const localOnly = books.filter(b=>!b.driveId);
     var _merged = (cat.books||[]).concat(localOnly);
-    /* KHỬ TRÙNG theo id (rồi driveId) để số lượng đầu sách luôn ổn định, không lúc 105 lúc 109 */
-    var _seen = {}; books = _merged.filter(function(b){
+    /* CHỈ gộp trùng theo ĐỊNH DANH DUY NHẤT (id, rồi driveId) - KHÔNG gộp theo tiêu đề,
+       vì hai cuốn sách khác nhau vẫn có thể trùng tên (trước đây gộp theo tên nên đếm THIẾU). */
+    var _seen = {}, _dup = 0; books = _merged.filter(function(b){
       if(!b) return false;
-      var k = b.id || b.driveId || b.title;
-      if(k==null) return true;
-      if(_seen[k]) return false; _seen[k]=1; return true;
+      var k = b.id || b.driveId;
+      if(k==null) return true;               /* không có định danh -> giữ, không gộp */
+      if(_seen[k]) { _dup++; return false; }
+      _seen[k]=1; return true;
     });
+    /* Lưu thống kê để hiển thị trong Quản trị (giúp hiểu vì sao ra con số này). */
+    try{ window.__catStats = { catalog:(cat.books||[]).length, localOnly:localOnly.length, shown:books.length, dup:_dup }; }catch(e){}
     if(cat.settings){
       if(cat.settings.wmText) settings.wmText = cat.settings.wmText;
       if(cat.settings.wmOpacity) settings.wmOpacity = cat.settings.wmOpacity;
@@ -4091,6 +4205,16 @@ $('#twofaOk').addEventListener('click', async ()=>{
 });
 
 /* ---------------- admin panel ---------------- */
+(function(){
+  var b = document.getElementById('rebuildDrive');
+  if(b) b.addEventListener('click', function(){
+    if(confirm('Quét toàn bộ file PDF trên Google Drive và thêm lại các cuốn bị THIẾU vào danh mục?\n\nCác cuốn khôi phục sẽ vào nhóm "Khác", tên lấy từ tên file - anh có thể phân loại lại sau. Thao tác này AN TOÀN (chỉ thêm, không xoá).')){
+      gRebuildFromDrive();
+    }
+  });
+  var e = document.getElementById('enrichBooks');
+  if(e) e.addEventListener('click', function(){ batchEnrichBooks(); });
+})();
 function openAdmin(){ renderAdminList(); updateDriveUI(); updateSecUI(); $('#adminModal').classList.add('open');
   capNhatOAdminAuth();
   loadSiteConfig().then(veTrangThaiQuanTri);
@@ -4209,9 +4333,14 @@ function renderAdminList(){
   const soMay = books.length - soDrive;
   const head = document.createElement('div');
   head.className = 'admin-list-head';
-  head.innerHTML = '<span><b>' + books.length + '</b> sách</span>' +
+  var _cs = (typeof window!=='undefined' && window.__catStats) ? window.__catStats : null;
+  var _warn = '';
+  if(_cs && _cs.dup > 0) _warn += '<span style="color:#e0b93f">⚠ đã gộp ' + _cs.dup + ' bản trùng (theo id/file)</span>';
+  if(soMay > 0) _warn += '<span style="color:#e0b93f">⚠ ' + soMay + ' sách chỉ ở máy (chưa lên Drive)</span>';
+  head.innerHTML = '<span><b>' + books.length + '</b> đầu sách</span>' +
     '<span>☁ Drive: <b>' + soDrive + '</b></span>' +
-    '<span>💾 Máy: <b>' + soMay + '</b></span>';
+    '<span>💾 Máy: <b>' + soMay + '</b></span>' +
+    _warn;
   list.appendChild(head);
   books.forEach((b, idx) => {
     const row = document.createElement('div'); row.className='admin-row';
@@ -4394,6 +4523,122 @@ $('#metaOk').addEventListener('click', async ()=>{
 
 /* ---------------- reader ---------------- */
 let rDoc=null, rPage=1, rZoom=1.15, rBookId=null, rendering=false, pendingPage=null;
+/* Bỏ dấu tiếng Việt để so khớp từ khóa */
+function _noDia(s){ return (s||'').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'d'); }
+/* Chuyển tên TOÀN HOA thành dạng Chữ Hoa Đầu Từ (đỡ chói khi PDF không có tên nhúng) */
+function titleCaseVi(s){
+  s = (s||'').toString().toLowerCase();
+  return s.replace(/([a-zà-ỹ0-9])([a-zà-ỹ0-9]*)/gi, function(m,a,b){ return a.toUpperCase()+b; });
+}
+/* Bản đồ từ khóa -> lĩnh vực (không dấu) để tự đoán nhóm cho sách khôi phục */
+var CAT_KEYWORDS = {
+  it:['cong nghe thong tin','may tinh','phan mem','tin hoc','internet','du lieu','lap trinh','bao mat','robot','tri tue nhan tao',' ai ','he dieu hanh','so hoa','cong nghe','ky nguyen so','blockchain'],
+  astro:['vu tru','thien van','hanh tinh','ngan ha','mat trang','thien ha',' sao '],
+  math:['toan hoc','thong ke','so hoc','hinh hoc','xac suat'],
+  sci:['khoa hoc tu nhien','vat ly','hoa hoc','sinh hoc',' tu nhien','chat lieu','vat chat','nguyen to','y tuong thay doi'],
+  health:['y hoc','suc khoe',' benh ','duoc pham','co the nguoi'],
+  psy:['tam ly','ky nang song','cam xuc','tinh cach','giao tiep'],
+  food:['am thuc','dinh duong','mon an','nau an','huong thom','vi giac','ky nghe bep'],
+  sport:['the thao','bong da','cau thu','olympic','vo thuat'],
+  hist:['lich su','trieu dai','chien tranh','vua chua','khoi nghia','ngay hoi cua loai nguoi','nen van minh','cach mang'],
+  geo:['dia ly','ban do','chau ','quoc gia',' song ',' nui ','dai duong','lanh tho','ky quan'],
+  culture:['van hoc','nghe thuat',' tho ','tieu thuyet','hoi hoa','am nhac','net chu','ban tay va dat set','san khau','dien anh','trang sach','kien truc','sac mau'],
+  iching:['kinh dich','tu vi','phat phap','minh triet','phuong dong','luc hao','bat tu','tu tru','ky mon','phong thuy','tam linh'],
+  econ:['kinh te','tai chinh','tien te','bitcoin','dau tu','chung khoan','tai san'],
+  mgmt:['quan tri','lanh dao','doanh nghiep','quan ly'],
+  law:['phap luat','chinh sach',' luat '],
+  edu:['giao duc','dao tao'],
+  ency:['bach khoa','toan thu'],
+  lang:['ngoai ngu','tieng anh','tieng nhat','tieng trung','tieng phap','hoc tieng']
+};
+function guessCatFromText(txt){
+  var t = ' ' + _noDia(txt).replace(/[^a-z0-9]+/g,' ') + ' ';
+  for(var cid in CAT_KEYWORDS){ var kws = CAT_KEYWORDS[cid];
+    for(var i=0;i<kws.length;i++){ if(t.indexOf(kws[i])>=0) return cid; } }
+  return null;
+}
+/* Tên có vẻ là TÊN FILE THÔ (viết hoa, không dấu) -> nên thay bằng tiêu đề chuẩn từ PDF */
+function isRawTitle(t){ t=(t||'').toString().trim(); if(!t) return true;
+  var coHoaThuong = /[a-z]/.test(t);                 /* có chữ thường latin? */
+  var coDau = /[\u00C0-\u1EF9]/.test(t);             /* có dấu tiếng Việt? */
+  return !coHoaThuong && !coDau;                      /* toàn HOA & không dấu -> tên thô */
+}
+/* Bổ sung/khôi phục metadata cho một cuốn từ tài liệu PDF đã mở.
+   opts.deep = đọc tiêu đề + đoán lĩnh vực từ chính file PDF. opts.restoreTitle = cho phép thay tên. */
+async function enrichBookMeta(book, doc, opts){
+  opts = opts || {};
+  if(!book || !doc) return false;
+  var changed = false;
+  if(opts.deep){
+    try{
+      var md = await doc.getMetadata();
+      var info = (md && md.info) || {};
+      var pTitle = (info.Title||'').toString().trim();
+      if(opts.restoreTitle){
+        if(pTitle && pTitle.length>=2 && pTitle.length<=200 && !isRawTitle(pTitle)){
+          if(pTitle !== book.title){ book.title = pTitle; changed = true; }      /* tên chuẩn CÓ DẤU trong PDF */
+        } else if(isRawTitle(book.title)){
+          var tc = titleCaseVi(book.title);                                        /* PDF không có tên -> ít nhất bỏ TOÀN HOA */
+          if(tc !== book.title){ book.title = tc; changed = true; }
+        }
+      }
+      if(!book.cat || book.cat==='general' || book.cat==='khac'){
+        var g = guessCatFromText((info.Subject||'')+' '+(info.Keywords||'')+' '+(book.title||''));
+        if(g){ book.cat = g; changed = true; }
+      }
+    }catch(e){}
+  }
+  try{
+    if(!book.pages || book.pages===0){ book.pages = doc.numPages || 0; changed = true; }
+    if(!book.cover){
+      var pg = await doc.getPage(1);
+      var vp0 = pg.getViewport({scale:1});
+      var scale = Math.min(2, 360 / (vp0.width||360));
+      var vp = pg.getViewport({scale:scale});
+      var cv = document.createElement('canvas'); cv.width=Math.round(vp.width); cv.height=Math.round(vp.height);
+      var cx = cv.getContext('2d'); cx.fillStyle='#fff'; cx.fillRect(0,0,cv.width,cv.height);
+      await pg.render({canvasContext:cx, viewport:vp}).promise;
+      book.cover = cv.toDataURL('image/jpeg', 0.82); changed = true;
+    }
+  }catch(e){ if(window.console) console.warn('enrich cover', e); }
+  if(changed){
+    try{ await saveBooks(); }catch(e){}
+    try{ renderBooks(); }catch(e){}
+    if(opts.push && book.driveId && typeof gConnected==='function' && gConnected()){ try{ await gPushCatalog(); }catch(e){} }
+  }
+  return changed;
+}
+/* Cập nhật hàng loạt: quét các sách còn thiếu số trang/bìa, tải từng cuốn để lấy số trang + tạo bìa. */
+async function batchEnrichBooks(){
+  var canhBao = 'KHÔI PHỤC & CẬP NHẬT các cuốn còn thiếu (thường là sách vừa khôi phục)?\n\nHệ thống sẽ tải lần lượt từng cuốn, đọc TÊN chuẩn nhúng trong file PDF, TỰ ĐOÁN LĨNH VỰC, lấy SỐ TRANG và tạo BÌA. Có thể mất vài phút nếu nhiều sách. Tiếp tục?';
+  if(!confirm(canhBao)) return;
+  var can = books.filter(function(b){ return b.driveId && ((!b.pages||b.pages===0) || !b.cover || b.cat==='general' || b.cat==='khac' || isRawTitle(b.title)); });
+  if(!can.length){ toast('Không có cuốn nào cần cập nhật.'); return; }
+  var ok=0, fail=0, tenMoi=0, catMoi=0;
+  try{ if(typeof __pdfWorkerReady!=='undefined') await __pdfWorkerReady; }catch(e){}
+  for(var i=0;i<can.length;i++){
+    var b = can[i];
+    var tenCu = b.title, catCu = b.cat;
+    toast('Đang khôi phục ' + (i+1) + '/' + can.length + ': ' + (b.title||'').slice(0,28) + '...');
+    try{
+      var bytes = await fetchBookPdf(b);
+      var src = (bytes instanceof Uint8Array) ? bytes : new Uint8Array(bytes);
+      var buf = new Uint8Array(src.length); buf.set(src);
+      var doc = await pdfjsLib.getDocument({data: buf}).promise;
+      await enrichBookMeta(b, doc, {deep:true, restoreTitle:true, push:false});
+      try{ doc.destroy(); }catch(e){}
+      if(b.title !== tenCu) tenMoi++;
+      if(b.cat !== catCu) catMoi++;
+      ok++;
+    }catch(e){ fail++; console.warn('enrich fail', b.title, e); }
+    await new Promise(function(r){ setTimeout(r, 120); });
+  }
+  window.__forcePush = true;
+  try{ await saveBooks(); if(typeof gConnected==='function' && gConnected()) await gPushCatalog(); }catch(e){}
+  window.__forcePush = false;
+  try{ renderBooks(); renderCats(); renderAdminList(); }catch(e){}
+  toast('Xong! Xử lý ' + ok + ' cuốn: khôi phục ' + tenMoi + ' tên chuẩn, xếp lại ' + catMoi + ' lĩnh vực' + (fail? (', ' + fail + ' cuốn lỗi') : '') + '. Các cuốn còn ở "Khác" anh phân loại thủ công giúp.');
+}
 async function openReader(book){
   /* đóng mọi cửa sổ đang mở để không chồng chéo */
   document.querySelectorAll('.modal-backdrop.open').forEach(m=>m.classList.remove('open'));
@@ -4436,6 +4681,9 @@ async function openReader(book){
     rPage = 1;
     /* Vẽ trang bìa với ổn định bố cục (như mọi trang khác) */
     renderPageSettle();
+    /* TỰ BỔ SUNG metadata cho sách khôi phục (thiếu số trang hoặc bìa): lấy số trang + tạo bìa từ trang 1.
+       PDF đã tải sẵn để đọc nên không tốn thêm lượt tải. */
+    try{ enrichBookMeta(book, rDoc, {deep:true, restoreTitle: isRawTitle(book.title), push:false}); }catch(e){}
   }catch(e){
     console.error('Lỗi mở sách:', e);
     const la404 = /404/.test(e.message || '');
@@ -4679,6 +4927,8 @@ function voiceScore(v){
   if(/online/.test(n)) sc += 20;                        /* giọng đám mây - mượt hơn offline */
   if(/hoaimy|nammin|namminh/.test(n)) sc += 15;         /* giọng Việt của Microsoft */
   if(/google/.test(n)) sc += 10;
+  if(/^en/i.test(v.lang)) sc += 8;                      /* tiếng Anh ưu tiên hơn ngoại ngữ khác */
+  if(v.default) sc += 6;                                /* giọng mặc định của máy */
   if(v.localService === false) sc += 5;
   return sc;
 }
@@ -4699,6 +4949,12 @@ function loadVoices(){
   const vi = list.filter(v => /^vi/i.test(v.lang));
   if(prev && list.some(v=>v.name===prev)) sel.value = prev;
   else if(vi.length) sel.value = vi[0].name;
+  else {
+    /* Không có giọng Việt: ưu tiên giọng LUÔN PHÁT RA TIẾNG (trực tuyến/mặc định của máy),
+       tránh một số giọng cục bộ (offline) bỏ qua ký tự tiếng Việt khiến im lặng. */
+    const fb = list.find(v=>v.localService===false) || list.find(v=>v.default) || list[0];
+    if(fb) sel.value = fb.name;
+  }
 
   if(!vi.length) $('#ttsStatus').textContent = t('ttsNoVi');
   else if(!/natural|neural|online/i.test(vi[0].name)) $('#ttsStatus').textContent = t('ttsTipNatural');
@@ -5133,6 +5389,14 @@ $('#ttsToggle').addEventListener('click', async ()=>{
   }
 });
 $('#ttsStop').addEventListener('click', ttsStop);
+$('#ttsRestart').addEventListener('click', ()=>{
+  if(!HAS_TTS){ toast(t('ttsUnsupported')); return; }
+  primeTTS();                       /* mồi âm thanh cho iPhone/Safari */
+  try{ synth.cancel(); }catch(_){}
+  ttsQueue = []; ttsIdx = 0;         /* xoá hàng đợi -> đọc lại TRANG HIỆN TẠI từ dòng đầu */
+  ttsSetPlaying(true);
+  speakPage();
+});
 $('#ttsRate').addEventListener('input', e=>{
   ttsRate = Math.max(0.5, Math.min(2, parseFloat(e.target.value) || 1));
   $('#ttsRateVal').textContent = ttsRate.toFixed(1) + 'x';
