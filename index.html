@@ -1356,8 +1356,8 @@ body.desktop-view .hdr-inner{flex-wrap:nowrap}
 .welcome-title span{color:var(--gold-bright)}
 .welcome-lead{font-size:.94rem;color:var(--cream-dim);line-height:1.7;margin:0 auto 16px;max-width:440px}
 .welcome-lead b{color:var(--cream)}
-.welcome-stats{display:flex;justify-content:center;gap:10px;margin:0 0 18px;position:relative;z-index:1}
-.w-stat{flex:1;max-width:130px;background:rgba(255,255,255,.03);border:1px solid rgba(201,162,39,.22);border-radius:13px;padding:11px 6px}
+.welcome-stats{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:0 0 18px;position:relative;z-index:1}
+.w-stat{flex:1 1 90px;max-width:130px;background:rgba(255,255,255,.03);border:1px solid rgba(201,162,39,.22);border-radius:13px;padding:11px 6px}
 .w-stat b{display:block;font-family:var(--font-display);font-size:1.5rem;color:var(--gold-bright);line-height:1}
 .w-stat span{font-size:.72rem;color:var(--cream-dim);margin-top:3px;display:block}
 .welcome-perks{text-align:left;display:flex;flex-direction:column;gap:10px;margin-bottom:18px;position:relative;z-index:1}
@@ -1368,6 +1368,11 @@ body.desktop-view .hdr-inner{flex-wrap:nowrap}
 .w-p-tx small b{color:#FFE08A;display:inline}
 .welcome-note{position:relative;z-index:1;margin:0 0 16px;padding:12px 15px;border-radius:12px;background:linear-gradient(135deg,rgba(0,194,168,.09),rgba(201,162,39,.07));border:1px solid rgba(0,194,168,.22);font-size:.86rem;line-height:1.65;color:var(--cream-dim);text-align:center}
 .welcome-note b{color:var(--gold-bright)}
+.welcome-sec{position:relative;z-index:1;font-size:.72rem;letter-spacing:2px;color:var(--gold);font-weight:700;text-align:center;margin:4px 0 10px}
+.welcome-steps{text-align:left;display:flex;flex-direction:column;gap:9px;margin-bottom:18px;position:relative;z-index:1}
+.w-step{display:flex;gap:12px;align-items:flex-start;font-size:.88rem;color:var(--cream-dim);line-height:1.55}
+.w-step b{color:var(--cream)}
+.w-num{flex-shrink:0;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.9rem;color:var(--navy-950);background:linear-gradient(135deg,var(--gold-bright),var(--gold));box-shadow:0 3px 10px rgba(201,162,39,.35)}
 .welcome-cta{display:flex;gap:10px;flex-wrap:wrap;position:relative;z-index:1}
 .welcome-cta .btn{flex:1;min-width:150px;justify-content:center;padding:13px 16px;font-size:.95rem}
 .welcome-off{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:14px;font-size:.8rem;color:var(--cream-dim);cursor:pointer}
@@ -2442,21 +2447,30 @@ footer{
     <div class="welcome-glow"></div>
     <div class="welcome-top">
       <div class="welcome-emblem"><span>KK</span></div>
-      <div class="welcome-badge">✦ THƯ VIỆN TRI THỨC CÁ NHÂN ✦</div>
-      <h2 class="welcome-title">Chào mừng bạn đến với <span>KK-BOOK</span></h2>
-      <p class="welcome-lead">Không gian đọc sách mở cửa chào đón <b>tất cả mọi người</b> - nơi hội tụ một kho tri thức đồ sộ trải khắp các lĩnh vực: khoa học, lịch sử, công nghệ, kinh tế, văn hoá, đời sống và hơn thế nữa.</p>
+      <div class="welcome-badge">✦ TỦ SÁCH TRI THỨC · KHOA HỌC ✦</div>
+      <h2 class="welcome-title">Chào mừng đến với <span>KK-BOOK</span></h2>
+      <p class="welcome-lead">Một <b>kho tàng tri thức đồ sộ</b>, được tuyển chọn và biên soạn công phu bởi tác giả <b>Nguyễn Duy Điển</b> - trải khắp khoa học, lịch sử, công nghệ, kinh tế, văn hoá, đời sống và cổ học phương Đông. Nơi mỗi trang sách mở ra một chân trời, mỗi lĩnh vực là một hành trình khám phá.</p>
     </div>
     <div class="welcome-stats">
       <div class="w-stat"><b>100+</b><span>Đầu sách</span></div>
       <div class="w-stat"><b>20+</b><span>Lĩnh vực</span></div>
-      <div class="w-stat"><b>1000+</b><span>Câu hỏi Quiz</span></div>
+      <div class="w-stat"><b>10</b><span>Bộ Quiz</span></div>
+      <div class="w-stat"><b>5</b><span>Cổ học Á Đông</span></div>
     </div>
+    <div class="welcome-sec">✦ TẠI ĐÂY BẠN CÓ ✦</div>
     <div class="welcome-perks">
-      <div class="w-perk"><div class="w-p-ic">🎁</div><div class="w-p-tx"><b>10 NGÀY ĐỌC SÁCH MIỄN PHÍ</b><small>Thỏa sức đọc và trải nghiệm trọn vẹn tủ sách ngay khi ghé thăm - không rào cản.</small></div></div>
-      <div class="w-perk"><div class="w-p-ic">🎯</div><div class="w-p-tx"><b>KK-QUIZ - Chơi thả ga, không giới hạn</b><small>Thử tài với hàng loạt bộ câu hỏi khoa học vui. <b>Ghi danh để được vinh danh</b> trên Bảng Vàng Top 20!</small></div></div>
-      <div class="w-perk"><div class="w-p-ic">🧭</div><div class="w-p-tx"><b>Khoa học Á Đông</b><small>Lập lá số Tử Vi, Xem ngày tốt, Rút quẻ Kinh Dịch - khám phá đầy thú vị.</small></div></div>
+      <div class="w-perk"><div class="w-p-ic">📚</div><div class="w-p-tx"><b>Tủ sách chuyên khảo</b><small>Hàng trăm đầu sách nguyên bản trải khắp các lĩnh vực. <b>Đọc thử miễn phí</b>, mở khoá để đọc trọn cuốn.</small></div></div>
+      <div class="w-perk"><div class="w-p-ic">🎯</div><div class="w-p-tx"><b>KK-QUIZ - Đấu trí không giới hạn</b><small>10 bộ câu hỏi nâng cao đủ chủ đề. <b>Ghi danh để được vinh danh trên Bảng Vàng Top 20!</b></small></div></div>
+      <div class="w-perk"><div class="w-p-ic">☯</div><div class="w-p-tx"><b>Khoa học Á Đông</b><small>Lập lá số Tử Vi, Xem Ngày Tốt, Rút quẻ Kinh Dịch, Tứ Trụ - Bát Tự, Lục Hào - có luận giải chi tiết &amp; xuất PDF.</small></div></div>
+      <div class="w-perk"><div class="w-p-ic">📲</div><div class="w-p-tx"><b>App KK-BOOK</b><small>Cài về màn hình như một ứng dụng thật, đọc mọi lúc mọi nơi - <b>đọc được cả khi mất mạng</b>.</small></div></div>
     </div>
-    <div class="welcome-note">Chúng tôi rất mong nhận được <b>sự góp ý và ủng hộ của quý độc giả</b> để không ngừng nâng cao chất lượng sách và hoàn thiện website ngày một tốt hơn. Mỗi phản hồi của bạn là nguồn động viên quý giá trên hành trình lan tỏa tri thức. <b>Trân trọng cảm ơn!</b></div>
+    <div class="welcome-sec">✦ CHỈ 3 BƯỚC ĐỂ BẮT ĐẦU ✦</div>
+    <div class="welcome-steps">
+      <div class="w-step"><span class="w-num">1</span><div><b>Chạm vào bìa sách</b> bất kỳ để mở đọc - phần đầu luôn miễn phí cho tất cả mọi người.</div></div>
+      <div class="w-step"><span class="w-num">2</span><div><b>Đăng nhập</b> (chỉ cần email &amp; mật khẩu) để lưu sách vĩnh viễn và ghi danh xếp hạng KK-QUIZ.</div></div>
+      <div class="w-step"><span class="w-num">3</span><div>Bấm <b>"Cài đặt App"</b> để có KK-BOOK ngay trên màn hình điện thoại hoặc máy tính.</div></div>
+    </div>
+    <div class="welcome-note">Mỗi trang sách là tâm huyết của người viết. Rất mong nhận được <b>sự ủng hộ và góp ý</b> của quý độc giả để KK-BOOK ngày một hoàn thiện. <b>Trân trọng cảm ơn - chúc bạn những giờ đọc thật ý nghĩa!</b></div>
     <div class="welcome-cta">
       <button class="btn btn-gold" id="wGoBooks">📚 Khám phá tủ sách ngay</button>
       <button class="btn btn-ghost" id="wGoQuiz">🎯 Chơi KK-QUIZ</button>
