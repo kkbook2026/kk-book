@@ -2923,7 +2923,8 @@ footer{
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
       <button class="btn btn-gold btn-sm" id="rebuildDrive">🔄 Quét &amp; khôi phục sách từ Drive</button>
-      <small style="color:var(--cream-dim);font-size:.76rem">Dò toàn bộ file PDF trên Google Drive và thêm lại các cuốn bị thiếu trong danh mục.</small>
+      <button class="btn btn-ghost btn-sm" id="enrichBooks">🖼️ Cập nhật bìa &amp; số trang</button>
+      <small style="color:var(--cream-dim);font-size:.76rem">Khôi phục: dò file PDF trên Drive, thêm lại cuốn thiếu. Cập nhật: lấy số trang &amp; tạo bìa cho sách khôi phục.</small>
     </div>
     <div class="admin-list" id="adminList"></div>
 
@@ -4211,6 +4212,8 @@ $('#twofaOk').addEventListener('click', async ()=>{
       gRebuildFromDrive();
     }
   });
+  var e = document.getElementById('enrichBooks');
+  if(e) e.addEventListener('click', function(){ batchEnrichBooks(); });
 })();
 function openAdmin(){ renderAdminList(); updateDriveUI(); updateSecUI(); $('#adminModal').classList.add('open');
   capNhatOAdminAuth();
@@ -4520,6 +4523,57 @@ $('#metaOk').addEventListener('click', async ()=>{
 
 /* ---------------- reader ---------------- */
 let rDoc=null, rPage=1, rZoom=1.15, rBookId=null, rendering=false, pendingPage=null;
+/* Bổ sung số trang + bìa cho một cuốn từ tài liệu PDF đã mở (dùng cho sách khôi phục). */
+async function enrichBookMeta(book, doc, forcePush){
+  if(!book || !doc) return false;
+  var need = (!book.pages || book.pages===0) || !book.cover;
+  if(!need) return false;
+  try{
+    if(!book.pages || book.pages===0) book.pages = doc.numPages || 0;
+    if(!book.cover){
+      var pg = await doc.getPage(1);
+      var vp0 = pg.getViewport({scale:1});
+      var scale = Math.min(2, 360 / (vp0.width||360));
+      var vp = pg.getViewport({scale:scale});
+      var cv = document.createElement('canvas'); cv.width=Math.round(vp.width); cv.height=Math.round(vp.height);
+      var cx = cv.getContext('2d'); cx.fillStyle='#fff'; cx.fillRect(0,0,cv.width,cv.height);
+      await pg.render({canvasContext:cx, viewport:vp}).promise;
+      book.cover = cv.toDataURL('image/jpeg', 0.82);
+    }
+    try{ await saveBooks(); }catch(e){}
+    try{ renderBooks(); }catch(e){}
+    if(forcePush && book.driveId && typeof gConnected==='function' && gConnected()){ try{ await gPushCatalog(); }catch(e){} }
+    return true;
+  }catch(e){ if(window.console) console.warn('enrichBookMeta', e); return false; }
+}
+/* Cập nhật hàng loạt: quét các sách còn thiếu số trang/bìa, tải từng cuốn để lấy số trang + tạo bìa. */
+async function batchEnrichBooks(){
+  var canhBao = 'Cập nhật SỐ TRANG và BÌA cho các cuốn còn thiếu (thường là sách vừa khôi phục)?\n\nHệ thống sẽ tải lần lượt từng cuốn để lấy số trang và tạo ảnh bìa. Việc này có thể mất vài phút nếu có nhiều sách. Tiếp tục?';
+  if(!confirm(canhBao)) return;
+  var can = books.filter(function(b){ return b.driveId && ((!b.pages||b.pages===0) || !b.cover); });
+  if(!can.length){ toast('Không có cuốn nào cần cập nhật (tất cả đã có số trang & bìa).'); return; }
+  var ok=0, fail=0;
+  try{ if(typeof __pdfWorkerReady!=='undefined') await __pdfWorkerReady; }catch(e){}
+  for(var i=0;i<can.length;i++){
+    var b = can[i];
+    toast('Đang cập nhật ' + (i+1) + '/' + can.length + ': ' + (b.title||'').slice(0,30) + '...');
+    try{
+      var bytes = await fetchBookPdf(b);
+      var src = (bytes instanceof Uint8Array) ? bytes : new Uint8Array(bytes);
+      var buf = new Uint8Array(src.length); buf.set(src);
+      var doc = await pdfjsLib.getDocument({data: buf}).promise;
+      await enrichBookMeta(b, doc, false);
+      try{ doc.destroy(); }catch(e){}
+      ok++;
+    }catch(e){ fail++; console.warn('enrich fail', b.title, e); }
+    await new Promise(function(r){ setTimeout(r, 150); });
+  }
+  window.__forcePush = true;
+  try{ await saveBooks(); if(typeof gConnected==='function' && gConnected()) await gPushCatalog(); }catch(e){}
+  window.__forcePush = false;
+  try{ renderBooks(); renderAdminList(); }catch(e){}
+  toast('Xong! Cập nhật bìa & số trang cho ' + ok + ' cuốn' + (fail? (', ' + fail + ' cuốn lỗi (thử lại sau)') : '') + '.');
+}
 async function openReader(book){
   /* đóng mọi cửa sổ đang mở để không chồng chéo */
   document.querySelectorAll('.modal-backdrop.open').forEach(m=>m.classList.remove('open'));
@@ -4562,6 +4616,9 @@ async function openReader(book){
     rPage = 1;
     /* Vẽ trang bìa với ổn định bố cục (như mọi trang khác) */
     renderPageSettle();
+    /* TỰ BỔ SUNG metadata cho sách khôi phục (thiếu số trang hoặc bìa): lấy số trang + tạo bìa từ trang 1.
+       PDF đã tải sẵn để đọc nên không tốn thêm lượt tải. */
+    try{ enrichBookMeta(book, rDoc); }catch(e){}
   }catch(e){
     console.error('Lỗi mở sách:', e);
     const la404 = /404/.test(e.message || '');
