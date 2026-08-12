@@ -35,6 +35,30 @@
       navigator.serviceWorker.register('./sw.js').catch(function (e) { /* bỏ qua nếu lỗi */ });
     });
   }
+  /* Nút "Cài đặt App KK-BOOK" hiện rõ khi trình duyệt cho phép cài (Chrome/Edge/Cốc Cốc trên Android & máy tính). */
+  var __kkPrompt = null;
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault();
+    __kkPrompt = e;
+    __kkShowInstall();
+  });
+  function __kkShowInstall() {
+    if (!document.body || document.getElementById('kkInstallBtn')) return;
+    var b = document.createElement('button');
+    b.id = 'kkInstallBtn';
+    b.innerHTML = '📲 Cài đặt App KK-BOOK';
+    b.style.cssText = 'position:fixed;left:16px;bottom:16px;z-index:99999;background:linear-gradient(135deg,#e0b93f,#c9a227);color:#0f1d38;font-weight:700;border:none;border-radius:99px;padding:12px 18px;box-shadow:0 8px 24px rgba(0,0,0,.45);cursor:pointer;font-family:sans-serif;font-size:14px';
+    b.onclick = function () {
+      if (!__kkPrompt) return;
+      __kkPrompt.prompt();
+      var p = __kkPrompt.userChoice; __kkPrompt = null;
+      if (p && p.finally) p.finally(function () { b.remove(); }); else b.remove();
+    };
+    document.body.appendChild(b);
+  }
+  window.addEventListener('appinstalled', function () {
+    var b = document.getElementById('kkInstallBtn'); if (b) b.remove();
+  });
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -48,7 +72,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <style>
 :root{
-  --navy-950:#0A1428; --navy-900:#0E1B36; --navy-800:#15264A; --navy-700:#1E3260;
+  --navy-950:#232C3E; --navy-900:#26324A; --navy-800:#2C3C5C; --navy-700:#354770;
   --gold:#C9A227; --gold-bright:#E4C158; --gold-dim:#8C7420;
   --cream:#F6F0E1; --cream-dim:#D9CFB6; --ink:#1A2233;
   --ok:#3FA66A; --danger:#C4514A;
@@ -84,7 +108,7 @@ canvas{image-rendering:auto}
 body{
   font-family:var(--font-body);
   -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;
-  background:linear-gradient(180deg,#12223f 0%,#0e1c37 55%,#0c1830 100%);
+  background:linear-gradient(180deg,#2A3852 0%,#26334B 55%,#242F45 100%);
   background-attachment:fixed;
   color:var(--cream);
   min-height:100vh;
@@ -511,14 +535,14 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
   color:var(--navy-950);background:var(--gc);
   box-shadow:0 0 11px color-mix(in srgb, var(--gc) 50%, transparent);
 }
-.grp-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.grp-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;align-items:center;text-align:center}
 .grp-title{
   font-family:var(--font-display);font-size:.88rem;font-weight:700;
-  color:var(--cream);line-height:1.2;
+  color:var(--cream);line-height:1.2;text-align:center;max-width:100%;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 .grp-sub{
-  font-style:normal;font-size:.63rem;color:var(--cream-dim);line-height:1.25;
+  font-style:normal;font-size:.63rem;color:var(--cream-dim);line-height:1.25;text-align:center;max-width:100%;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 .grp-total{
@@ -604,12 +628,13 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
   position:relative;z-index:1;flex-shrink:0;
   width:30px;height:30px;border-radius:9px;
   display:flex;align-items:center;justify-content:center;
-  background:color-mix(in srgb, var(--cc) 40%, transparent);
-  border:1px solid color-mix(in srgb, var(--cc) 68%, transparent);
+  background:color-mix(in srgb, var(--cc) 46%, transparent);
+  border:1px solid color-mix(in srgb, var(--cc) 78%, transparent);
+  filter:brightness(1.12) saturate(1.05);      /* sáng hơn ~12% cho icon lĩnh vực nổi bật */
 }
 .cat-ico svg{
   width:16px;height:16px;
-  stroke:color-mix(in srgb, var(--cc) 75%, #ffffff);fill:none;stroke-width:2;
+  stroke:color-mix(in srgb, var(--cc) 62%, #ffffff);fill:none;stroke-width:2;
   stroke-linecap:round;stroke-linejoin:round;
 }
 .cat-label{
@@ -2263,7 +2288,8 @@ footer{
       <span class="dock-title">Đọc thành tiếng</span>
       <button class="dock-close" id="ttsDockClose" title="Đóng">✕</button>
     </div>
-    <div class="dock-row" style="justify-content:center;gap:14px">
+    <div class="dock-row" style="justify-content:center;gap:12px">
+      <button class="icon-btn" id="ttsRestart" title="Đọc lại từ đầu trang">⏮</button>
       <button class="tts-play" id="ttsToggle">▶</button>
       <button class="icon-btn" id="ttsStop" title="Dừng hẳn">■</button>
     </div>
@@ -5159,6 +5185,14 @@ $('#ttsToggle').addEventListener('click', async ()=>{
   }
 });
 $('#ttsStop').addEventListener('click', ttsStop);
+$('#ttsRestart').addEventListener('click', ()=>{
+  if(!HAS_TTS){ toast(t('ttsUnsupported')); return; }
+  primeTTS();                       /* mồi âm thanh cho iPhone/Safari */
+  try{ synth.cancel(); }catch(_){}
+  ttsQueue = []; ttsIdx = 0;         /* xoá hàng đợi -> đọc lại TRANG HIỆN TẠI từ dòng đầu */
+  ttsSetPlaying(true);
+  speakPage();
+});
 $('#ttsRate').addEventListener('input', e=>{
   ttsRate = Math.max(0.5, Math.min(2, parseFloat(e.target.value) || 1));
   $('#ttsRateVal').textContent = ttsRate.toFixed(1) + 'x';
