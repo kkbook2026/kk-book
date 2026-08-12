@@ -3638,13 +3638,17 @@ async function gLoadCatalog(){
     const cat = await r.json();
     const localOnly = books.filter(b=>!b.driveId);
     var _merged = (cat.books||[]).concat(localOnly);
-    /* KHỬ TRÙNG theo id (rồi driveId) để số lượng đầu sách luôn ổn định, không lúc 105 lúc 109 */
-    var _seen = {}; books = _merged.filter(function(b){
+    /* CHỈ gộp trùng theo ĐỊNH DANH DUY NHẤT (id, rồi driveId) - KHÔNG gộp theo tiêu đề,
+       vì hai cuốn sách khác nhau vẫn có thể trùng tên (trước đây gộp theo tên nên đếm THIẾU). */
+    var _seen = {}, _dup = 0; books = _merged.filter(function(b){
       if(!b) return false;
-      var k = b.id || b.driveId || b.title;
-      if(k==null) return true;
-      if(_seen[k]) return false; _seen[k]=1; return true;
+      var k = b.id || b.driveId;
+      if(k==null) return true;               /* không có định danh -> giữ, không gộp */
+      if(_seen[k]) { _dup++; return false; }
+      _seen[k]=1; return true;
     });
+    /* Lưu thống kê để hiển thị trong Quản trị (giúp hiểu vì sao ra con số này). */
+    try{ window.__catStats = { catalog:(cat.books||[]).length, localOnly:localOnly.length, shown:books.length, dup:_dup }; }catch(e){}
     if(cat.settings){
       if(cat.settings.wmText) settings.wmText = cat.settings.wmText;
       if(cat.settings.wmOpacity) settings.wmOpacity = cat.settings.wmOpacity;
@@ -4267,9 +4271,14 @@ function renderAdminList(){
   const soMay = books.length - soDrive;
   const head = document.createElement('div');
   head.className = 'admin-list-head';
-  head.innerHTML = '<span><b>' + books.length + '</b> sách</span>' +
+  var _cs = (typeof window!=='undefined' && window.__catStats) ? window.__catStats : null;
+  var _warn = '';
+  if(_cs && _cs.dup > 0) _warn += '<span style="color:#e0b93f">⚠ đã gộp ' + _cs.dup + ' bản trùng (theo id/file)</span>';
+  if(soMay > 0) _warn += '<span style="color:#e0b93f">⚠ ' + soMay + ' sách chỉ ở máy (chưa lên Drive)</span>';
+  head.innerHTML = '<span><b>' + books.length + '</b> đầu sách</span>' +
     '<span>☁ Drive: <b>' + soDrive + '</b></span>' +
-    '<span>💾 Máy: <b>' + soMay + '</b></span>';
+    '<span>💾 Máy: <b>' + soMay + '</b></span>' +
+    _warn;
   list.appendChild(head);
   books.forEach((b, idx) => {
     const row = document.createElement('div'); row.className='admin-row';
