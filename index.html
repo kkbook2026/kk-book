@@ -2950,6 +2950,14 @@ footer{
     <div class="section-head" style="margin-top:26px;margin-bottom:4px">
       <h2 style="font-size:1.05rem" data-i18n="manageBooks">Quản lý sách</h2>
     </div>
+    <div style="background:rgba(201,162,39,.08);border:1px solid rgba(201,162,39,.28);border-radius:10px;padding:10px 12px;margin-bottom:10px">
+      <div style="font-size:.82rem;color:var(--gold-bright);font-weight:700;margin-bottom:6px">⚡ Tăng tốc đọc sách - Kích hoạt GitHub/jsDelivr</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <input type="text" id="ghRepoInput" placeholder="vd: kkbook2026/kk-book-pdfs" style="flex:1;min-width:200px;background:var(--navy-800);color:var(--cream);border:1px solid rgba(201,162,39,.3);border-radius:8px;padding:7px 10px;font-size:.85rem">
+        <button class="btn btn-gold btn-sm" id="ghRepoSave">Lưu &amp; kích hoạt</button>
+      </div>
+      <small id="ghRepoState" style="color:var(--cream-dim);font-size:.74rem;display:block;margin-top:6px">Điền tên repo GitHub chứa PDF (dạng tài-khoản/tên-repo). Lưu xong, sách sẽ tải NHANH từ CDN jsDelivr thay vì Google Drive. Cấu hình này được ghi vào danh mục nên không bị mất khi cập nhật web.</small>
+    </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
       <button class="btn btn-gold btn-sm" id="rebuildDrive">🔄 Quét &amp; khôi phục sách từ Drive</button>
       <button class="btn btn-ghost btn-sm" id="enrichBooks">✨ Khôi phục tên, lĩnh vực, bìa &amp; số trang</button>
@@ -3792,8 +3800,8 @@ function bookPdfSources(book){
   if(ghEnabled()){
     if(book && book.gh){ out.push({url:jsdUrl(book.gh), src:'GitHub/jsDelivr'}); }
     else {
-      if(book && book.id!=null && book.id!=='') out.push({url:jsdUrl(ghDir()+encodeURIComponent(String(book.id))+'.pdf'), src:'GitHub (theo id)'});
       if(book && book.driveId) out.push({url:jsdUrl(ghDir()+String(book.driveId)+'.pdf'), src:'GitHub (theo driveId)'});
+      if(book && book.id!=null && book.id!=='') out.push({url:jsdUrl(ghDir()+encodeURIComponent(String(book.id))+'.pdf'), src:'GitHub (theo id)'});
     }
   }
   if(book && book.driveId){
@@ -4308,6 +4316,22 @@ $('#twofaOk').addEventListener('click', async ()=>{
   if(scr) scr.addEventListener('click', function(){ var v = sel ? sel.value : 'geo'; if(v) smartRecategorize([v]); });
   var sca = document.getElementById('smartCatAll');
   if(sca) sca.addEventListener('click', function(){ smartRecategorizeAll(); });
+  /* Cấu hình repo GitHub để bật jsDelivr (tải nhanh). Lưu vào danh mục -> bền vững. */
+  var ghIn = document.getElementById('ghRepoInput'), ghSt = document.getElementById('ghRepoState');
+  if(ghIn){
+    if(typeof GHUB!=='undefined' && GHUB.repo) ghIn.value = GHUB.repo;
+    if(ghSt && typeof GHUB!=='undefined' && GHUB.repo) ghSt.innerHTML = '✅ Đang bật GitHub/jsDelivr: <b>'+GHUB.repo+'</b>. Sách tải nhanh từ CDN.';
+  }
+  var ghBtn = document.getElementById('ghRepoSave');
+  if(ghBtn) ghBtn.addEventListener('click', async function(){
+    var v = (ghIn.value||'').trim().replace(/^https?:\/\/github\.com\//i,'').replace(/\/+$/,'');
+    if(!/^[\w.-]+\/[\w.-]+$/.test(v)){ toast('Repo phải dạng: tài-khoản/tên-repo (vd kkbook2026/kk-book-pdfs).'); return; }
+    GHUB.repo = v; GHUB.branch = GHUB.branch||'main'; GHUB.dir = GHUB.dir||'pdfs';
+    try{ if(typeof gConnected==='function' && gConnected()){ window.__forcePush=true; await gPushCatalog(); window.__forcePush=false; } }catch(e){ window.__forcePush=false; }
+    if(ghSt) ghSt.innerHTML = '✅ Đã bật GitHub/jsDelivr: <b>'+v+'</b>. Mở lại một cuốn sách để cảm nhận tốc độ. (Nhớ đã chạy đồng bộ để file có trên GitHub.)';
+    toast('Đã kích hoạt tải nhanh qua GitHub/jsDelivr: ' + v);
+    try{ books.forEach(function(b){ delete b._fastUrl; }); }catch(e){}
+  });
 })();
 function openAdmin(){ renderAdminList(); updateDriveUI(); updateSecUI(); $('#adminModal').classList.add('open');
   capNhatOAdminAuth();
@@ -4888,24 +4912,37 @@ async function openReader(book){
   try{
     /* Chờ worker (Blob cùng nguồn) sẵn sàng để tránh lỗi cross-origin làm PDF không mở được */
     try{ if(typeof __pdfWorkerReady!=='undefined') await __pdfWorkerReady; }catch(e){}
-    const bytes = (book.driveId || book.gh || book.url)
-      ? await fetchBookPdf(book)
-      : (book.chunks && book.chunks.length)
-        ? await loadPdf(book.id, book.chunks)
-        : await fetchBookPdf(book);   /* không có dữ liệu local: thử GitHub theo id sách */
-    /* Chuẩn hoá về Uint8Array (dữ liệu có thể là ArrayBuffer hoặc Uint8Array) */
-    var src = (bytes instanceof Uint8Array) ? bytes : (bytes ? new Uint8Array(bytes) : null);
-    if(!src || !src.length){ throw new Error('PDF rỗng hoặc chưa tải được dữ liệu.'); }
-    /* Dùng BẢN SAO: pdf.js "tách rời" (detach) mảng gốc khi chuyển sang worker,
-       sao chép giúp mở đi mở lại luôn đọc được từ trang đầu. */
-    var buf = new Uint8Array(src.length); buf.set(src);
-    rDoc = await pdfjsLib.getDocument({ data: buf }).promise;
+    rDoc = null;
+    /* === TỐI ƯU TỐC ĐỘ: ưu tiên NẠP TIẾN TRÌNH (range request) từ jsDelivr (CDN nhanh) ===
+       pdf.js chỉ tải phần cần cho TRANG ĐANG XEM -> trang đầu hiện gần như tức thì, KHÔNG tải cả file.
+       Ghi nhớ URL nhanh vào book._fastUrl để lần mở sau vào thẳng, không dò lại. */
+    var _srcs = (typeof bookPdfSources==='function') ? bookPdfSources(book) : [];
+    var _jsd  = _srcs.filter(function(s){ return /cdn\.jsdelivr\.net/.test(s.url); });
+    var _fast = book._fastUrl;
+    if(!_fast && book.driveId){ var _m=_jsd.filter(function(s){ return s.url.indexOf(String(book.driveId))>=0; })[0]; if(_m) _fast=_m.url; }
+    if(!_fast && _jsd.length){ _fast=_jsd[0].url; }
+    if(_fast){
+      try{
+        rDoc = await pdfjsLib.getDocument({ url:_fast, rangeChunkSize:262144, disableAutoFetch:true, disableStream:false }).promise;
+        if(rDoc && rDoc.numPages){ book._fastUrl = _fast; }
+        else rDoc = null;
+      }catch(e){ rDoc = null; }
+    }
+    if(!rDoc){
+      /* Dự phòng: tải toàn bộ file (Drive trực tiếp / bản local) rồi mở. */
+      const bytes = (book.driveId) ? await gFetchPdf(book.driveId)
+                  : (book.chunks && book.chunks.length) ? await loadPdf(book.id, book.chunks)
+                  : await fetchBookPdf(book);
+      var src = (bytes instanceof Uint8Array) ? bytes : (bytes ? new Uint8Array(bytes) : null);
+      if(!src || !src.length){ throw new Error('PDF rỗng hoặc chưa tải được dữ liệu.'); }
+      var buf = new Uint8Array(src.length); buf.set(src);
+      rDoc = await pdfjsLib.getDocument({ data: buf }).promise;
+    }
     if(!rDoc || !rDoc.numPages){ throw new Error('Không đọc được nội dung PDF.'); }
     rPage = 1;
     /* Vẽ trang bìa với ổn định bố cục (như mọi trang khác) */
     renderPageSettle();
-    /* TỰ BỔ SUNG metadata cho sách khôi phục (thiếu số trang hoặc bìa): lấy số trang + tạo bìa từ trang 1.
-       PDF đã tải sẵn để đọc nên không tốn thêm lượt tải. */
+    /* TỰ BỔ SUNG metadata cho sách khôi phục (thiếu số trang hoặc bìa) từ tài liệu đã mở. */
     try{ enrichBookMeta(book, rDoc, {deep:true, restoreTitle: isRawTitle(book.title), push:false}); }catch(e){}
   }catch(e){
     console.error('Lỗi mở sách:', e);
