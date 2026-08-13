@@ -736,6 +736,21 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
   display:flex;align-items:center;justify-content:center;
 }
 .book-cover img{width:100%;height:100%;object-fit:cover}
+.fav-btn{position:absolute;top:7px;left:7px;z-index:3;width:30px;height:30px;border:none;border-radius:50%;
+  background:rgba(10,20,40,.55);color:rgba(255,255,255,.75);font-size:15px;line-height:1;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;backdrop-filter:blur(2px);transition:transform .12s,color .12s,background .12s}
+.fav-btn:hover{transform:scale(1.12);color:#ff7a90}
+.fav-btn.on{color:#ff4d6d;background:rgba(10,20,40,.7)}
+.shelf-card{max-width:920px;width:94vw;max-height:90vh;overflow-y:auto}
+.shelf-title{font-family:var(--font-display);color:var(--gold-bright);font-size:1.3rem;margin:0 0 4px}
+.shelf-sub{color:var(--cream-dim);font-size:.85rem;margin:0 0 16px}
+.shelf-tabs{display:flex;gap:8px;margin-bottom:16px}
+.shelf-tab{flex:0 0 auto;padding:8px 18px;border-radius:99px;border:1px solid rgba(201,162,39,.3);
+  background:transparent;color:var(--cream-dim);font-weight:600;font-size:.9rem;cursor:pointer}
+.shelf-tab.on{background:linear-gradient(135deg,var(--gold-bright),var(--gold));color:var(--navy-950);border-color:transparent}
+.shelf-body{min-height:120px}
+.shelf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:14px}
+.shelf-empty{color:var(--cream-dim);text-align:center;padding:40px 10px;line-height:1.7;font-size:.9rem}
 .book-cover .placeholder{
   font-family:var(--font-display);font-size:3rem;color:rgba(201,162,39,.35);font-weight:900;
 }
@@ -1481,6 +1496,7 @@ body.desktop-view .hdr-inner{flex-wrap:nowrap}
 }
 .admin-row .ar-title{flex:1;font-size:.88rem;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .admin-row .ar-cat{font-size:.7rem;color:var(--gold);white-space:nowrap}
+.ar-catsel{font-size:.72rem;background:var(--navy-800);color:var(--cream);border:1px solid rgba(201,162,39,.35);border-radius:7px;padding:4px 6px;max-width:150px;cursor:pointer}
 .wm-preview{
   margin-top:8px;background:#fff;border-radius:10px;height:90px;position:relative;overflow:hidden;
 }
@@ -2052,6 +2068,7 @@ footer{
         <div class="nav-dd-menu" id="navBookMenu">
           <button class="dd-item" id="navAbout"><span class="dd-ic">✦</span><span><b>Về KK-BOOK</b><small>Giới thiệu thư viện &amp; tác giả</small></span></button>
           <button class="dd-item" id="navGuide"><span class="dd-ic">📖</span><span><b>Hướng dẫn</b><small>Cách đọc sách, mở khoá, chơi Quiz</small></span></button>
+          <button class="dd-item" id="navShelf"><span class="dd-ic">📚</span><span><b>Kệ của tôi</b><small>Sách yêu thích &amp; đã mua</small></span></button>
         </div>
       </div>
       <button class="nav-item" id="navServices"><span class="nav-ic">🧭</span>KHOA HỌC Á ĐÔNG</button>
@@ -2441,6 +2458,18 @@ footer{
 
 <!-- ================= ĐĂNG KÝ / ĐĂNG NHẬP THÀNH VIÊN ================= -->
 <!-- ============ POPUP CHÀO MỪNG ============ -->
+<div class="modal-backdrop" id="shelfModal">
+  <div class="modal-card shelf-card">
+    <button class="modal-x" id="shelfClose" aria-label="Đóng">✕</button>
+    <h2 class="shelf-title">📚 Kệ sách của tôi</h2>
+    <p class="shelf-sub">Danh sách sách bạn yêu thích và đã mua - tiện tra cứu, đọc lại bất cứ lúc nào.</p>
+    <div class="shelf-tabs">
+      <button class="shelf-tab on" id="shelfTabFav">♥ Yêu thích</button>
+      <button class="shelf-tab" id="shelfTabBuy">🛍 Đã mua</button>
+    </div>
+    <div class="shelf-body" id="shelfBody"></div>
+  </div>
+</div>
 <div class="modal-backdrop welcome-back" id="welcomeModal">
   <div class="welcome-card">
     <button class="welcome-x" id="welcomeClose" title="Đóng">✕</button>
@@ -3892,6 +3921,21 @@ function escapeHtml(s){
 
 let openCat = null;   /* lĩnh vực đang mở - mặc định KHÔNG mở cái nào */
 
+/* ===== KỆ CỦA TÔI: Yêu thích & Đã mua (theo tài khoản) ===== */
+function getFavs(){ try{ return JSON.parse(localStorage.getItem('kkFavs')||'[]')||[]; }catch(e){ return []; } }
+function isFav(id){ return id && getFavs().indexOf(id)>=0; }
+function setFavs(a){ try{ localStorage.setItem('kkFavs', JSON.stringify(a)); }catch(e){}
+  try{ if(typeof isMember==='function' && isMember() && typeof fbDb!=='undefined' && fbDb && fbUser) fbDb.collection('users').doc(fbUser.uid).set({favs:a}, {merge:true}); }catch(e){} }
+function toggleFav(id){ if(!id) return false; var f=getFavs(), i=f.indexOf(id), now; if(i>=0){ f.splice(i,1); now=false; } else { f.push(id); now=true; } setFavs(f); return now; }
+async function loadFavsFromCloud(){
+  try{ if(typeof isMember==='function' && isMember() && typeof fbDb!=='undefined' && fbDb && fbUser){
+    var d=await fbDb.collection('users').doc(fbUser.uid).get();
+    var cf=(d.exists && d.data() && d.data().favs)||[];
+    var merged=Array.from(new Set(getFavs().concat(cf)));
+    localStorage.setItem('kkFavs', JSON.stringify(merged));
+    try{ renderBooks(); }catch(e){}
+  } }catch(e){}
+}
 function bookCard(b){
   const card = document.createElement('div');
   card.className='book-card'; card.tabIndex=0; card.setAttribute('role','button');
@@ -3899,6 +3943,7 @@ function bookCard(b){
     <div class="book-cover">
       ${b.cover ? `<img src="${b.cover}" alt="" loading="lazy" decoding="async">` : `<span class="placeholder">KK</span>`}
       <span class="badge">${b.lang||'VI'}</span>
+      <button class="fav-btn${isFav(b.id)?' on':''}" title="Yêu thích / bỏ yêu thích" aria-label="Yêu thích">♥</button>
     </div>
     <div class="book-info">
       <h3>${escapeHtml(b.title)}</h3>
@@ -3907,7 +3952,34 @@ function bookCard(b){
   const open = ()=>openReader(b);
   card.addEventListener('click', open);
   card.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();open();} });
+  const fav = card.querySelector('.fav-btn');
+  if(fav) fav.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    const now = toggleFav(b.id);
+    fav.classList.toggle('on', now);
+    toast(now ? ('Đã thêm "'+b.title+'" vào Yêu thích ♥') : ('Đã bỏ "'+b.title+'" khỏi Yêu thích'));
+    var sm=document.getElementById('shelfModal'); if(sm && sm.classList.contains('open') && document.getElementById('shelfTabFav') && document.getElementById('shelfTabFav').classList.contains('on')) renderShelf('fav');
+  });
   return card;
+}
+function myPurchasedBooks(){ return books.filter(function(b){ return b.id && (myAccess.all || (myAccess.books && myAccess.books[b.id])); }); }
+function myFavBooks(){ var f=getFavs(); return books.filter(function(b){ return f.indexOf(b.id)>=0; }); }
+function openMyShelf(tab){ var m=document.getElementById('shelfModal'); if(!m) return; m.classList.add('open'); renderShelf(tab||'fav'); }
+function renderShelf(tab){
+  var favBtn=document.getElementById('shelfTabFav'), buyBtn=document.getElementById('shelfTabBuy'), body=document.getElementById('shelfBody');
+  if(!body) return;
+  favBtn && favBtn.classList.toggle('on', tab!=='buy');
+  buyBtn && buyBtn.classList.toggle('on', tab==='buy');
+  var listB = tab==='buy' ? myPurchasedBooks() : myFavBooks();
+  if(!listB.length){
+    body.innerHTML = '<p class="shelf-empty">' + (tab==='buy'
+      ? 'Bạn chưa có cuốn nào đã mua/mở khoá.<br>Mở một cuốn sách và mở khoá để nó tự lưu vào đây.'
+      : 'Bạn chưa yêu thích cuốn nào.<br>Bấm biểu tượng ♥ trên bìa sách để thêm vào danh sách này.') + '</p>';
+    return;
+  }
+  body.innerHTML=''; var grid=document.createElement('div'); grid.className='shelf-grid';
+  listB.forEach(function(b){ grid.appendChild(bookCard(b)); });
+  body.appendChild(grid);
 }
 function icoSvg(id){
   return `<span class="cat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -4369,8 +4441,24 @@ function renderAdminList(){
     const noiLuu = b.driveId ? '<span class="ar-store drive">☁ Drive</span>' : '<span class="ar-store local">💾 Máy</span>';
     row.innerHTML = `<span class="ar-num">${idx+1}</span>
       <span class="ar-title">${escapeHtml(b.title)}</span>
-      <span class="ar-cat">${catName(b.cat)} · ${b.pages||'?'} ${t('pages')}</span>
+      <span class="ar-cat">${b.pages||'?'} ${t('pages')}</span>
       ${noiLuu}`;
+    /* ô CHỌN LĨNH VỰC cho cuốn này - đổi là LƯU NGAY */
+    const catSel = document.createElement('select');
+    catSel.className = 'ar-catsel';
+    catSel.title = 'Đổi lĩnh vực cho cuốn này (lưu ngay)';
+    (typeof CATS!=='undefined' ? CATS : []).forEach(function(c){
+      var o=document.createElement('option'); o.value=c.id; o.textContent=c.vi;
+      if((b.cat||'general')===c.id) o.selected=true; catSel.appendChild(o);
+    });
+    catSel.addEventListener('change', async ()=>{
+      var old=b.cat; b.cat=catSel.value;
+      try{ await saveBooks(); if(b.driveId) await gPushCatalog(); }catch(e){ b.cat=old; toast('Lưu lỗi, đã hoàn tác.'); return; }
+      try{ renderCats(); renderBooks(); }catch(e){}
+      var ten = catSel.options[catSel.selectedIndex] ? catSel.options[catSel.selectedIndex].textContent : catSel.value;
+      toast('Đã chuyển "' + b.title + '" sang: ' + ten);
+    });
+    row.appendChild(catSel);
     /* ô đặt giá riêng cho cuốn này - để trống = dùng giá chung */
     const giaWrap = document.createElement('label');
     giaWrap.className = 'ar-price-wrap';
@@ -5870,6 +5958,7 @@ async function loadMyAccess(){
       myAccess.books = Object.assign(myAccess.books, v.books || {});
     }
   }catch(e){ console.warn('access', e && e.code); }
+  try{ if(typeof loadFavsFromCloud==='function') loadFavsFromCloud(); }catch(e){}
 }
 function duocDocTiep(bookId){
   var cfg = cauHinhThuPhi(bookId);
@@ -9975,6 +10064,10 @@ function pdfLucHaoCombo(lh){
     ['#navBook',      function(){ var dd=el('navBookDD'); if(dd) dd.classList.toggle('open'); }],
     ['#navAbout',     function(){ ddClose(); renderAbout(); openModal('aboutModal'); }],
     ['#navGuide',     function(){ ddClose(); renderGuide(); openModal('guideModal'); }],
+    ['#navShelf',     function(){ ddClose(); openMyShelf('fav'); }],
+    ['#shelfClose',   function(){ closeModal('shelfModal'); }],
+    ['#shelfTabFav',  function(){ renderShelf('fav'); }],
+    ['#shelfTabBuy',  function(){ renderShelf('buy'); }],
     ['#guideClose',   function(){ closeModal('guideModal'); }],
     ['#navServices',  function(){ ddClose(); showSvcHome(); openModal('servicesModal'); }],
     ['#navQuiz',      function(){ ddClose(); renderQuizHome(); openModal('quizModal'); }],
