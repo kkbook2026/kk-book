@@ -2927,6 +2927,12 @@ footer{
       <button class="btn btn-ghost btn-sm" id="smartCat">🧠 Phân loại thông minh (đọc nội dung)</button>
       <small style="color:var(--cream-dim);font-size:.76rem">Khôi phục: dò file PDF trên Drive, thêm lại cuốn thiếu. Cập nhật: đọc tên có dấu nhúng trong PDF, đoán lĩnh vực, lấy số trang &amp; tạo bìa.</small>
     </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
+      <label style="color:var(--cream-dim);font-size:.8rem">Rà soát lại 1 lĩnh vực:</label>
+      <select id="smartCatSrc" style="background:var(--navy-800);color:var(--cream);border:1px solid rgba(201,162,39,.3);border-radius:8px;padding:6px 10px;font-size:.82rem"></select>
+      <button class="btn btn-ghost btn-sm" id="smartCatRun">🔎 Đọc nội dung &amp; xếp lại lĩnh vực này</button>
+      <small style="color:var(--cream-dim);font-size:.76rem">Ví dụ: chọn "Địa lý &amp; Bản đồ" để tách các cuốn thực chất là Khoa học tự nhiên sang đúng chỗ.</small>
+    </div>
     <div class="admin-list" id="adminList"></div>
 
     <div class="section-head" style="margin-top:26px;margin-bottom:4px">
@@ -4217,6 +4223,13 @@ $('#twofaOk').addEventListener('click', async ()=>{
   if(e) e.addEventListener('click', function(){ batchEnrichBooks(); });
   var sc = document.getElementById('smartCat');
   if(sc) sc.addEventListener('click', function(){ smartRecategorize(); });
+  /* ô chọn lĩnh vực để rà soát lại + nút chạy */
+  var sel = document.getElementById('smartCatSrc');
+  if(sel && !sel.options.length && typeof CATS!=='undefined'){
+    CATS.forEach(function(c){ var o=document.createElement('option'); o.value=c.id; o.textContent=c.vi; if(c.id==='geo') o.selected=true; sel.appendChild(o); });
+  }
+  var scr = document.getElementById('smartCatRun');
+  if(scr) scr.addEventListener('click', function(){ var v = sel ? sel.value : 'geo'; if(v) smartRecategorize([v]); });
 })();
 function openAdmin(){ renderAdminList(); updateDriveUI(); updateSecUI(); $('#adminModal').classList.add('open');
   capNhatOAdminAuth();
@@ -4657,10 +4670,13 @@ async function batchEnrichBooks(){
 }
 /* PHÂN LOẠI THÔNG MINH: đọc NỘI DUNG mấy trang đầu của từng cuốn ở "Tổng hợp khác" rồi chấm điểm
    để xếp vào đúng lĩnh vực. Chính xác hơn nhiều so với chỉ đoán theo tên. */
-async function smartRecategorize(){
-  if(!confirm('PHÂN LOẠI THÔNG MINH các sách đang ở "Tổng hợp khác"?\n\nHệ thống sẽ ĐỌC NỘI DUNG vài trang đầu của từng cuốn để xếp vào đúng lĩnh vực - chính xác hơn nhiều. Có thể mất vài phút. Tiếp tục?')) return;
-  var can = books.filter(function(b){ return b.driveId && (b.cat==='general' || b.cat==='khac' || !b.cat); });
-  if(!can.length){ toast('Không có cuốn nào đang ở "Tổng hợp khác".'); return; }
+async function smartRecategorize(srcCats){
+  srcCats = (srcCats && srcCats.length) ? srcCats : ['general','khac'];
+  var srcSet={}; srcCats.forEach(function(c){ srcSet[c]=1; });
+  var tenNguon = srcCats.map(function(c){ var f=CATS.filter(function(x){return x.id===c;})[0]; return f?f.vi:c; }).join(', ');
+  if(!confirm('PHÂN LOẠI THÔNG MINH lại các sách trong lĩnh vực: ' + tenNguon + '?\n\nHệ thống sẽ ĐỌC NỘI DUNG vài trang đầu của từng cuốn rồi xếp lại vào lĩnh vực khớp nhất (cuốn nào vẫn đúng thì giữ nguyên). Có thể mất vài phút. Tiếp tục?')) return;
+  var can = books.filter(function(b){ return b.driveId && (srcSet[b.cat] || (!b.cat && srcSet['general'])); });
+  if(!can.length){ toast('Không có cuốn nào trong lĩnh vực đã chọn.'); return; }
   var moved=0, kept=0, fail=0;
   try{ if(typeof __pdfWorkerReady!=='undefined') await __pdfWorkerReady; }catch(e){}
   for(var i=0;i<can.length;i++){
