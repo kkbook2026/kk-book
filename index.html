@@ -2933,6 +2933,10 @@ footer{
       <button class="btn btn-ghost btn-sm" id="smartCatRun">🔎 Đọc nội dung &amp; xếp lại lĩnh vực này</button>
       <small style="color:var(--cream-dim);font-size:.76rem">Ví dụ: chọn "Địa lý &amp; Bản đồ" để tách các cuốn thực chất là Khoa học tự nhiên sang đúng chỗ.</small>
     </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
+      <button class="btn btn-gold btn-sm" id="smartCatAll">📚 Sắp xếp lại TOÀN BỘ (trừ Siêu Trợ Lý)</button>
+      <small style="color:var(--cream-dim);font-size:.76rem">Đọc nội dung từng cuốn, xếp lại toàn bộ vào đúng lĩnh vực. Chỉ chuyển khi lĩnh vực mới rõ hơn HẲN (không xáo trộn sách đã đúng). Có thể mất 10-20 phút.</small>
+    </div>
     <div class="admin-list" id="adminList"></div>
 
     <div class="section-head" style="margin-top:26px;margin-bottom:4px">
@@ -4230,6 +4234,8 @@ $('#twofaOk').addEventListener('click', async ()=>{
   }
   var scr = document.getElementById('smartCatRun');
   if(scr) scr.addEventListener('click', function(){ var v = sel ? sel.value : 'geo'; if(v) smartRecategorize([v]); });
+  var sca = document.getElementById('smartCatAll');
+  if(sca) sca.addEventListener('click', function(){ smartRecategorizeAll(); });
 })();
 function openAdmin(){ renderAdminList(); updateDriveUI(); updateSecUI(); $('#adminModal').classList.add('open');
   capNhatOAdminAuth();
@@ -4569,10 +4575,11 @@ var CAT_KEYWORDS = {
 };
 /* Đoán lĩnh vực theo ĐIỂM SỐ: đếm số từ khóa khớp trong nội dung; từ khóa trong TIÊU ĐỀ nhân trọng số cao.
    Chọn lĩnh vực nhiều điểm nhất (đủ tín hiệu mới gán, tránh xếp bừa). */
-function guessCatFromText(txt, titleTxt){
+/* Chấm điểm TỪNG lĩnh vực cho một đoạn text (khớp trọn từ; từ khóa trong tiêu đề nhân trọng số). */
+function catScores(txt, titleTxt){
   var t  = ' ' + _noDia(txt||'').replace(/[^a-z0-9]+/g,' ') + ' ';
   var tt = titleTxt ? (' ' + _noDia(titleTxt).replace(/[^a-z0-9]+/g,' ') + ' ') : '';
-  var best=null, bestScore=0;
+  var out={};
   for(var cid in CAT_KEYWORDS){
     var kws=CAT_KEYWORDS[cid], score=0;
     for(var i=0;i<kws.length;i++){
@@ -4582,8 +4589,13 @@ function guessCatFromText(txt, titleTxt){
       score += n;
       if(tt && tt.indexOf(kw2)>=0) score += 5;    /* xuất hiện trong tiêu đề -> rất chỉ thị */
     }
-    if(score>bestScore){ bestScore=score; best=cid; }
+    out[cid]=score;
   }
+  return out;
+}
+function guessCatFromText(txt, titleTxt){
+  var s=catScores(txt, titleTxt), best=null, bestScore=0;
+  for(var c in s){ if(s[c]>bestScore){ bestScore=s[c]; best=c; } }
   return bestScore>=2 ? best : null;
 }
 /* Tên có vẻ là TÊN FILE THÔ (viết hoa, không dấu) -> nên thay bằng tiêu đề chuẩn từ PDF */
@@ -4708,6 +4720,59 @@ async function smartRecategorize(srcCats){
   window.__forcePush=false;
   try{ renderBooks(); renderCats(); renderAdminList(); }catch(e){}
   toast('Xong! Đã xếp lại ' + moved + ' cuốn vào đúng lĩnh vực. Còn ' + kept + ' cuốn chưa đủ tín hiệu (giữ ở Khác, anh phân loại tay)' + (fail?(', '+fail+' lỗi'):'') + '.');
+}
+/* Đọc text vài trang đầu + metadata của một cuốn (dùng để phân loại). */
+async function _docTextForCat(doc){
+  var txt='';
+  var np = Math.min(5, doc.numPages||1);
+  for(var p=1;p<=np;p++){
+    try{ var pg=await doc.getPage(p); var tc=await pg.getTextContent(); txt += ' ' + tc.items.map(function(it){return it.str;}).join(' '); }catch(e){}
+    if(txt.length>8000) break;
+  }
+  try{ var md=await doc.getMetadata(); var info=(md&&md.info)||{}; txt += ' '+(info.Subject||'')+' '+(info.Keywords||''); }catch(e){}
+  return txt;
+}
+/* SẮP XẾP LẠI TOÀN BỘ (trừ Siêu Trợ Lý) theo NỘI DUNG, có BIÊN ĐỘ an toàn:
+   chỉ chuyển khi lĩnh vực mới rõ hơn HẲN lĩnh vực hiện tại -> không xáo trộn sách đã đúng. */
+async function smartRecategorizeAll(){
+  if(!confirm('SẮP XẾP LẠI TOÀN BỘ sách vào đúng lĩnh vực (TRỪ mục "Siêu Trợ Lý")?\n\nHệ thống sẽ ĐỌC NỘI DUNG vài trang đầu của TỪNG cuốn để xếp vào lĩnh vực khớp nhất. Với nhiều sách, việc này có thể mất 10-20 phút - nên chạy khi rảnh và giữ trang mở. Tiếp tục?')) return;
+  var can = books.filter(function(b){ return b.driveId && b.cat!=='assist'; });
+  if(!can.length){ toast('Không có cuốn nào để sắp xếp.'); return; }
+  var moved=0, kept=0, fail=0, log=[];
+  try{ if(typeof __pdfWorkerReady!=='undefined') await __pdfWorkerReady; }catch(e){}
+  for(var i=0;i<can.length;i++){
+    var b=can[i];
+    toast('Đang đọc & sắp xếp ' + (i+1) + '/' + can.length + ': ' + (b.title||'').slice(0,24) + '...');
+    try{
+      var bytes = await fetchBookPdf(b);
+      var srcA=(bytes instanceof Uint8Array)?bytes:new Uint8Array(bytes);
+      var buf=new Uint8Array(srcA.length); buf.set(srcA);
+      var doc = await pdfjsLib.getDocument({data:buf}).promise;
+      /* tranh thủ bổ sung tên/số trang/bìa nếu thiếu */
+      try{ await enrichBookMeta(b, doc, {deep:true, restoreTitle:true, push:false}); }catch(e){}
+      var txt = await _docTextForCat(doc);
+      var s = catScores(txt + ' ' + (b.title||''), b.title||'');
+      var bestCat=null, bestScore=0;
+      for(var c in s){ if(s[c]>bestScore){ bestScore=s[c]; bestCat=c; } }
+      var curCat = (b.cat && b.cat!=='khac') ? b.cat : 'general';
+      var curScore = s[curCat] || 0;
+      /* CHUYỂN chỉ khi: có lĩnh vực khác rõ ràng (>=3 điểm) VÀ hơn lĩnh vực hiện tại tối thiểu 2 điểm.
+         Sách đang ở "Khác/general" thì chỉ cần đủ tín hiệu (>=3) là xếp. */
+      var isOther = (curCat==='general');
+      if(bestCat && bestCat!==b.cat && bestScore>=3 && (isOther ? true : (bestScore >= curScore + 2))){
+        log.push((b.title||'').slice(0,30) + ': ' + (b.cat||'?') + ' -> ' + bestCat);
+        b.cat = bestCat; moved++;
+      } else kept++;
+      try{ doc.destroy(); }catch(e){}
+    }catch(e){ fail++; console.warn('recatAll fail', b.title, e); }
+    await new Promise(function(r){ setTimeout(r, 100); });
+  }
+  window.__forcePush=true;
+  try{ await saveBooks(); if(typeof gConnected==='function' && gConnected()) await gPushCatalog(); }catch(e){}
+  window.__forcePush=false;
+  try{ renderBooks(); renderCats(); renderAdminList(); }catch(e){}
+  if(log.length && window.console) console.log('KK-BOOK sắp xếp lại:\n' + log.join('\n'));
+  toast('Xong! Đã sắp xếp lại ' + moved + ' cuốn vào đúng lĩnh vực, giữ nguyên ' + kept + ' cuốn' + (fail?(', '+fail+' lỗi'):'') + '. (Không đụng mục Siêu Trợ Lý.)');
 }
 async function openReader(book){
   /* đóng mọi cửa sổ đang mở để không chồng chéo */
