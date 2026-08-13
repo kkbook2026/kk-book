@@ -2924,6 +2924,7 @@ footer{
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
       <button class="btn btn-gold btn-sm" id="rebuildDrive">🔄 Quét &amp; khôi phục sách từ Drive</button>
       <button class="btn btn-ghost btn-sm" id="enrichBooks">✨ Khôi phục tên, lĩnh vực, bìa &amp; số trang</button>
+      <button class="btn btn-ghost btn-sm" id="smartCat">🧠 Phân loại thông minh (đọc nội dung)</button>
       <small style="color:var(--cream-dim);font-size:.76rem">Khôi phục: dò file PDF trên Drive, thêm lại cuốn thiếu. Cập nhật: đọc tên có dấu nhúng trong PDF, đoán lĩnh vực, lấy số trang &amp; tạo bìa.</small>
     </div>
     <div class="admin-list" id="adminList"></div>
@@ -4214,6 +4215,8 @@ $('#twofaOk').addEventListener('click', async ()=>{
   });
   var e = document.getElementById('enrichBooks');
   if(e) e.addEventListener('click', function(){ batchEnrichBooks(); });
+  var sc = document.getElementById('smartCat');
+  if(sc) sc.addEventListener('click', function(){ smartRecategorize(); });
 })();
 function openAdmin(){ renderAdminList(); updateDriveUI(); updateSecUI(); $('#adminModal').classList.add('open');
   capNhatOAdminAuth();
@@ -4532,30 +4535,43 @@ function titleCaseVi(s){
 }
 /* Bản đồ từ khóa -> lĩnh vực (không dấu) để tự đoán nhóm cho sách khôi phục */
 var CAT_KEYWORDS = {
-  it:['cong nghe thong tin','may tinh','phan mem','tin hoc','internet','du lieu','lap trinh','bao mat','robot','tri tue nhan tao',' ai ','he dieu hanh','so hoa','cong nghe','ky nguyen so','blockchain'],
-  astro:['vu tru','thien van','hanh tinh','ngan ha','mat trang','thien ha',' sao '],
-  math:['toan hoc','thong ke','so hoc','hinh hoc','xac suat'],
-  sci:['khoa hoc tu nhien','vat ly','hoa hoc','sinh hoc',' tu nhien','chat lieu','vat chat','nguyen to','y tuong thay doi'],
-  health:['y hoc','suc khoe',' benh ','duoc pham','co the nguoi'],
-  psy:['tam ly','ky nang song','cam xuc','tinh cach','giao tiep'],
-  food:['am thuc','dinh duong','mon an','nau an','huong thom','vi giac','ky nghe bep'],
-  sport:['the thao','bong da','cau thu','olympic','vo thuat'],
-  hist:['lich su','trieu dai','chien tranh','vua chua','khoi nghia','ngay hoi cua loai nguoi','nen van minh','cach mang'],
-  geo:['dia ly','ban do','chau ','quoc gia',' song ',' nui ','dai duong','lanh tho','ky quan'],
-  culture:['van hoc','nghe thuat',' tho ','tieu thuyet','hoi hoa','am nhac','net chu','ban tay va dat set','san khau','dien anh','trang sach','kien truc','sac mau'],
-  iching:['kinh dich','tu vi','phat phap','minh triet','phuong dong','luc hao','bat tu','tu tru','ky mon','phong thuy','tam linh'],
-  econ:['kinh te','tai chinh','tien te','bitcoin','dau tu','chung khoan','tai san'],
-  mgmt:['quan tri','lanh dao','doanh nghiep','quan ly'],
-  law:['phap luat','chinh sach',' luat '],
-  edu:['giao duc','dao tao'],
-  ency:['bach khoa','toan thu'],
-  lang:['ngoai ngu','tieng anh','tieng nhat','tieng trung','tieng phap','hoc tieng']
+  it:['cong nghe thong tin','may tinh','phan mem','tin hoc','internet','du lieu','lap trinh','bao mat','an ninh mang','robot','tri tue nhan tao',' ai ','machine learning','he dieu hanh','so hoa','cong nghe','ky nguyen so','blockchain','thuat toan','vi xu ly','ban dan','chip','dien toan','mang may tinh','website','ung dung','ma hoa','mat khau','virus may tinh','chuyen doi so'],
+  astro:['vu tru','thien van','hanh tinh','ngan ha','mat trang','thien ha',' sao ','ho den','sao choi','thien the','vu tru hoc','giai ngan ha','trai dat quay','he mat troi','tinh van','big bang'],
+  math:['toan hoc','thong ke','so hoc','hinh hoc','xac suat','dai so','giai tich','phuong trinh','ham so','so nguyen to','logic','con so'],
+  sci:['khoa hoc tu nhien','vat ly','hoa hoc','sinh hoc',' tu nhien','chat lieu','vat chat','nguyen to','nang luong','dien tu','phan ung','te bao','gene','di truyen','tien hoa','song anh sang','luong tu','trong luc','nhiet dong'],
+  health:['y hoc','suc khoe',' benh ','duoc pham','co the nguoi','dinh duong','virus','vi khuan','mien dich','tim mach','ung thu','dich benh','thuoc','giai phau','than kinh','vaccine','suc khoe tinh than'],
+  psy:['tam ly','ky nang song','cam xuc','tinh cach','giao tiep','tu duy','thoi quen','dong luc','hanh vi','nhan thuc','stress','hanh phuc','tri tue cam xuc','phat trien ban than'],
+  food:['am thuc','dinh duong','mon an','nau an','huong thom','vi giac','ky nghe bep','cong thuc','nguyen lieu','gia vi','dac san','bep nuc','van hoa am thuc','mon ngon'],
+  sport:['the thao','bong da','cau thu','olympic','vo thuat','bong ro','quan vot','the duc','van dong vien','giai dau','huan luyen','world cup'],
+  hist:['lich su','trieu dai','chien tranh','vua chua','khoi nghia','ngay hoi cua loai nguoi','nen van minh','cach mang','de che','vuong trieu','phong kien','danh tuong','anh hung dan toc','doc lap','khang chien','co dai','trung dai','the ky','dynasty','nha nuoc','dat nuoc'],
+  geo:['dia ly','ban do','chau ','quoc gia',' song ',' nui ','dai duong','lanh tho','ky quan','dinh nui','dong song','bien','sa mac','khi hau','dan cu','thu do','vung mien','du lich','danh lam','di san'],
+  culture:['van hoc','nghe thuat',' tho ','tieu thuyet','hoi hoa','am nhac','net chu','ban tay va dat set','san khau','dien anh','trang sach','kien truc','sac mau','hoi hoa','dieu khac','nha van','nha tho','tac pham','van hoa','le hoi','phong tuc','my thuat','ca dao','truyen thong','danh nhan van hoa'],
+  iching:['kinh dich','tu vi','phat phap','minh triet','phuong dong','luc hao','bat tu','tu tru','ky mon','phong thuy','tam linh','dao giao','nho giao','thien','bat quai','am duong','ngu hanh','boi toan','tuong so','than so'],
+  econ:['kinh te','tai chinh','tien te','bitcoin','dau tu','chung khoan','tai san','ngan hang','lam phat','thi truong','tien ao','tang truong','gdp','thuong mai','kinh doanh','tien','vang','tin dung'],
+  mgmt:['quan tri','lanh dao','doanh nghiep','quan ly','chien luoc','nhan su','to chuc','khoi nghiep','marketing','du an','nang suat','dieu hanh','ceo','cong ty'],
+  law:['phap luat','chinh sach',' luat ','hien phap','nghi dinh','toa an','quyen','nghia vu','vi pham','tu phap','quy dinh','hop dong','toi pham'],
+  edu:['giao duc','dao tao','hoc tap','truong hoc','day hoc','su pham','hoc sinh','sinh vien','phuong phap hoc','ky nang hoc','tu hoc','giao vien','khoa hoc giao duc'],
+  ency:['bach khoa','toan thu','tra cuu','tong quan','cam nang','kien thuc tong hop','so tay','tri thuc pho thong','kham pha the gioi'],
+  lang:['ngoai ngu','tieng anh','tieng nhat','tieng trung','tieng phap','hoc tieng','tu vung','ngu phap','giao tiep tieng','song ngu','phien am','han tu','kanji']
 };
-function guessCatFromText(txt){
-  var t = ' ' + _noDia(txt).replace(/[^a-z0-9]+/g,' ') + ' ';
-  for(var cid in CAT_KEYWORDS){ var kws = CAT_KEYWORDS[cid];
-    for(var i=0;i<kws.length;i++){ if(t.indexOf(kws[i])>=0) return cid; } }
-  return null;
+/* Đoán lĩnh vực theo ĐIỂM SỐ: đếm số từ khóa khớp trong nội dung; từ khóa trong TIÊU ĐỀ nhân trọng số cao.
+   Chọn lĩnh vực nhiều điểm nhất (đủ tín hiệu mới gán, tránh xếp bừa). */
+function guessCatFromText(txt, titleTxt){
+  var t  = ' ' + _noDia(txt||'').replace(/[^a-z0-9]+/g,' ') + ' ';
+  var tt = titleTxt ? (' ' + _noDia(titleTxt).replace(/[^a-z0-9]+/g,' ') + ' ') : '';
+  var best=null, bestScore=0;
+  for(var cid in CAT_KEYWORDS){
+    var kws=CAT_KEYWORDS[cid], score=0;
+    for(var i=0;i<kws.length;i++){
+      var kw=(kws[i]||'').trim(); if(!kw) continue;
+      var kw2=' '+kw+' ';                          /* khớp TRỌN TỪ/CỤM (tránh 'tien' khớp nhầm trong 'tieng') */
+      var p=0, n=0; while((p=t.indexOf(kw2,p))>=0){ n++; p+=kw2.length-1; if(n>=6) break; }
+      score += n;
+      if(tt && tt.indexOf(kw2)>=0) score += 5;    /* xuất hiện trong tiêu đề -> rất chỉ thị */
+    }
+    if(score>bestScore){ bestScore=score; best=cid; }
+  }
+  return bestScore>=2 ? best : null;
 }
 /* Tên có vẻ là TÊN FILE THÔ (viết hoa, không dấu) -> nên thay bằng tiêu đề chuẩn từ PDF */
 function isRawTitle(t){ t=(t||'').toString().trim(); if(!t) return true;
@@ -4583,7 +4599,7 @@ async function enrichBookMeta(book, doc, opts){
         }
       }
       if(!book.cat || book.cat==='general' || book.cat==='khac'){
-        var g = guessCatFromText((info.Subject||'')+' '+(info.Keywords||'')+' '+(book.title||''));
+        var g = guessCatFromText((info.Subject||'')+' '+(info.Keywords||'')+' '+(book.title||''), book.title||'');
         if(g){ book.cat = g; changed = true; }
       }
     }catch(e){}
@@ -4638,6 +4654,44 @@ async function batchEnrichBooks(){
   window.__forcePush = false;
   try{ renderBooks(); renderCats(); renderAdminList(); }catch(e){}
   toast('Xong! Xử lý ' + ok + ' cuốn: khôi phục ' + tenMoi + ' tên chuẩn, xếp lại ' + catMoi + ' lĩnh vực' + (fail? (', ' + fail + ' cuốn lỗi') : '') + '. Các cuốn còn ở "Khác" anh phân loại thủ công giúp.');
+}
+/* PHÂN LOẠI THÔNG MINH: đọc NỘI DUNG mấy trang đầu của từng cuốn ở "Tổng hợp khác" rồi chấm điểm
+   để xếp vào đúng lĩnh vực. Chính xác hơn nhiều so với chỉ đoán theo tên. */
+async function smartRecategorize(){
+  if(!confirm('PHÂN LOẠI THÔNG MINH các sách đang ở "Tổng hợp khác"?\n\nHệ thống sẽ ĐỌC NỘI DUNG vài trang đầu của từng cuốn để xếp vào đúng lĩnh vực - chính xác hơn nhiều. Có thể mất vài phút. Tiếp tục?')) return;
+  var can = books.filter(function(b){ return b.driveId && (b.cat==='general' || b.cat==='khac' || !b.cat); });
+  if(!can.length){ toast('Không có cuốn nào đang ở "Tổng hợp khác".'); return; }
+  var moved=0, kept=0, fail=0;
+  try{ if(typeof __pdfWorkerReady!=='undefined') await __pdfWorkerReady; }catch(e){}
+  for(var i=0;i<can.length;i++){
+    var b=can[i];
+    toast('Đang đọc & phân loại ' + (i+1) + '/' + can.length + ': ' + (b.title||'').slice(0,26) + '...');
+    try{
+      var bytes = await fetchBookPdf(b);
+      var src=(bytes instanceof Uint8Array)?bytes:new Uint8Array(bytes);
+      var buf=new Uint8Array(src.length); buf.set(src);
+      var doc = await pdfjsLib.getDocument({data:buf}).promise;
+      var txt='';
+      var np = Math.min(4, doc.numPages||1);
+      for(var p=1;p<=np;p++){
+        try{ var pg=await doc.getPage(p); var tc=await pg.getTextContent(); txt += ' ' + tc.items.map(function(it){return it.str;}).join(' '); }catch(e){}
+        if(txt.length>6000) break;
+      }
+      try{ var md=await doc.getMetadata(); var info=(md&&md.info)||{}; txt += ' '+(info.Subject||'')+' '+(info.Keywords||''); }catch(e){}
+      /* nếu chưa có bìa/số trang thì tranh thủ bổ sung luôn */
+      try{ await enrichBookMeta(b, doc, {deep:true, restoreTitle:true, push:false}); }catch(e){}
+      var g = guessCatFromText(txt + ' ' + (b.title||''), b.title||'');
+      if(g && g!=='general' && g!==b.cat){ b.cat=g; moved++; }
+      else kept++;
+      try{ doc.destroy(); }catch(e){}
+    }catch(e){ fail++; console.warn('recat fail', b.title, e); }
+    await new Promise(function(r){ setTimeout(r, 120); });
+  }
+  window.__forcePush=true;
+  try{ await saveBooks(); if(typeof gConnected==='function' && gConnected()) await gPushCatalog(); }catch(e){}
+  window.__forcePush=false;
+  try{ renderBooks(); renderCats(); renderAdminList(); }catch(e){}
+  toast('Xong! Đã xếp lại ' + moved + ' cuốn vào đúng lĩnh vực. Còn ' + kept + ' cuốn chưa đủ tín hiệu (giữ ở Khác, anh phân loại tay)' + (fail?(', '+fail+' lỗi'):'') + '.');
 }
 async function openReader(book){
   /* đóng mọi cửa sổ đang mở để không chồng chéo */
