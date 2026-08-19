@@ -6898,7 +6898,8 @@ function dongWelcome(){
   var back=document.getElementById('welcomeModal');
   if(back) back.addEventListener('click', function(e){ if(e.target===back) dongWelcome(); });
   document.addEventListener('keydown', function(e){ if((e.key==='Escape'||e.keyCode===27) && back && back.classList.contains('open')) dongWelcome(); });
-  setTimeout(showWelcomePopup, 1300);
+  /* Đã tắt popup chào mừng lúc khởi động theo yêu cầu. */
+  /* setTimeout(showWelcomePopup, 1300); */
 })();
 
 /* ============ CHAT BOT TRỢ LÝ ============ */
