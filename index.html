@@ -693,6 +693,10 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
   background:linear-gradient(90deg, color-mix(in srgb, var(--cc) 22%, transparent), transparent);
   border:1px solid var(--cc);border-bottom:none;
 }
+.drawer-head .drawer-title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sort-sel{background:var(--navy-800);color:var(--cream);border:1px solid rgba(201,162,39,.35);border-radius:8px;padding:6px 10px;font-size:.8rem;cursor:pointer}
+@keyframes kkCardIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.book-grid .book-card{animation:kkCardIn .34s cubic-bezier(.2,.7,.3,1) both}
 .drawer-head .cat-ico{width:38px;height:38px;border-radius:11px}
 .drawer-head .cat-ico svg{width:20px;height:20px}
 .drawer-title{flex:1;font-family:var(--font-display);font-size:1.14rem;font-weight:700;color:var(--cream)}
@@ -725,12 +729,13 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
   display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:26px;
 }
 .book-card{
-  background:var(--navy-900);border:1px solid rgba(201,162,39,.16);
+  background:linear-gradient(180deg,#2c3c5c,#26324a);border:1px solid rgba(201,162,39,.2);
   border-radius:var(--radius);overflow:hidden;cursor:pointer;
   transition:transform .2s, box-shadow .2s, border-color .2s;
   display:flex;flex-direction:column;
+  content-visibility:auto;contain-intrinsic-size:auto 330px;   /* tăng tốc render khi có hàng trăm sách */
 }
-.book-card:hover{transform:translateY(-6px);border-color:rgba(201,162,39,.55);box-shadow:0 18px 44px rgba(0,0,0,.5)}
+.book-card:hover{transform:translateY(-6px);border-color:rgba(201,162,39,.6);box-shadow:0 18px 44px rgba(0,0,0,.5), 0 0 0 1px rgba(201,162,39,.18)}
 .book-cover{
   aspect-ratio:3/4.15;background:var(--navy-800);position:relative;overflow:hidden;
   display:flex;align-items:center;justify-content:center;
@@ -751,8 +756,10 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
 .shelf-body{min-height:120px}
 .shelf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:14px}
 .shelf-empty{color:var(--cream-dim);text-align:center;padding:40px 10px;line-height:1.7;font-size:.9rem}
+.book-cover{background:linear-gradient(160deg,#33456b,#1c2c4c)}
 .book-cover .placeholder{
-  font-family:var(--font-display);font-size:3rem;color:rgba(201,162,39,.35);font-weight:900;
+  font-family:var(--font-display);font-size:3.2rem;color:rgba(228,193,88,.55);font-weight:900;
+  text-shadow:0 2px 12px rgba(0,0,0,.35);letter-spacing:1px;
 }
 .book-cover::after{
   content:'';position:absolute;inset:0;
@@ -791,6 +798,8 @@ button:focus-visible, input:focus-visible, select:focus-visible{outline:2px soli
 .reader-bar{grid-column:1 / -1;grid-row:1}
 .reader.open .tts-bar, .reader.open .auto-bar{grid-column:1;grid-row:2}
 .reader-stage{grid-column:2;grid-row:2;min-width:0;min-height:0}
+.read-progress{grid-column:1 / -1;height:3px;background:rgba(255,255,255,.08);width:100%}
+.read-progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-bright));transition:width .25s;box-shadow:0 0 8px rgba(201,162,39,.55)}
 .reader-note{grid-column:1 / -1;grid-row:3}
 .reader-bar{
   display:flex;align-items:center;gap:12px;padding:10px 18px;
@@ -1497,6 +1506,8 @@ body.desktop-view .hdr-inner{flex-wrap:nowrap}
 .admin-row .ar-title{flex:1;font-size:.88rem;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .admin-row .ar-cat{font-size:.7rem;color:var(--gold);white-space:nowrap}
 .ar-catsel{font-size:.72rem;background:var(--navy-800);color:var(--cream);border:1px solid rgba(201,162,39,.35);border-radius:7px;padding:4px 6px;max-width:150px;cursor:pointer}
+.admin-search{width:100%;box-sizing:border-box;margin:6px 0 10px;background:var(--navy-800);color:var(--cream);border:1px solid rgba(201,162,39,.3);border-radius:9px;padding:9px 12px;font-size:.85rem}
+.admin-search:focus{outline:none;border-color:var(--gold)}
 .wm-preview{
   margin-top:8px;background:#fff;border-radius:10px;height:90px;position:relative;overflow:hidden;
 }
@@ -2351,6 +2362,7 @@ footer{
     <span class="tts-status" id="autoStatus"></span>
   </div>
 
+  <div class="read-progress"><div class="read-progress-fill" id="readProg"></div></div>
   <div class="reader-stage" id="readerStage">
     <div class="canvas-wrap"><canvas id="pdfCanvas"></canvas></div>
 
@@ -3730,34 +3742,53 @@ async function gRebuildFromDrive(){
     toast('Quét xong: có ' + files.length + ' file PDF trên Drive, khôi phục thêm ' + added + ' cuốn. Tổng danh mục: ' + books.filter(b=>b.driveId).length + '.');
   }catch(e){ window.__forcePush = false; console.error(e); toast('Lỗi khi quét Drive: ' + (e && e.message ? e.message : e)); }
 }
+function _applyCatalog(cat){
+  const localOnly = books.filter(b=>!b.driveId);
+  var _merged = (cat.books||[]).concat(localOnly);
+  var _seen = {}, _dup = 0; books = _merged.filter(function(b){
+    if(!b) return false;
+    var k = b.id || b.driveId;
+    if(k==null) return true;
+    if(_seen[k]) { _dup++; return false; }
+    _seen[k]=1; return true;
+  });
+  try{ window.__catStats = { catalog:(cat.books||[]).length, localOnly:localOnly.length, shown:books.length, dup:_dup }; }catch(e){}
+  if(cat.settings){
+    if(cat.settings.wmText) settings.wmText = cat.settings.wmText;
+    if(cat.settings.wmOpacity) settings.wmOpacity = cat.settings.wmOpacity;
+    if(cat.settings.ghRepo) GHUB.repo = cat.settings.ghRepo;
+    if(cat.settings.ghBranch) GHUB.branch = cat.settings.ghBranch;
+    if(cat.settings.ghDir!=null) GHUB.dir = cat.settings.ghDir;
+  }
+}
+function _loadCatalogCache(warn){
+  try{
+    var raw = localStorage.getItem('kkCatCache');
+    if(raw){ var cat = JSON.parse(raw);
+      if(cat && cat.books && cat.books.length){
+        _applyCatalog(cat);
+        if(warn) toast('Đang hiển thị danh mục đã lưu (Google Drive tạm thời chưa phản hồi). Tải lại sau ít phút để cập nhật mới nhất.');
+        return true;
+      }
+    }
+  }catch(e){}
+  return false;
+}
 async function gLoadCatalog(){
-  if(!GDRIVE.apiKey || !gCatalogId) return false;
+  if(!GDRIVE.apiKey || !gCatalogId){ return _loadCatalogCache(); }
   try{
     const r = await fetch(`https://www.googleapis.com/drive/v3/files/${gCatalogId}?alt=media&key=${GDRIVE.apiKey}`, {cache:'no-store'});
-    if(!r.ok) return false;
+    if(!r.ok) throw new Error('Drive HTTP '+r.status);
     const cat = await r.json();
-    const localOnly = books.filter(b=>!b.driveId);
-    var _merged = (cat.books||[]).concat(localOnly);
-    /* CHỈ gộp trùng theo ĐỊNH DANH DUY NHẤT (id, rồi driveId) - KHÔNG gộp theo tiêu đề,
-       vì hai cuốn sách khác nhau vẫn có thể trùng tên (trước đây gộp theo tên nên đếm THIẾU). */
-    var _seen = {}, _dup = 0; books = _merged.filter(function(b){
-      if(!b) return false;
-      var k = b.id || b.driveId;
-      if(k==null) return true;               /* không có định danh -> giữ, không gộp */
-      if(_seen[k]) { _dup++; return false; }
-      _seen[k]=1; return true;
-    });
-    /* Lưu thống kê để hiển thị trong Quản trị (giúp hiểu vì sao ra con số này). */
-    try{ window.__catStats = { catalog:(cat.books||[]).length, localOnly:localOnly.length, shown:books.length, dup:_dup }; }catch(e){}
-    if(cat.settings){
-      if(cat.settings.wmText) settings.wmText = cat.settings.wmText;
-      if(cat.settings.wmOpacity) settings.wmOpacity = cat.settings.wmOpacity;
-      if(cat.settings.ghRepo) GHUB.repo = cat.settings.ghRepo;
-      if(cat.settings.ghBranch) GHUB.branch = cat.settings.ghBranch;
-      if(cat.settings.ghDir!=null) GHUB.dir = cat.settings.ghDir;
-    }
+    if(!cat || !Array.isArray(cat.books)) throw new Error('Danh mục rỗng/không hợp lệ');
+    _applyCatalog(cat);
+    /* LƯU BẢN SAO danh mục (chỉ khi có sách) để dự phòng khi Drive lỗi/giới hạn -> không bao giờ hiện 0 sách. */
+    try{ if((cat.books||[]).length > 0) localStorage.setItem('kkCatCache', JSON.stringify(cat)); }catch(e){}
     return true;
-  }catch(e){ console.error('catalog', e); return false; }
+  }catch(e){
+    console.error('catalog', e);
+    return _loadCatalogCache(true);   /* DỰ PHÒNG: dùng bản sao đã lưu */
+  }
 }
 async function gFetchPdf(driveId){
   const key = GDRIVE.apiKey;
@@ -4024,6 +4055,15 @@ function khongDau(w){
   try{ return (w||'').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d'); }
   catch(_){ return (w||'').toString().toLowerCase(); }
 }
+/* Sắp xếp danh sách sách theo lựa chọn của người dùng */
+function sortBooks(list){
+  var s = window.__sortBy || 'new', a = list.slice();
+  if(s==='az') a.sort(function(x,y){ return (x.title||'').localeCompare(y.title||'','vi'); });
+  else if(s==='za') a.sort(function(x,y){ return (y.title||'').localeCompare(x.title||'','vi'); });
+  else if(s==='pages') a.sort(function(x,y){ return (y.pages||0)-(x.pages||0); });
+  else a.sort(function(x,y){ return (y.addedAt||0)-(x.addedAt||0); });   /* mới nhất */
+  return a;
+}
 
 function animStat(sel, target){
   var el = (typeof $==='function') ? $(sel) : document.querySelector(sel);
@@ -4131,6 +4171,12 @@ function moKhay(){
        ${icoSvg(meta.id)}
        <span class="drawer-title">${escapeHtml(meta.vi)}</span>
        <span class="drawer-n">${list.length}</span>
+       <select class="sort-sel" id="sortSel" title="Sắp xếp">
+         <option value="new">Mới nhất</option>
+         <option value="az">Tên A → Z</option>
+         <option value="za">Tên Z → A</option>
+         <option value="pages">Nhiều trang nhất</option>
+       </select>
        <button class="drawer-close" id="drawerClose" title="Đóng">✕</button>
      </div>
      <div class="drawer-body" style="--cc:${meta.c}">
@@ -4140,7 +4186,9 @@ function moKhay(){
   drawer.classList.add('open');
   if(list.length){
     const g = $('#drawerGrid');
-    list.sort((x,y)=>(y.addedAt||0)-(x.addedAt||0)).forEach(b => g.appendChild(bookCard(b)));
+    var _ss = $('#sortSel');
+    if(_ss){ _ss.value = window.__sortBy || 'new'; _ss.addEventListener('change', function(){ window.__sortBy = _ss.value; moKhay(); }); }
+    sortBooks(list).forEach(b => g.appendChild(bookCard(b)));
   }
   $('#drawerClose').addEventListener('click', ()=>{ openCat = null; capNhatActive(); moKhay(); });
 }
@@ -4181,10 +4229,12 @@ function renderBooks(){ renderLibrary(); }
 
 $('#collapseAll').addEventListener('click', ()=>{ openCat = null; renderLibrary(); });
 
+let _searchTimer = null;
 $('#searchInput').addEventListener('input', e => {
   searchQ = e.target.value.trim().toLowerCase();
   openCat = searchQ ? 'all' : null;   /* đang tìm: mở khay Tất cả; xóa ô tìm: gập lại */
-  renderLibrary();
+  clearTimeout(_searchTimer);
+  _searchTimer = setTimeout(renderLibrary, 120);   /* debounce: gõ nhanh không giật */
 });
 
 $('#brandHome').addEventListener('click', ()=>{ openCat=null; searchQ=''; $('#searchInput').value=''; renderLibrary(); window.scrollTo({top:0,behavior:'smooth'}); });
@@ -4196,7 +4246,9 @@ async function loadAll(){
     const s = await Store.get('kk-settings');if(s) settings = Object.assign(settings, JSON.parse(s));
   }catch(e){ console.error(e); }
   try{ applyI18n(); }catch(e){ if(window.console) console.warn(e); }  /* cập nhật số lượng từ dữ liệu đã lưu, không chờ mạng */
-  await gLoadCatalog(); /* khách truy cập: tải danh mục công khai từ Google Drive */
+  /* Nếu chưa có sách trong bộ nhớ, HIỆN NGAY bản sao danh mục đã lưu (nhanh + không phụ thuộc Drive) */
+  try{ if(!books.length && typeof _loadCatalogCache==='function' && _loadCatalogCache()){ applyI18n(); renderLibrary(); } }catch(e){}
+  await gLoadCatalog(); /* khách truy cập: tải danh mục công khai từ Google Drive (có dự phòng bản sao) */
   $('#wmText').value = settings.wmText;
   $('#wmOpacity').value = settings.wmOpacity;
   $('#wmOpVal').textContent = settings.wmOpacity+'%';
@@ -4460,8 +4512,20 @@ function renderAdminList(){
     '<span>💾 Máy: <b>' + soMay + '</b></span>' +
     _warn;
   list.appendChild(head);
+  var _sbox = document.createElement('input');
+  _sbox.type='text'; _sbox.className='admin-search'; _sbox.placeholder='🔎 Lọc nhanh sách theo tên...';
+  _sbox.addEventListener('input', function(){
+    var q = khongDau(_sbox.value.trim());
+    var shown=0;
+    list.querySelectorAll('.admin-row').forEach(function(r){
+      var ok = !q || (r.getAttribute('data-title')||'').indexOf(q)>=0;
+      r.style.display = ok ? '' : 'none'; if(ok) shown++;
+    });
+  });
+  list.appendChild(_sbox);
   books.forEach((b, idx) => {
     const row = document.createElement('div'); row.className='admin-row';
+    row.setAttribute('data-title', khongDau(b.title||''));
     const noiLuu = b.driveId ? '<span class="ar-store drive">☁ Drive</span>' : '<span class="ar-store local">💾 Máy</span>';
     row.innerHTML = `<span class="ar-num">${idx+1}</span>
       <span class="ar-title">${escapeHtml(b.title)}</span>
@@ -4940,8 +5004,14 @@ async function openReader(book){
     }
     if(!rDoc || !rDoc.numPages){ throw new Error('Không đọc được nội dung PDF.'); }
     rPage = 1;
-    /* Vẽ trang bìa với ổn định bố cục (như mọi trang khác) */
+    /* ĐỌC TIẾP: nếu đã đọc dở và có quyền đọc trọn cuốn, mở lại đúng trang đang đọc. */
+    try{
+      var _saved = parseInt(localStorage.getItem('kkLastPage_'+book.id)||'0',10);
+      if(_saved>1 && _saved<=rDoc.numPages && typeof duocDocTiep==='function' && duocDocTiep(book.id)){ rPage=_saved; toast('Đọc tiếp từ trang '+_saved); }
+    }catch(e){}
+    /* Vẽ trang với ổn định bố cục (như mọi trang khác) */
     renderPageSettle();
+    try{ updateReadProgress(); }catch(e){}
     /* TỰ BỔ SUNG metadata cho sách khôi phục (thiếu số trang hoặc bìa) từ tài liệu đã mở. */
     try{ enrichBookMeta(book, rDoc, {deep:true, restoreTitle: isRawTitle(book.title), push:false}); }catch(e){}
   }catch(e){
@@ -5044,6 +5114,7 @@ async function renderPage(){
     ctx.restore();
 
     $('#pageInd').textContent = rPage + ' / ' + rDoc.numPages;
+    try{ updateReadProgress(); }catch(e){}
     $('#prevPage').disabled = rPage<=1;
     $('#nextPage').disabled = rPage>=rDoc.numPages;
     $('#zoomInd') && ($('#zoomInd').textContent = Math.round(rZoom*100) + '%');
@@ -5065,12 +5136,19 @@ function renderPageSettle(){
   setTimeout(function(){ if(rDoc) renderPage(); }, 90);
 }
 /* LẬT TRANG - mọi đường đều đi qua đây, có chốt chặn thu phí */
+function updateReadProgress(){
+  var el=document.getElementById('readProg'); if(!el) return;
+  var pct = (rDoc && rDoc.numPages) ? Math.max(0, Math.min(100, (rPage/rDoc.numPages)*100)) : 0;
+  el.style.width = pct + '%';
+}
 function sangTrang(trangMoi){
   if(!rDoc) return false;
   if(trangMoi < 1 || trangMoi > rDoc.numPages) return false;
   if(!chanTrang(trangMoi)) return false;      /* hết trang miễn phí -> chặn */
   rPage = trangMoi;
+  try{ if(rBookId) localStorage.setItem('kkLastPage_'+rBookId, rPage); }catch(e){}   /* nhớ trang để đọc tiếp */
   renderPageSettle();
+  updateReadProgress();
   var st = $('#readerStage'); if(st){ st.scrollTop = 0; setTimeout(function(){ if(st) st.scrollTop = 0; }, 130); }
   return true;
 }
@@ -6009,10 +6087,11 @@ function duocDocTiep(bookId){
    BỨC TƯỜNG THU PHÍ
    ================================================================ */
 function maThanhToan(){
-  /* mã đối chiếu: gắn với tài khoản + cuốn sách, để anh soi sao kê */
+  if(_curOrderCode) return _curOrderCode;   /* mã đơn tự động (khớp backend SePay) */
+  /* mã đối chiếu dự phòng: gắn với tài khoản + cuốn sách, để anh soi sao kê */
   const u = fbUser ? fbUser.uid.slice(0,5) : 'AN' + Math.random().toString(36).slice(2,5);
   const b = (rBookId || 'X').replace(/[^A-Za-z0-9]/g,'').slice(0,4);
-  return ('KK' + u + b).toUpperCase().slice(0,14);
+  return ('KKB' + u + b).toUpperCase().slice(0,14);
 }
 function tienVN(n){ return (n||0).toLocaleString('vi-VN') + ' đ'; }
 
@@ -6081,26 +6160,70 @@ function veQR(){
   return ma;
 }
 
-function moTuongThuPhi(){
+/* ===== THANH TOÁN TỰ ĐỘNG: tạo đơn Firestore + lắng nghe tiền về (SePay) để tự mở khoá ===== */
+var _curOrderCode = null, _orderUnsub = null;
+async function batDauDonTuDong(){
+  if(!fbReady || typeof fbDb==='undefined' || !fbDb) return null;
+  try{
+    var code = 'KKB' + Math.random().toString(36).slice(2,8).toUpperCase();
+    var bookId = rBookId, amount = giaSach(rBookId);
+    var title = (typeof books!=='undefined' ? (books.find(function(b){return b.id===bookId;})||{}).title : '') || '';
+    await fbDb.collection('orders').doc(code).set({
+      bookId: bookId, amount: amount, title: title,
+      email: fbUser ? (fbUser.email||'') : '',
+      uid: fbUser ? fbUser.uid : 'khach',
+      orderCode: code, status: 'pending',
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    try{ if(_orderUnsub) _orderUnsub(); }catch(e){}
+    _orderUnsub = fbDb.collection('orders').doc(code).onSnapshot(function(d){
+      if(d.exists && d.data() && d.data().status==='paid'){ _moKhoaSauThanhToan(bookId); }
+    });
+    return code;
+  }catch(e){ if(window.console) console.warn('order', e && e.code); return null; }
+}
+function _moKhoaSauThanhToan(bookId){
+  try{ if(_orderUnsub){ _orderUnsub(); _orderUnsub=null; } }catch(e){}
+  if(typeof myAccess!=='undefined') myAccess.books[bookId]=true;
+  if(fbUser){ try{ fbDb.collection('access').doc(fbUser.uid).set({books:{[bookId]:true}},{merge:true}); }catch(e){} }
+  else { try{ localStorage.setItem('kkUnlock_'+bookId,'1'); }catch(e){} }
+  var note=$('#pwNote'); if(note){ note.className='pw-note ok'; note.textContent='✅ Đã nhận thanh toán! Sách đã tự mở khoá - mời bạn đọc tiếp. (Biên lai & mã đã gửi vào email nếu bạn đã nhập.)'; }
+  setTimeout(function(){ try{ dongTuongThuPhi(); }catch(e){} toast('Đã mở khoá sách tự động sau thanh toán!'); try{ if(rDoc) renderPageSettle(); }catch(e){} }, 1400);
+}
+/* Cập nhật email khách vào đơn để backend gửi biên lai/mã */
+function capNhatEmailDon(){
+  try{
+    var v = ($('#pwContact') && $('#pwContact').value || '').trim();
+    if(_curOrderCode && /@/.test(v) && fbDb){ fbDb.collection('orders').doc(_curOrderCode).set({email:v.slice(0,80)}, {merge:true}); }
+  }catch(e){}
+}
+async function moTuongThuPhi(){
   const wall = $('#payWall');
-  const ma = veQR();
   const soTien = giaSach(rBookId);
   $('#pwTitle').textContent = 'Bạn đã đọc hết ' + cauHinhThuPhi(rBookId).freePages + ' trang miễn phí';
   $('#pwSub').textContent   = 'Chuyển khoản ' + tienVN(soTien) + ' để đọc trọn cuốn sách này.';
-  $('#pwInfo').innerHTML =
-    (payCfg.bank ? '<div>Ngân hàng: <b>' + escapeHtml(payCfg.bank) + '</b></div>' : '') +
-    (payCfg.acc  ? '<div>Số tài khoản: <b>' + escapeHtml(payCfg.acc) + '</b></div>' : '') +
-    (payCfg.name ? '<div>Chủ tài khoản: <b>' + escapeHtml(payCfg.name) + '</b></div>' : '') +
-    '<div>Số tiền: <b>' + tienVN(soTien) + '</b></div>' +
-    '<div>Nội dung CK: <b>' + escapeHtml(ma) + '</b></div>';
   $('#pwNote').textContent = '';
   $('#pwNote').className = 'pw-note';
   document.querySelector('.canvas-wrap').classList.add('blurred');
   wall.classList.add('on');
   $('#reader').classList.add('pw-open');   /* ẩn nút bình luận để không che màn thanh toán */
   ttsStop(); autoStop();
+  /* Tạo ĐƠN TỰ ĐỘNG (đặt _curOrderCode) rồi mới dựng QR + thông tin -> khớp mã với backend SePay,
+     đồng thời lắng nghe real-time để TỰ MỞ KHOÁ khi tiền về. Nếu Firestore lỗi thì dùng mã dự phòng. */
+  _curOrderCode = null;
+  try{ _curOrderCode = await batDauDonTuDong(); }catch(e){}
+  const ma = veQR();
+  $('#pwInfo').innerHTML =
+    (payCfg.bank ? '<div>Ngân hàng: <b>' + escapeHtml(payCfg.bank) + '</b></div>' : '') +
+    (payCfg.acc  ? '<div>Số tài khoản: <b>' + escapeHtml(payCfg.acc) + '</b></div>' : '') +
+    (payCfg.name ? '<div>Chủ tài khoản: <b>' + escapeHtml(payCfg.name) + '</b></div>' : '') +
+    '<div>Số tiền: <b>' + tienVN(soTien) + '</b></div>' +
+    '<div>Nội dung CK: <b>' + escapeHtml(ma) + '</b></div>' +
+    (_curOrderCode ? '<div style="color:#5FC98A;font-size:.8rem;margin-top:4px">✓ Sau khi chuyển khoản đúng nội dung trên, sách sẽ TỰ MỞ KHOÁ trong giây lát.</div>' : '');
 }
 function dongTuongThuPhi(){
+  try{ if(_orderUnsub){ _orderUnsub(); _orderUnsub=null; } }catch(e){}
+  _curOrderCode = null;
   $('#payWall').classList.remove('on');
   $('#reader').classList.remove('pw-open');
   document.querySelector('.canvas-wrap').classList.remove('blurred');
@@ -6870,6 +6993,7 @@ setInterval(capNhatBadgeYeuCau, 60000);
 initMaintButtons();
 initAdminExtras();
 $('#pwPaid').addEventListener('click', guiYeuCauThanhToan);
+(function(){ var c=document.getElementById('pwContact'); if(c) c.addEventListener('blur', function(){ try{ capNhatEmailDon(); }catch(e){} }); })();
 $('#pwCodeBtn').addEventListener('click', dungMaMoKhoa);
 $('#pwCode').addEventListener('keydown', e=>{ if(e.key==='Enter') dungMaMoKhoa(); });
 $('#pwBack').addEventListener('click', ()=>{ dongTuongThuPhi(); sangTrang(cauHinhThuPhi(rBookId).freePages); });
