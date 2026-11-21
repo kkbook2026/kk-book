@@ -16,13 +16,13 @@
   }catch(e){}
 })();
 </script>
-<title>THƯ VIỆN SÁCH CÁ NHÂN</title>
+<title>THƯ VIỆN SÁCH CÁ NHÂN</title><meta name="description" content="KK-BOOK - Thư viện Sách &amp; Tri thức Khoa học của tác giả Nguyễn Duy Điển: đọc sách, KK-QUIZ và bộ công cụ Khoa học Á Đông."><link rel="canonical" href="https://kk-book.com/">
 <meta name="robots" content="noarchive, noimageindex">
 <!-- ===== KK-BOOK App (PWA): cài được như ứng dụng, có icon riêng, chạy toàn màn hình ===== -->
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#17294c">
-<link rel="icon" href="./icons/kk-64.png" type="image/png">
-<link rel="apple-touch-icon" href="./icons/kk-192.png">
+<link rel="icon" href="./kk-64.png" type="image/png">
+<link rel="apple-touch-icon" href="./kk-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -3605,10 +3605,10 @@ function requestToken(){
       tokenClient = google.accounts.oauth2.initTokenClient({
         client_id: GDRIVE.clientId,
         scope: 'https://www.googleapis.com/auth/drive.file email',
-        callback: ()=>{}
+        callback: ()=>{}, error_callback: (err)=>{ const rj=tokenClient&&tokenClient.__rej; if(rj){ tokenClient.__rej=null; rj(new Error((err&&err.type)||'popup_failed')); } }
       });
     }
-    tokenClient.callback = (resp)=>{
+    tokenClient.__rej = reject; tokenClient.callback = (resp)=>{ tokenClient.__rej = null;
       if(resp.error){ reject(new Error(resp.error)); return; }
       gToken = resp.access_token;
       gTokenExp = Date.now() + (resp.expires_in - 60)*1000;
